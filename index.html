@@ -188,6 +188,22 @@ body[data-view=rate] .foot,body[data-view=results] .foot{display:none}
 .sgrid span{display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .sgrid i{flex:none;width:9px;height:9px;border-radius:50%;background:var(--c)}
 .sgrid input{width:78px;flex:none;background:#0a110d;border:1px solid var(--line);border-radius:9px;padding:8px;min-height:44px;text-align:center}
+.tag.lock{background:#2a3530;color:#c9d6cd}
+.lknote{color:var(--mut);font-size:13px;align-self:center}
+.pubbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:#15231b;border:1px solid #2f5a40;border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.pubbar div{flex:1 1 220px;display:grid}.pubbar span{color:var(--mut);font-size:14px}
+.pubres{max-width:900px;margin:0 auto;padding:6px max(4vw,14px) 8px}.pubres:empty{display:none}
+.mvp{display:flex;align-items:center;gap:12px;background:linear-gradient(100deg,color-mix(in srgb,var(--c) 30%,var(--panel)),var(--panel) 70%);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.mvp .crown{flex:none;font:800 13px "Barlow Condensed",sans-serif;letter-spacing:.5px;background:#f5d020;color:#1b1600;padding:3px 9px;border-radius:6px}
+.mvp b{font:800 26px/1.05 "Barlow Condensed",sans-serif;flex:0 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tmn{color:var(--mut);font-size:13px;flex:1}
+.mvp .avg{font-size:36px}
+.plist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media(max-width:600px){.plist{grid-template-columns:minmax(0,1fr)}}
+.pr{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:12px;padding:10px 12px}
+.pr b{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr .avg{font-size:26px}
+.mvpn{color:var(--ink);font-weight:700}
 </style>
 </head>
 <body>
@@ -261,6 +277,7 @@ body[data-view=rate] .foot,body[data-view=results] .foot{display:none}
   </section>
   <section class="card c1" id="card1"></section>
 </main>
+<section class="pubres" id="pubres"></section>
 <section class="tools">
   <div class="bar ed-only">
     <button class="pri" id="shuffle">Shuffle teams</button>
@@ -317,7 +334,7 @@ function clean(d){
 // geometry: field is x4..64, y6..96 inside 68x102
 const toBox=s=>({l:(4+s.x*60)/68*100,t:(6+s.y*90)/102*100});
 $('#stripes').innerHTML=Array.from({length:12},(_,i)=>`<rect x="4" y="${6+i*7.5}" width="60" height="7.5" fill="url(#${i%2?'sb':'sa'})"/>`).join('');
-let editor=false,sel=null,drag=null;
+let editor=false,baseEd=false,sel=null,drag=null;
 const num=i=>S.numbers[S.slots[i].p]||String(i%8+1);
 function renderTokens(){
   $('#tokens').innerHTML=S.slots.map((s,i)=>{const b=toBox(s);return `<div class="tk${i%8===0?' gk':''}${sel===i?' sel':''}" data-s="${i}" style="left:${b.l}%;top:${b.t}%;--c:${S.teams[s.t].color}"><svg class="j" viewBox="0 0 40 38"><path class="sl" d="M12 3L3 8.5l3.4 7.6 5.6-2.6z M28 3l9 5.5-3.4 7.6-5.6-2.6z"/><path class="sh" d="M12 3c2.6 2.4 5 3.4 8 3.4s5.4-1 8-3.4l.6 10.5V35.5H11.4V13.5z"/><path class="tr" d="M14.5 3.6c1.6 2.4 3.4 3.4 5.5 3.4s3.9-1 5.5-3.4" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="1.4"/><path d="M12 3L3 8.5l3.4 7.6 5.6-2.6zM28 3l9 5.5-3.4 7.6-5.6-2.6z" fill="#0000002a"/><path d="M11.4 33.5H28.6v2H11.4z" fill="#0000003a"/><text class="no" x="20" y="27">${num(i)}</text></svg><span>${esc(S.players[s.p])||'—'}</span></div>`}).join('');
@@ -350,11 +367,11 @@ async function write(){
   if(writing){queued=true;return}
   writing=true;
   try{await ref.set({...JSON.parse(JSON.stringify(S)),updatedAt:Date.now()});status('')}
-  catch(e){writing=false;if(denied(e)){dirty=false;queued=false;setMode(false);toast('Enter the PIN to edit');return}status('Save failed, retrying…');setTimeout(change,2000);return}
+  catch(e){writing=false;if(denied(e)){dirty=false;queued=false;const m=MATCHES[curMatch];if(m&&isLocked(m)){applyEd();toast('This match is locked')}else{setMode(false);toast('Enter the PIN to edit')}return}status('Save failed, retrying…');setTimeout(change,2000);return}
   writing=false;
   if(queued){queued=false;write()}else dirty=false;
 }
-function setMode(ed){editor=ed;document.body.classList.toggle('ed',ed);$('#mode').hidden=true;$('#unlock').hidden=ed;all();renderMbar();if(!ed){$('#mForm').hidden=true;$('#eForm').hidden=true}}
+function setMode(ed){baseEd=ed;$('#mode').hidden=true;$('#unlock').hidden=ed;applyEd();if(!ed){$('#mForm').hidden=true;$('#eForm').hidden=true}}
 $('#unlockBtn').onclick=async()=>{
   const v=$('#pin').value.trim();if(!v)return;
   if(!F||!uid){toast('Connecting…');return}
@@ -370,6 +387,7 @@ $('#pin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#unlockBtn').clic
     const wait=setTimeout(()=>status('Connecting…'),8000);
     D.onValue(D.ref(db,'matches'),snap=>{clearTimeout(wait);status('');onMatches(snap.val())},()=>{clearTimeout(wait);$('#matches').innerHTML='<div class="empty"><p>Could not load matches.</p></div>'});
     D.onValue(D.ref(db,'meta/current'),s=>{round=s.val();onRound()},()=>{});
+    D.onValue(D.ref(db,'published'),s=>{PUB=s.val()||{};renderMatches();renderPub();if(isAdmin)renderResults()},()=>{});
     Au.getRedirectResult(auth).catch(()=>{});
     Au.onAuthStateChanged(auth,async u=>{
       if(!u){Au.signInAnonymously(auth).catch(()=>status('Could not connect.'));return}
@@ -383,7 +401,7 @@ $('#pin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#unlockBtn').clic
 })();
 function renderAccount(){
   $('#acct').innerHTML=isAdmin?`Organizer · <button class="lnk" id="so">Sign out</button>`:`<button class="lnk" id="si">Organizer sign in</button>`;
-  $('#nav-results').hidden=!isAdmin;renderMbar();
+  $('#nav-results').hidden=!isAdmin;applyEd();
   if(!isAdmin&&view==='results')go('matches');
 }
 $('#acct').addEventListener('click',async e=>{
@@ -441,9 +459,18 @@ $('#fs').onclick=async e=>{e.stopPropagation();const on=!document.body.classList
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&document.body.classList.contains('focus')){document.body.classList.remove('focus');$('#fs').textContent='⤢ Tactics mode'}});
 $('#fs').addEventListener('pointerdown',e=>e.stopPropagation());
 // ---------- views ----------
-let view='matches',MATCHES={},curMatch=null,showNew=false;
+let view='matches',MATCHES={},curMatch=null,showNew=false,PUB={};
 const LABEL={matches:'Matches',match:'Squads',rate:'Player ratings',results:'Results'};
 const VIEWS={matches:'v-matches',match:'v-squads',rate:'v-rate',results:'v-results'};
+const isLocked=m=>!!m&&(m.locked===true||!(+m.lockAt>Date.now()));
+const lockAtFor=(date,start,end)=>{const t=new Date(`${date}T${(end&&end>=start?end:start)||'23:59'}`).getTime();return (isNaN(t)?Date.now():t)+86400000};
+function applyEd(){
+  const m=MATCHES[curMatch],lk=view==='match'&&m&&isLocked(m);
+  const ed=baseEd&&(!lk||isAdmin);
+  if(ed!==editor){editor=ed;sel=null;if(!ed)drag=null}
+  document.body.classList.toggle('ed',editor);all();renderMbar();
+  if(!editor){$('#eForm').hidden=true}
+}
 function freshBoard(){const keep=S;S=blank();applyForm(0);applyForm(1);const b=S;S=keep;return b}
 function go(h){
   let v=h||'matches',id=null;
@@ -454,7 +481,7 @@ function go(h){
   for(const k in VIEWS)$('#'+VIEWS[k]).hidden=k!==v;
   ['matches','rate','results'].forEach(x=>$('#nav-'+x).classList.toggle('on',x===v||(x==='matches'&&v==='match')));
   const hs=v==='match'?'m-'+id:v;if(location.hash.slice(1)!==hs)history.replaceState(null,'','#'+hs);
-  renderMbar();heroUpdate();window.scrollTo(0,0);
+  applyEd();renderPub();heroUpdate();window.scrollTo(0,0);
 }
 document.querySelector('.tabbar').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});
 window.addEventListener('hashchange',()=>go(location.hash.slice(1)));
@@ -475,7 +502,7 @@ function onMatches(v){
     if(!m){toast('Match not found');go('matches');}
     else if(!(dirty||writing||drag)){const c=clean(m.board);if(c){S=c;sel=null;all()}}
   }
-  renderMatches();renderMbar();heroUpdate();
+  renderMatches();applyEd();heroUpdate();
 }
 function heroUpdate(){
   let t='';
@@ -486,37 +513,50 @@ function heroUpdate(){
 }
 function mcard(m){
   const b=m.board||{},t=b.teams||[],pl=(b.players||[]).filter(x=>x&&String(x).trim()).length;
-  const d=new Date(m.date+'T12:00'),rOpen=round&&round.open&&round.id===m.id;
+  const d=new Date(m.date+'T12:00'),rOpen=round&&round.open&&round.id===m.id,P=PUB[m.id],mvp=P&&Array.isArray(P.players)&&P.players.slice().sort((a,b)=>b.avg-a.avg)[0];
   const tn=(i,dn,dc)=>`<i style="background:${esc((t[i]&&t[i].color)||dc)}"></i>${esc((t[i]&&t[i].name)||dn)}`;
-  return `<a class="mc" href="#m-${esc(m.id)}"><div class="md"><b>${d.getDate()}</b><span>${esc(d.toLocaleDateString('en-GB',{month:'short'}))}</span></div><div class="mi"><b>${esc(d.toLocaleDateString('en-GB',{weekday:'long'}))} · ${esc(m.start||'')}${m.end?'–'+esc(m.end):''}</b><span>${tn(0,'Red','#d93a2b')} vs ${tn(1,'Blue','#2468d8')}</span><span>${pl}/16 players</span></div>${rOpen?'<em class="tag">Rating open</em>':''}<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>`;
+  return `<a class="mc" href="#m-${esc(m.id)}"><div class="md"><b>${d.getDate()}</b><span>${esc(d.toLocaleDateString('en-GB',{month:'short'}))}</span></div><div class="mi"><b>${esc(d.toLocaleDateString('en-GB',{weekday:'long'}))} · ${esc(m.start||'')}${m.end?'–'+esc(m.end):''}</b><span>${tn(0,'Red','#d93a2b')} vs ${tn(1,'Blue','#2468d8')}</span><span>${mvp?`MVP · <b class="mvpn">${esc(mvp.n)}</b> ${(+mvp.avg).toFixed(2).replace(/0$/,'')}`:`${pl}/16 players`}</span></div>${rOpen?'<em class="tag">Rating open</em>':(isLocked(m)&&m.date<today()?'<em class="tag lock">Final</em>':'')}<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>`;
+}
+function renderPub(){
+  const el=$('#pubres');if(!el)return;const P=view==='match'&&PUB[curMatch];
+  if(!P||!Array.isArray(P.players)||!P.players.length){el.innerHTML='';return}
+  const ps=P.players.slice().sort((a,b)=>b.avg-a.avg),fmt=v=>(+v).toFixed(2).replace(/0$/,'');
+  const tm=t=>(P.teams&&P.teams[t])||{name:'',color:'#888'};
+  const mvp=ps[0];
+  el.innerHTML=`<div class="rh"><h2>Player ratings</h2><p>Average of anonymous votes after the match.</p></div>
+  <div class="mvp" style="--c:${esc(tm(mvp.t).color)}"><span class="crown">MVP</span><b>${esc(mvp.n)}</b><span class="tmn">${esc(tm(mvp.t).name)}</span><span class="avg" style="color:${hue(mvp.avg)}">${fmt(mvp.avg)}</span></div>
+  <div class="plist">${ps.slice(1).map((p,k)=>`<div class="pr" style="--c:${esc(tm(p.t).color)}"><span class="rk">${k+2}</span><b>${esc(p.n)}</b><span class="tmn">${esc(tm(p.t).name)}${p.votes?` · ${p.votes} ${p.votes===1?'vote':'votes'}`:''}</span><span class="avg" style="color:${hue(p.avg)}">${fmt(p.avg)}</span></div>`).join('')}</div>`;
 }
 function renderMatches(){
   const t=today(),all_=mList(),up=upcoming(),past=all_.filter(m=>m.date<t).sort((a,b)=>mKey(b).localeCompare(mKey(a)));
-  $('#matches').innerHTML=`<h3 class="sec">Upcoming</h3>`+(up.length?up.map(mcard).join(''):`<div class="empty sm"><p>No upcoming matches.${editor?' Tap “New match” to add one.':''}</p></div>`)+(past.length?`<h3 class="sec">Past matches</h3>`+past.map(mcard).join(''):'');
+  $('#matches').innerHTML=`<h3 class="sec">Upcoming</h3>`+(up.length?up.map(mcard).join(''):`<div class="empty sm"><p>No upcoming matches.${baseEd?' Tap “New match” to add one.':''}</p></div>`)+(past.length?`<h3 class="sec">Past matches</h3>`+past.map(mcard).join(''):'');
 }
 function renderMbar(){
   const el=$('#mbar');if(!el)return;const m=MATCHES[curMatch];
   if(view!=='match'||!m){el.innerHTML='';return}
-  const rOpen=round&&round.open&&round.id===curMatch,had=isAdmin&&rounds[curMatch];
-  let h=`<a class="back" href="#matches">← All matches</a><div class="mrow"><div class="mt"><b>${esc(mLabel(m))}</b>${rOpen?'<em class="tag">Rating open</em>':''}</div><div class="bar">`;
+  const rOpen=round&&round.open&&round.id===curMatch,had=isAdmin&&rounds[curMatch],lk=isLocked(m);
+  let h=`<a class="back" href="#matches">← All matches</a><div class="mrow"><div class="mt"><b>${esc(mLabel(m))}</b>${rOpen?'<em class="tag">Rating open</em>':''}${lk?'<em class="tag lock">Locked</em>':''}</div><div class="bar">`;
   if(rOpen)h+=`<a class="btn pri" href="#rate">Rate players</a>`;
-  if(isAdmin)h+=rOpen?`<button id="closeR2">Close rating</button>`:`<button id="openR2">${had?'Reopen rating':'Open rating'}</button>`;
+  if(isAdmin)h+=rOpen?`<button id="closeR2">Close rating</button>`:(lk?'':`<button id="openR2">${had?'Reopen rating':'Open rating'}</button>`);
   if(isAdmin&&!rOpen)h+=`<button id="scoreM">${had&&had.summary?'Edit scores':'Enter scores'}</button>`;
   if(had)h+=`<button id="viewR">Results</button>`;
   if(editor)h+=`<button id="editM">Edit date &amp; time</button>`;
+  if(isAdmin)h+=lk?`<button id="unlockM">Unlock match</button>`:`<button id="lockM">Lock now</button>`;
+  if(lk&&!isAdmin)h+=`<span class="lknote">This match is final and can’t be changed.</span>`;
+  else if(!lk&&m.lockAt)h+=`<span class="lknote">Locks ${esc(new Date(+m.lockAt).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}))}</span>`;
   el.innerHTML=h+`</div></div>`;
 }
 $('#newM').onclick=()=>{const f=$('#mForm');f.hidden=!f.hidden;if(!f.hidden){$('#fDate').value=nextWed();$('#fDate').focus()}};
 $('#fCancel').onclick=()=>{$('#mForm').hidden=true};
 $('#mForm').addEventListener('submit',async e=>{
-  e.preventDefault();if(!F||!editor)return;
+  e.preventDefault();if(!F||!baseEd)return;
   const date=$('#fDate').value,start=$('#fStart').value||'22:00',end=$('#fEnd').value||'';
   if(!date){toast('Pick a date');return}
   const id=date+'-'+start.replace(':','');
   if(MATCHES[id]){toast('A match already exists at that time');return}
   let board=freshBoard();
   if($('#fCopy').checked){const last=mList().sort((a,b)=>mKey(b).localeCompare(mKey(a)))[0];const c=last&&clean(last.board);if(c)board=c}
-  try{await F.set(F.ref(db,'matches/'+id),{date,start,end,createdAt:Date.now(),board:JSON.parse(JSON.stringify(board))});$('#mForm').hidden=true;toast('Match created');go('m-'+id)}
+  try{await F.set(F.ref(db,'matches/'+id),{date,start,end,lockAt:lockAtFor(date,start,end),locked:false,createdAt:Date.now(),board:JSON.parse(JSON.stringify(board))});$('#mForm').hidden=true;toast('Match created');go('m-'+id)}
   catch(err){toast(denied(err)?'Enter the PIN to add matches':'Could not create match')}
 });
 let delT=0;
@@ -525,6 +565,8 @@ $('#mbar').addEventListener('click',async e=>{
   if(t.id==='editM'){const f=$('#eForm');f.hidden=!f.hidden;$('#eDate').value=m.date;$('#eStart').value=m.start||'';$('#eEnd').value=m.end||'';delT=0;$('#eDel').textContent='Delete match'}
   if(t.id==='openR2')openRating(m);
   if(t.id==='scoreM')openScores();
+  if(t.id==='lockM'){try{await F.update(F.ref(db,'matches/'+curMatch),{locked:true});if(round&&round.open&&round.id===curMatch)await setOpen(curMatch,false);toast('Match locked')}catch(err){toast('Could not lock')}}
+  if(t.id==='unlockM'){try{await F.update(F.ref(db,'matches/'+curMatch),{locked:false,lockAt:Date.now()+86400000});toast('Unlocked for 24 hours')}catch(err){toast('Could not unlock')}}
   if(t.id==='closeR2'&&round)setOpen(round.id,false);
   if(t.id==='viewR'){selRound=curMatch;subResults();go('results')}
 });
@@ -532,7 +574,7 @@ $('#eCancel').onclick=()=>{$('#eForm').hidden=true};
 $('#eForm').addEventListener('submit',async e=>{
   e.preventDefault();const date=$('#eDate').value,start=$('#eStart').value,end=$('#eEnd').value||'';
   if(!date||!start){toast('Date and start time are needed');return}
-  try{await F.update(F.ref(db,'matches/'+curMatch),{date,start,end});$('#eForm').hidden=true;toast('Saved')}catch(err){toast('Could not save')}
+  try{await F.update(F.ref(db,'matches/'+curMatch),{date,start,end,lockAt:lockAtFor(date,start,end)});$('#eForm').hidden=true;toast('Saved')}catch(err){toast('Could not save')}
 });
 $('#eDel').onclick=async()=>{
   if(!delT||Date.now()-delT>5000){delT=Date.now();$('#eDel').textContent='Tap again to delete';return}
@@ -631,7 +673,7 @@ $('#submitBtn').onclick=async()=>{
   btn.disabled=false;confirmT=0;if(!submitted)btn.textContent='Submit';
 };
 // ---------- results (organizer) ----------
-let rounds={},selRound=null,unsubRounds=null,unsubRes=null,subFor=null,results=null,openRow={};
+let lastRows=null,rounds={},selRound=null,unsubRounds=null,unsubRes=null,subFor=null,results=null,openRow={};
 function startAdmin(){
   if(unsubRounds)return;
   unsubRounds=F.onValue(F.ref(db,'rounds'),s=>{rounds=s.val()||{};if(!selRound||!rounds[selRound])selRound=Object.keys(rounds).sort((a,b)=>mKey(rounds[a]).localeCompare(mKey(rounds[b]))).pop()||null;subResults();renderResults();renderMbar()},()=>{});
@@ -652,6 +694,9 @@ function renderResults(){
   h+=`<div class="rsel"><select id="rSel" aria-label="Match">${ids.map(id=>`<option value="${esc(id)}"${id===selRound?' selected':''}>${esc(mLabel(rounds[id]))}${rounds[id].open?' · open':''}</option>`).join('')}</select><span class="rsum">${sum?'Imported scores':`<b>${subs.length}</b> ${subs.length===1?'response':'responses'}`}</span></div>`;
   if(cur&&!cur.open&&selRound===cur.id)h+=`<p class="note" style="text-align:left;margin:-4px 0 10px"><button class="lnk" id="reopenR">Reopen this rating</button></p>`;
   const rows=(rd.players||[]).map((p,i)=>{const vs=[],cs=[];subs.forEach(x=>{const o=x&&x.s&&x.s['p'+i];if(o&&o.v){vs.push(+o.v);if(o.c)cs.push(String(o.c))}});const sv=sum&&+sum['p'+i];if(sum)return{p,i,n:null,avg:sv>0?sv:null,cs:[]};return{p,i,n:vs.length,avg:vs.length?vs.reduce((a,b)=>a+b,0)/vs.length:null,cs:cs.sort((a,b)=>a.localeCompare(b))}}).sort((a,b)=>(b.avg??-1)-(a.avg??-1));
+  lastRows={id:selRound,rd,rows};
+  const pub=PUB[selRound],rated=rows.filter(r=>r.avg!=null).length;
+  if(rated)h+=`<div class="pubbar"><div><b>${pub?'Published':'Not published'}</b><span>${pub?`Everyone can see these scores on the match page${pub.publishedAt?' · '+esc(new Date(pub.publishedAt).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})):''}`:'Only you can see these scores until you publish them. Comments stay private.'}</span></div><button class="pri" id="pubR">${pub?'Update published scores':'Publish results'}</button>${pub?'<button id="unpubR">Unpublish</button>':''}</div>`;
   h+=rows.map((r,k)=>{const tm=teamOf(rd,r.p.t);return `<div class="rc${r.cs.length?' has':''}" data-r="${r.i}" style="--c:${esc(tm.color)}"><div class="rt"><span class="rk">${r.avg==null?'–':k+1}</span><div class="rn"><b>${esc(r.p.n)}</b><span>${esc(tm.name)} · ${r.n==null?'final score':`${r.n} ${r.n===1?'vote':'votes'}`}${r.cs.length?` · ${r.cs.length} ${r.cs.length===1?'comment':'comments'}`:''}</span></div><span class="avg"${r.avg!=null?` style="color:${hue(r.avg)}"`:''}>${r.avg==null?'–':r.avg.toFixed(2).replace(/0$/,"")}</span></div><div class="meter"><i style="width:${(r.avg||0)*10}%"></i></div>${openRow[r.i]&&r.cs.length?`<div class="cms">${r.cs.map(c=>`<p class="cm">${esc(c)}</p>`).join('')}</div>`:''}</div>`}).join('');
   $('#results').innerHTML=h;
 }
@@ -659,6 +704,11 @@ async function setOpen(id,open){try{await F.update(F.ref(db),{['rounds/'+id+'/op
 $('#results').addEventListener('click',async e=>{
   const t=e.target;
   if(t.id==='closeR'&&round){setOpen(round.id,false);return}
+  if(t.id==='pubR'&&lastRows&&lastRows.id===selRound){
+    const {rd,rows}=lastRows;const players=rows.filter(r=>r.avg!=null).map(r=>({n:r.p.n,t:r.p.t,avg:Math.round(r.avg*100)/100,votes:r.n==null?0:r.n}));
+    try{await F.set(F.ref(db,'published/'+selRound),{publishedAt:Date.now(),date:rd.date||'',start:rd.start||'',end:rd.end||'',teams:(rd.teams||[]).map(x=>({name:x.name||'',color:x.color||'#888'})),players});toast('Results published')}catch(err){toast('Could not publish')}
+    return}
+  if(t.id==='unpubR'){try{await F.set(F.ref(db,'published/'+selRound),null);toast('Results unpublished')}catch(err){toast('Could not unpublish')}return}
   if(t.id==='reopenR'&&round){setOpen(round.id,true);return}
   const rc=t.closest('.rc.has');if(rc){openRow[rc.dataset.r]=!openRow[rc.dataset.r];renderResults()}
 });
