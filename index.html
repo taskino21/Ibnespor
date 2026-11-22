@@ -256,6 +256,10 @@ body:not(.adm) .admin-only{display:none!important}
 @media(max-width:420px){.tabbar button{font-size:12px}}
 .tk .rtg{position:absolute;top:-7px;left:50%;transform:translateX(-118%);min-width:30px;padding:1px 5px;border-radius:5px;color:#0b110e;font:800 13px/1.35 "Barlow Condensed",sans-serif;font-style:normal;text-align:center;box-shadow:0 2px 4px #0009;border:1.5px solid #0b110e55;white-space:nowrap}
 .tk .rtg.mvp{background:#f5d020!important;color:#1b1600;border-color:#7a6400}
+.stp i{font-style:normal;color:var(--mut);font:700 12px Barlow,sans-serif;width:12px}
+.stp.ast{margin-left:8px}
+@media(max-width:480px){.gr{flex-wrap:wrap}.gr b{flex:1 1 calc(100% - 40px)}.gr .stp{margin-left:34px}.gr .stp.ast{margin-left:12px}}
+.asl{margin-top:6px;padding-top:6px;border-top:1px solid #ffffff10;color:var(--mut)}.asl .ah{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
 </style>
 </head>
 <body>
@@ -601,17 +605,17 @@ function resolve(n){
 function renderRosterDL(){const dl=$('#rosterDL');if(!dl)return;dl.innerHTML=Object.values(ROSTER).filter(p=>p&&!p.archived).sort((a,b)=>a.name.localeCompare(b.name,'tr')).map(p=>`<option value="${esc(p.name)}">${esc(p.aliases||'')}</option>`).join('')}
 function computeStats(){
   const t=today(),past=mList().filter(m=>m.date<t||RESULTS[m.id]).sort((a,b)=>mKey(a).localeCompare(mKey(b)));
-  const st={};for(const id in ROSTER){const r=ROSTER[id];if(!r)continue;st[id]={id,name:r.name||'',aliases:r.aliases||'',archived:!!r.archived,played:0,goals:0,gm:0,rs:[],mvp:0,w:0,d:0,l:0,hist:[]}}
+  const st={};for(const id in ROSTER){const r=ROSTER[id];if(!r)continue;st[id]={id,name:r.name||'',aliases:r.aliases||'',archived:!!r.archived,played:0,goals:0,gm:0,ast:0,rs:[],mvp:0,w:0,d:0,l:0,hist:[]}}
   past.forEach(m=>{
     const b=m.board||{},R=RESULTS[m.id],P=PUB[m.id],sc=scoreOf(m),seen={};
     const top=P&&Array.isArray(P.players)&&P.players.length?P.players.slice().sort((a,c)=>c.avg-a.avg)[0]:null;
     (b.slots||[]).forEach(sl=>{
       const nm=String((b.players||[])[sl.p]||'').trim();if(!nm)return;
       const id=(b.pids||[])[sl.p]||resolve(nm);const x=id&&st[id];if(!x||seen[id])return;seen[id]=1;
-      x.played++;const g=R?+((R.goals||{})['p'+sl.p]||0):0;x.goals+=g;if(g)x.gm++;
+      x.played++;const g=R?+((R.goals||{})['p'+sl.p]||0):0;x.goals+=g;if(g)x.gm++;const as=R?+((R.assists||{})['p'+sl.p]||0):0;x.ast+=as;
       let rt=null;if(P&&Array.isArray(P.players)){const e=P.players.find(q=>q&&((q.pid&&q.pid===id)||(!q.pid&&resolve(q.n)===id)));if(e){rt=+e.avg;x.rs.push(rt);if(e===top)x.mvp++}}
       let res=null;if(sc){const my=sc[sl.t],op=sc[1-sl.t];res=my>op?'W':my<op?'L':'D';x[res.toLowerCase()]++}
-      x.hist.push({id:m.id,label:mLabel(m),team:(b.teams||[])[sl.t]||{},g,rt,res,mvp:!!(top&&rt!=null&&P.players.find(q=>q===top)&&((top.pid&&top.pid===id)||(!top.pid&&resolve(top.n)===id)))});
+      x.hist.push({id:m.id,label:mLabel(m),team:(b.teams||[])[sl.t]||{},g,as,rt,res,mvp:!!(top&&rt!=null&&P.players.find(q=>q===top)&&((top.pid&&top.pid===id)||(!top.pid&&resolve(top.n)===id)))});
     });
   });
   return{total:past.length,list:Object.values(st).map(x=>({...x,avg:x.rs.length?x.rs.reduce((a,c)=>a+c,0)/x.rs.length:null}))};
@@ -620,16 +624,16 @@ let pSort='avg',pOpen={},pDel=0;
 function renderPlayers(){
   const el=$('#players');if(!el||view!=='players')return;
   const {total,list}=computeStats(),act=list.filter(x=>!x.archived);
-  const key={avg:x=>x.avg??-1,goals:x=>x.goals,att:x=>x.played,mvp:x=>x.mvp}[pSort];
+  const key={avg:x=>x.avg??-1,goals:x=>x.goals,ast:x=>x.ast,att:x=>x.played,mvp:x=>x.mvp}[pSort];
   act.sort((a,b)=>key(b)-key(a)||a.name.localeCompare(b.name,'tr'));
   const f2=v=>(+v).toFixed(2).replace(/0$/,'');
-  let h=`<div class="psort" role="group" aria-label="Sort players"><span>Sort by</span>${[['avg','Rating'],['goals','Goals'],['att','Attendance'],['mvp','MVP']].map(([k,l])=>`<button type="button" data-ps="${k}" class="${pSort===k?'on':''}">${l}</button>`).join('')}</div>`;
+  let h=`<div class="psort" role="group" aria-label="Sort players"><span>Sort by</span>${[['avg','Rating'],['goals','Goals'],['ast','Assists'],['att','Attendance'],['mvp','MVP']].map(([k,l])=>`<button type="button" data-ps="${k}" class="${pSort===k?'on':''}">${l}</button>`).join('')}</div>`;
   if(!act.length){el.innerHTML=h+`<div class="empty"><p>${isAdmin?'Add your regular players here. You can also add everyone who played in past matches in one go.':'No players yet.'}</p>${isAdmin?'<div class="bar" style="justify-content:center;margin-top:12px"><button class="pri" id="importP">Add players from past matches</button></div>':''}</div>`;return}
   h+=act.map((x,k)=>{const pct=total?Math.round(x.played/total*100):0,op=pOpen[x.id];
     return `<div class="pp${op?' open':''}" data-pid="${esc(x.id)}"><div class="ph"><span class="rk">${k+1}</span><div class="pn"><b>${esc(x.name)}</b>${x.aliases?`<span>${esc(x.aliases)}</span>`:''}</div><span class="avg"${x.avg!=null?` style="color:${hue(x.avg)}"`:''}>${x.avg!=null?f2(x.avg):'–'}</span></div>
-    <div class="chips"><span><em>Attendance</em>${x.played}/${total}${total?` · ${pct}%`:''}</span><span><em>Goals</em>${x.goals}${x.gm?` in ${x.gm} ${x.gm===1?'match':'matches'}`:''}</span><span><em>MVP</em>${x.mvp}</span><span><em>W-D-L</em>${x.w}-${x.d}-${x.l}</span></div>
+    <div class="chips"><span><em>Attendance</em>${x.played}/${total}${total?` · ${pct}%`:''}</span><span><em>Goals</em>${x.goals}${x.gm?` in ${x.gm} ${x.gm===1?'match':'matches'}`:''}</span><span><em>Assists</em>${x.ast}</span><span><em>MVP</em>${x.mvp}</span><span><em>W-D-L</em>${x.w}-${x.d}-${x.l}</span></div>
     <div class="abar" title="Attendance ${pct}%"><i style="width:${pct}%"></i></div>
-    ${op?`<div class="phist">${x.hist.length?x.hist.slice().reverse().map(hh=>`<div class="hr"><span class="hd">${esc(hh.label)}</span><span class="ht" style="--c:${esc(hh.team.color||'#888')}">${esc(hh.team.name||'')}</span>${hh.res?`<span class="res r${hh.res}">${hh.res}</span>`:''}${hh.g?`<span class="hg">${hh.g} ${hh.g===1?'goal':'goals'}</span>`:''}${hh.mvp?'<span class="hm">MVP</span>':''}<span class="hrt">${hh.rt!=null?f2(hh.rt):''}</span></div>`).join(''):'<p class="note" style="text-align:left">No matches yet.</p>'}
+    ${op?`<div class="phist">${x.hist.length?x.hist.slice().reverse().map(hh=>`<div class="hr"><span class="hd">${esc(hh.label)}</span><span class="ht" style="--c:${esc(hh.team.color||'#888')}">${esc(hh.team.name||'')}</span>${hh.res?`<span class="res r${hh.res}">${hh.res}</span>`:''}${hh.g?`<span class="hg">${hh.g} ${hh.g===1?'goal':'goals'}</span>`:''}${hh.as?`<span class="hg">${hh.as} ${hh.as===1?'assist':'assists'}</span>`:''}${hh.mvp?'<span class="hm">MVP</span>':''}<span class="hrt">${hh.rt!=null?f2(hh.rt):''}</span></div>`).join(''):'<p class="note" style="text-align:left">No matches yet.</p>'}
     ${isAdmin?`<form class="pedit" data-edit="${esc(x.id)}"><input type="text" name="n" value="${esc(x.name)}" maxlength="30" aria-label="Name"><input type="text" name="a" value="${esc(x.aliases)}" maxlength="80" placeholder="Nicknames" aria-label="Nicknames"><button class="pri" type="submit">Save</button><button type="button" class="danger" data-del="${esc(x.id)}">Remove</button></form>`:''}</div>`:''}</div>`}).join('');
   el.innerHTML=h;
 }
@@ -707,6 +711,11 @@ function scoreOf(m){
   const sc=[0,0];b.slots.forEach(s=>{sc[s.t]+=+((r.goals||{})['p'+s.p]||0)});
   const og=r.og||[];sc[0]+=+(og[0]||0);sc[1]+=+(og[1]||0);return sc;
 }
+function assisters(m,t){
+  const r=RESULTS[m.id]||{},b=m.board||{},out=[];
+  (b.slots||[]).forEach(s=>{if(s.t!==t)return;const a=+((r.assists||{})['p'+s.p]||0);const n=((b.players||[])[s.p]||'').trim();if(a>0&&n)out.push({n,a})});
+  return out.sort((x,y)=>y.a-x.a);
+}
 function scorers(m,t){
   const r=RESULTS[m.id]||{},b=m.board||{},out=[];
   (b.slots||[]).forEach(s=>{if(s.t!==t)return;const g=+((r.goals||{})['p'+s.p]||0);const n=((b.players||[])[s.p]||'').trim();if(g>0&&n)out.push({n,g})});
@@ -718,26 +727,35 @@ function renderResult(){
   if(!m){el.innerHTML='';return}
   const sc=scoreOf(m),T=S.teams;
   if(resEdit&&isAdmin){
-    const col=t=>{const rows=S.slots.map((s,i)=>({s,i})).filter(x=>x.s.t===t&&(S.players[x.s.p]||'').trim()).map(({s,i})=>`<div class="gr"><span class="no" style="--c:${esc(T[t].color)}">${esc(num(i))}</span><b>${esc(S.players[s.p])}</b><div class="stp"><button type="button" data-gp="${s.p}" data-d="-1" aria-label="Remove goal">−</button><span>${resDraft.goals['p'+s.p]||0}</span><button type="button" data-gp="${s.p}" data-d="1" aria-label="Add goal">+</button></div></div>`).join('');
+    const col=t=>{const rows=S.slots.map((s,i)=>({s,i})).filter(x=>x.s.t===t&&(S.players[x.s.p]||'').trim()).map(({s,i})=>`<div class="gr"><span class="no" style="--c:${esc(T[t].color)}">${esc(num(i))}</span><b>${esc(S.players[s.p])}</b><div class="stp"><i>G</i><button type="button" data-gp="${s.p}" data-d="-1" aria-label="Remove goal">−</button><span>${resDraft.goals['p'+s.p]||0}</span><button type="button" data-gp="${s.p}" data-d="1" aria-label="Add goal">+</button></div><div class="stp ast"><i>A</i><button type="button" data-ap="${s.p}" data-d="-1" aria-label="Remove assist">−</button><span>${resDraft.assists['p'+s.p]||0}</span><button type="button" data-ap="${s.p}" data-d="1" aria-label="Add assist">+</button></div></div>`).join('');
       return `<div class="gcol" style="--c:${esc(T[t].color)}"><h4>${esc(T[t].name)} <span>${draftScore()[t]}</span></h4>${rows||'<p class="note">Add player names first.</p>'}<div class="gr og"><b>Own goals for ${esc(T[t].name)}</b><div class="stp"><button type="button" data-og="${t}" data-d="-1" aria-label="Remove own goal">−</button><span>${resDraft.og[t]||0}</span><button type="button" data-og="${t}" data-d="1" aria-label="Add own goal">+</button></div></div></div>`};
-    el.innerHTML=`<div class="rescard edit"><div class="rh"><h2>Result</h2><p>Tap + for every goal. The score is added up for you.</p></div><div class="gcols">${col(0)}${col(1)}</div><div class="bar"><button class="pri" id="resSave">Save result</button><button id="resCancel">Cancel</button>${sc?'<button class="danger" id="resClear">Remove result</button>':''}</div></div>`;
+    el.innerHTML=`<div class="rescard edit"><div class="rh"><h2>Result</h2><p>G = goals, A = assists. Tap + for each one; the score is added up for you.</p></div><div class="gcols">${col(0)}${col(1)}</div><div class="bar"><button class="pri" id="resSave">Save result</button><button id="resCancel">Cancel</button>${sc?'<button class="danger" id="resClear">Remove result</button>':''}</div></div>`;
     return;
   }
   if(!sc){el.innerHTML=isAdmin?`<div class="rescard empty2"><span>No result yet.</span><button class="pri" id="resEditBtn">Add score &amp; goals</button></div>`:'';return}
   const sl=t=>scorers(m,t).map(x=>`<li${x.og?' class="ogl"':''}><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#fff"/><path d="M12 7.6l3.3 2.4-1.3 3.9h-4L8.7 10z" fill="#1b1f1d"/></svg>${esc(x.n)}${x.g>1?` <b>×${x.g}</b>`:''}</li>`).join('');
-  el.innerHTML=`<div class="rescard"><div class="scoreb"><span class="tn0" style="--c:${esc(T[0].color)}">${esc(T[0].name)}</span><b>${sc[0]}</b><i>–</i><b>${sc[1]}</b><span class="tn1" style="--c:${esc(T[1].color)}">${esc(T[1].name)}</span></div><div class="scl"><ul>${sl(0)}</ul><ul>${sl(1)}</ul></div>${isAdmin?'<div class="bar" style="justify-content:center"><button id="resEditBtn">Edit score &amp; goals</button></div>':''}</div>`;
+  el.innerHTML=`<div class="rescard"><div class="scoreb"><span class="tn0" style="--c:${esc(T[0].color)}">${esc(T[0].name)}</span><b>${sc[0]}</b><i>–</i><b>${sc[1]}</b><span class="tn1" style="--c:${esc(T[1].color)}">${esc(T[1].name)}</span></div><div class="scl"><ul>${sl(0)}</ul><ul>${sl(1)}</ul></div>${(()=>{const al=t=>assisters(m,t).map(x=>`<li>${esc(x.n)}${x.a>1?` <b>×${x.a}</b>`:''}</li>`).join('');const a0=al(0),a1=al(1);return a0||a1?`<div class="scl asl"><ul><li class="ah">Assists</li>${a0}</ul><ul><li class="ah">Assists</li>${a1}</ul></div>`:''})()}${isAdmin?'<div class="bar" style="justify-content:center"><button id="resEditBtn">Edit score &amp; goals</button></div>':''}</div>`;
 }
 function draftScore(){const sc=[0,0];S.slots.forEach(s=>{sc[s.t]+=resDraft.goals['p'+s.p]||0});sc[0]+=resDraft.og[0]||0;sc[1]+=resDraft.og[1]||0;return sc}
 $('#mres').addEventListener('click',async e=>{
   const b=e.target.closest('button');if(!b)return;const m=MATCHES[curMatch];if(!m)return;
-  if(b.id==='resEditBtn'){const r=RESULTS[curMatch]||{};resDraft={goals:{...(r.goals||{})},og:[+((r.og||[])[0]||0),+((r.og||[])[1]||0)]};resEdit=true;renderResult();return}
+  if(b.id==='resEditBtn'){const r=RESULTS[curMatch]||{};resDraft={goals:{...(r.goals||{})},assists:{...(r.assists||{})},og:[+((r.og||[])[0]||0),+((r.og||[])[1]||0)]};resEdit=true;renderResult();return}
   if(b.id==='resCancel'){resEdit=false;renderResult();return}
   if(b.dataset.gp!==undefined){const k='p'+b.dataset.gp;resDraft.goals[k]=Math.max(0,Math.min(30,(resDraft.goals[k]||0)+(+b.dataset.d)));if(!resDraft.goals[k])delete resDraft.goals[k];renderResult();return}
+  if(b.dataset.ap!==undefined){const k='p'+b.dataset.ap;resDraft.assists[k]=Math.max(0,Math.min(30,(resDraft.assists[k]||0)+(+b.dataset.d)));if(!resDraft.assists[k])delete resDraft.assists[k];renderResult();return}
   if(b.dataset.og!==undefined){const t=+b.dataset.og;resDraft.og[t]=Math.max(0,Math.min(30,(resDraft.og[t]||0)+(+b.dataset.d)));renderResult();return}
-  if(b.id==='resSave'){try{await F.set(F.ref(db,'results/'+curMatch),{goals:resDraft.goals,og:resDraft.og,updatedAt:Date.now()});resEdit=false;renderResult();toast('Result saved')}catch(err){toast(denied(err)?'Only the organizer can save results':'Could not save result')}return}
+  if(b.id==='resSave'){try{await F.set(F.ref(db,'results/'+curMatch),{goals:resDraft.goals,assists:resDraft.assists,og:resDraft.og,updatedAt:Date.now()});resEdit=false;renderResult();toast('Result saved')}catch(err){toast(denied(err)?'Only the organizer can save results':'Could not save result')}return}
   if(b.id==='resClear'){try{await F.set(F.ref(db,'results/'+curMatch),null);resEdit=false;renderResult();toast('Result removed')}catch(err){toast('Could not remove')}return}
 });
-function renderScorers(){
+function renderScorers(){return topList('goals','Top scorers')+topList('assists','Top assists')}
+function topList(field,title){
+  const tally={};
+  mList().forEach(m=>{const R=RESULTS[m.id];if(!R)return;const b=m.board||{},seen={};(b.slots||[]).forEach(s=>{const n=((b.players||[])[s.p]||'').trim();if(!n)return;const g=+((R[field]||{})['p'+s.p]||0);if(!g)return;const id=(b.pids||[])[s.p]||resolve(n);const k=id||nameKey(n);const nm=id&&ROSTER[id]?ROSTER[id].name:n;tally[k]=tally[k]||{n:nm,g:0,m:0};tally[k].g+=g;if(!seen[k]){tally[k].m++;seen[k]=1}})});
+  const list=Object.values(tally).sort((a,b)=>b.g-a.g||a.n.localeCompare(b.n)).slice(0,10);
+  if(!list.length)return '';
+  return `<h3 class="sec">${title}</h3><div class="tops">${list.map((x,i)=>`<div class="ts"><span class="rk">${i+1}</span><b>${esc(x.n)}</b><span class="tmn">${x.m} ${x.m===1?'match':'matches'}</span><span class="tg">${x.g}</span></div>`).join('')}</div>`;
+}
+function oldScorers(){
   const tally={};
   mList().forEach(m=>{const R=RESULTS[m.id];if(!R)return;const b=m.board||{},seen={};(b.slots||[]).forEach(s=>{const n=((b.players||[])[s.p]||'').trim();if(!n)return;const g=+((R.goals||{})['p'+s.p]||0);if(!g)return;const k=n.toLocaleLowerCase('tr');tally[k]=tally[k]||{n,g:0,m:0};tally[k].g+=g;if(!seen[k]){tally[k].m++;seen[k]=1}})});
   const list=Object.values(tally).sort((a,b)=>b.g-a.g||a.n.localeCompare(b.n)).slice(0,10);
