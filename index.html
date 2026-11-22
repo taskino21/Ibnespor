@@ -348,7 +348,11 @@ body:not(.adm) .admin-only{display:none!important}
 <div id="v-rate" class="view narrow" hidden><div id="rate"></div><div class="sbar" id="sbar" hidden><div class="pg"><span id="prog">0 rated</span><div class="pbar"><i id="pfill"></i></div></div><button class="pri" id="submitBtn">Submit</button></div></div>
 <div id="v-results" class="view narrow" hidden><div id="results"></div></div>
 <div id="v-players" class="view narrow" hidden>
-  <div class="rh mh"><h2>Players</h2><button class="pri admin-only" id="addP">+ Add player</button></div>
+  <div class="rh mh"><h2>Players</h2><div class="bar admin-only"><button id="bulkP">Edit list</button><button class="pri" id="addP">+ Add player</button></div></div>
+  <form class="mform" id="bForm" hidden>
+    <label style="flex:1 1 100%">One player per line. Add nicknames after a dash, e.g. <b>Kerem - Kero</b>. Names you remove are hidden from the list, their past stats are kept.<textarea id="bNames" rows="12" style="width:100%;margin-top:6px"></textarea></label>
+    <div class="bar"><button class="pri" type="submit">Save list</button><button type="button" id="bCancel">Cancel</button></div>
+  </form>
   <form class="mform" id="pForm" hidden>
     <label>Name<input type="text" id="pName" maxlength="30" required autocomplete="off"></label>
     <label>Nicknames<input type="text" id="pAlias" maxlength="80" placeholder="e.g. Kero, Kerem K." autocomplete="off"></label>
@@ -647,7 +651,19 @@ $('#players').addEventListener('submit',async e=>{
   if(!n){toast('Name is required');return}
   try{await F.update(F.ref(db,'players/'+f.dataset.edit),{name:n,aliases:a});toast('Saved')}catch(err){toast('Could not save')}
 });
-$('#addP').onclick=()=>{const f=$('#pForm');f.hidden=!f.hidden;if(!f.hidden)$('#pName').focus()};
+$('#bulkP').onclick=()=>{const f=$('#bForm');f.hidden=!f.hidden;if(!f.hidden){$('#pForm').hidden=true;$('#bNames').value=Object.values(ROSTER).filter(p=>p&&!p.archived).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0)).map(p=>p.name+(p.aliases?' - '+p.aliases:'')).join('\n');$('#bNames').focus()}};
+$('#bCancel').onclick=()=>{$('#bForm').hidden=true};
+$('#bForm').addEventListener('submit',async e=>{
+  e.preventDefault();if(!isAdmin)return;
+  const rows=$('#bNames').value.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{const i=l.indexOf(' - ');const n=(i<0?l:l.slice(0,i)).trim().slice(0,30);const a=i<0?'':l.slice(i+3).split(',').map(x=>x.trim()).filter(Boolean).join(', ');return{n,a}});
+  const seen={};for(const r of rows){const k=nameKey(r.n);if(seen[k]){toast('Two players are called “'+r.n+'”. Give one a different name.');return}seen[k]=1}
+  const byName={};for(const id in ROSTER){const p=ROSTER[id];if(p)byName[nameKey(p.name)]=byName[nameKey(p.name)]||id}
+  const ops={},keep={},now=Date.now();
+  rows.forEach((r,i)=>{const id=byName[nameKey(r.n)];if(id){keep[id]=1;ops['players/'+id+'/name']=r.n;ops['players/'+id+'/aliases']=r.a;ops['players/'+id+'/archived']=null;ops['players/'+id+'/createdAt']=now+i}else{ops['players/'+F.push(F.ref(db,'players')).key]={name:r.n,aliases:r.a,createdAt:now+i}}});
+  for(const id in ROSTER){if(!keep[id]&&ROSTER[id]&&!ROSTER[id].archived)ops['players/'+id+'/archived']=true}
+  try{await F.update(F.ref(db),ops);$('#bForm').hidden=true;toast(rows.length+' players saved')}catch(err){toast('Could not save the list')}
+});
+$('#addP').onclick=()=>{$('#bForm').hidden=true;const f=$('#pForm');f.hidden=!f.hidden;if(!f.hidden)$('#pName').focus()};
 $('#pCancel').onclick=()=>{$('#pForm').hidden=true};
 $('#pForm').addEventListener('submit',async e=>{
   e.preventDefault();if(!isAdmin)return;
