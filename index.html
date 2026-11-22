@@ -260,6 +260,12 @@ body:not(.adm) .admin-only{display:none!important}
 .stp.ast{margin-left:8px}
 @media(max-width:480px){.gr{flex-wrap:wrap}.gr b{flex:1 1 calc(100% - 40px)}.gr .stp{margin-left:34px}.gr .stp.ast{margin-left:12px}}
 .asl{margin-top:6px;padding-top:6px;border-top:1px solid #ffffff10;color:var(--mut)}.asl .ah{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.tk .rtg.avgb{background:#0b110ee6!important;color:var(--h);border:1.5px solid var(--h);box-shadow:0 2px 4px #0008}
+.tk .rtg.nob{background:#0b110ee6!important;color:#e8efe9;border:1.5px dashed #ffffff90;min-width:22px}
+.tk .ev{position:absolute;top:-5px;left:50%;transform:translateX(16%);display:flex;align-items:center;gap:1px;font-style:normal;filter:drop-shadow(0 1px 2px #000a)}
+.tk .ev svg{width:15px;height:15px;flex:none}
+.tk .ev b{font:800 12px "Barlow Condensed",sans-serif;color:#fff;margin:0 3px 0 1px;text-shadow:0 1px 2px #000}
+.tk .ev .bt{display:flex;gap:1px;margin-left:2px}
 </style>
 </head>
 <body>
@@ -411,7 +417,7 @@ $('#stripes').innerHTML=Array.from({length:12},(_,i)=>`<rect x="4" y="${6+i*7.5}
 let editor=false,baseEd=false,sel=null,drag=null;
 const num=i=>S.numbers[S.slots[i].p]||String(i%8+1);
 function renderTokens(){
-  $('#tokens').innerHTML=S.slots.map((s,i)=>{const b=toBox(s);return `<div class="tk${i%8===0?' gk':''}${sel===i?' sel':''}" data-s="${i}" style="left:${b.l}%;top:${b.t}%;--c:${S.teams[s.t].color}"><svg class="j" viewBox="0 0 40 38"><path class="sl" d="M12 3L3 8.5l3.4 7.6 5.6-2.6z M28 3l9 5.5-3.4 7.6-5.6-2.6z"/><path class="sh" d="M12 3c2.6 2.4 5 3.4 8 3.4s5.4-1 8-3.4l.6 10.5V35.5H11.4V13.5z"/><path class="tr" d="M14.5 3.6c1.6 2.4 3.4 3.4 5.5 3.4s3.9-1 5.5-3.4" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="1.4"/><path d="M12 3L3 8.5l3.4 7.6 5.6-2.6zM28 3l9 5.5-3.4 7.6-5.6-2.6z" fill="#0000002a"/><path d="M11.4 33.5H28.6v2H11.4z" fill="#0000003a"/><text class="no" x="20" y="27">${num(i)}</text></svg>${(()=>{const R=ratingOf(s.p);return R?`<em class="rtg${R.mvp?' mvp':''}" style="background:${hue(R.v)}" aria-label="Rating ${R.v}">${R.mvp?'★ ':''}${(+R.v).toFixed(1)}</em>`:''})()}${goalsOf(s.p)?`<em class="gl" aria-label="${goalsOf(s.p)} goals">${goalsOf(s.p)>1?goalsOf(s.p):''}</em>`:''}<span>${esc(S.players[s.p])||'—'}</span></div>`}).join('');
+  $('#tokens').innerHTML=S.slots.map((s,i)=>{const b=toBox(s);return `<div class="tk${i%8===0?' gk':''}${sel===i?' sel':''}" data-s="${i}" style="left:${b.l}%;top:${b.t}%;--c:${S.teams[s.t].color}"><svg class="j" viewBox="0 0 40 38"><path class="sl" d="M12 3L3 8.5l3.4 7.6 5.6-2.6z M28 3l9 5.5-3.4 7.6-5.6-2.6z"/><path class="sh" d="M12 3c2.6 2.4 5 3.4 8 3.4s5.4-1 8-3.4l.6 10.5V35.5H11.4V13.5z"/><path class="tr" d="M14.5 3.6c1.6 2.4 3.4 3.4 5.5 3.4s3.9-1 5.5-3.4" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="1.4"/><path d="M12 3L3 8.5l3.4 7.6 5.6-2.6zM28 3l9 5.5-3.4 7.6-5.6-2.6z" fill="#0000002a"/><path d="M11.4 33.5H28.6v2H11.4z" fill="#0000003a"/><text class="no" x="20" y="27">${num(i)}</text></svg>${badgeHTML(s.p)}${eventsHTML(s.p)}<span>${esc(S.players[s.p])||'—'}</span></div>`}).join('');
 }
 function renderBug(){
   const [a,b]=S.teams;
@@ -698,6 +704,31 @@ $('#balance').onclick=()=>{
   const fa=best.na?best.a/best.na:0,fb=best.nb?best.bb/best.nb:0;
   toast(`Balanced · ${S.teams[0].name} ${fa.toFixed(2)} vs ${S.teams[1].name} ${fb.toFixed(2)}`);
 };
+const BALL='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="#fff" stroke="#111" stroke-width="1.5"/><path d="M12 7l4 2.9-1.5 4.7h-5L8 9.9z" fill="#111"/><path d="M12 7V2.2M16 9.9l4.4-1.6M14.5 14.6l2.8 3.9M9.5 14.6l-2.8 3.9M8 9.9L3.6 8.3" stroke="#111" stroke-width="1.3"/></svg>';
+const BOOT='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.2 6.5h5.6l.6 4.2c2.3 1 5.4 1.6 8.6 2.1 2.2.3 3.6 1.4 3.6 3.1v1.4H3.2z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/><path d="M5 19.5v1.6M9 19.5v1.6M13 19.5v1.6M17 19.5v1.6" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><path d="M9.6 10.8l1.6-1.6M12 11.5l1.5-1.5" stroke="#111" stroke-width="1.2"/></svg>';
+function assistsOf(p){try{const r=view==='match'&&RESULTS[curMatch];return r&&r.assists?(+r.assists['p'+p]||0):0}catch(e){return 0}}
+function eventsHTML(p){try{return eventsHTML_(p)}catch(e){return ''}}
+function eventsHTML_(p){
+  const g=goalsOf(p),a=assistsOf(p);if(!g&&!a)return '';
+  const rep_=(ic,n)=>n>3?ic+`<b>×${n}</b>`:ic.repeat(n);
+  return `<em class="ev" aria-label="${g?g+(g===1?' goal':' goals'):''}${g&&a?', ':''}${a?a+(a===1?' assist':' assists'):''}">${rep_(BALL,g)}${a?`<i class="bt">${rep_(BOOT,a)}</i>`:''}</em>`;
+}
+function seasonAvg(p){
+  try{const nm=String(S.players[p]||'').trim();if(!nm)return null;const id=S.pids[p]||resolve(nm),k=nameKey(nm);const vs=[];
+    for(const mid in PUB){if(mid===curMatch)continue;const P=PUB[mid];if(!P||!Array.isArray(P.players))continue;
+      const e=P.players.find(q=>q&&((id&&q.pid===id)||(id&&!q.pid&&resolve(q.n)===id)||(!id&&nameKey(q.n)===k)));if(e&&+e.avg>0)vs.push(+e.avg)}
+    return vs.length?vs.reduce((a,c)=>a+c,0)/vs.length:null;
+  }catch(e){return null}
+}
+function badgeHTML(p){try{return badgeHTML_(p)}catch(e){return ''}}
+function badgeHTML_(p){
+  if(view!=='match'||!String(S.players[p]||'').trim())return '';
+  const R=ratingOf(p);
+  if(R)return `<em class="rtg${R.mvp?' mvp':''}" style="background:${hue(R.v)}" aria-label="Match rating ${R.v}">${R.mvp?'★ ':''}${(+R.v).toFixed(1)}</em>`;
+  if(PUB[curMatch])return '';
+  const av=seasonAvg(p);
+  return av!=null?`<em class="rtg avgb" style="--h:${hue(av)}" title="Average rating before this match" aria-label="Average rating ${av.toFixed(1)}">${av.toFixed(1)}</em>`:`<em class="rtg nob" title="No rating yet" aria-label="No rating yet">?</em>`;
+}
 function ratingOf(p){
   try{const P=view==='match'&&PUB[curMatch];if(!P||!Array.isArray(P.players)||!P.players.length)return null;
     const nm=String(S.players[p]||'').trim();if(!nm)return null;const id=S.pids[p]||resolve(nm);
