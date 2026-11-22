@@ -40,7 +40,7 @@ h1{margin:0;font:800 clamp(34px,6vw,52px)/1.02 "Barlow Condensed",sans-serif;tex
 .status{text-align:center;color:var(--mut);font-size:14px;margin:10px 0 0}.status:empty{display:none}
 .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) minmax(0,1fr);gap:22px;padding:14px max(4vw,14px) 30px;max-width:1240px;margin:auto;align-items:start}
 .c0{order:1}.pbox{order:2}.c1{order:3}
-@media(max-width:1020px){.wrap{grid-template-columns:repeat(2,minmax(0,1fr))}.pbox{order:0;grid-column:1/-1}}
+@media(max-width:1099px){.wrap{grid-template-columns:repeat(2,minmax(0,1fr))}.pbox{order:0;grid-column:1/-1}}
 @media(max-width:600px){.wrap{grid-template-columns:minmax(0,1fr)}}
 .pitch{position:relative;container-type:inline-size;width:min(100%,calc(80vh * .6667),560px);aspect-ratio:68/102;margin:0 auto;border-radius:10px;overflow:hidden;box-shadow:0 24px 60px #000a,0 0 0 4px #1c2a22;touch-action:none;user-select:none;-webkit-user-select:none}
 .pitch>svg{position:absolute;inset:0;width:100%;height:100%}
@@ -92,10 +92,10 @@ body:not(.ed) .ed-only{display:none!important}
 body:not(.ed) .view-only{display:block}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#f4f7f5;color:#101512;padding:10px 18px;border-radius:20px;font-weight:700;opacity:0;transition:opacity .25s;pointer-events:none;z-index:9}
 .toast.on{opacity:1}
-@media(min-width:1021px){
+@media(min-width:1100px){
 .hero{min-height:200px}.hin{padding-bottom:22px}
-.wrap{grid-template-columns:minmax(230px,1fr) auto minmax(230px,1fr);gap:24px;padding-top:18px;max-width:1480px}
-.pitch{width:min(780px,calc((100vh - 36px) * .6667));min-width:420px}
+.wrap{grid-template-columns:minmax(220px,1fr) auto minmax(220px,1fr);gap:24px;padding-top:18px;max-width:1480px}
+.pitch{width:min(780px,calc((100vh - 36px) * .6667),calc(100vw - 600px));min-width:340px}
 .card{position:sticky;top:18px}
 .list li{min-height:50px}
 }
@@ -501,7 +501,7 @@ function renderMbar(){
   let h=`<a class="back" href="#matches">← All matches</a><div class="mrow"><div class="mt"><b>${esc(mLabel(m))}</b>${rOpen?'<em class="tag">Rating open</em>':''}</div><div class="bar">`;
   if(rOpen)h+=`<a class="btn pri" href="#rate">Rate players</a>`;
   if(isAdmin)h+=rOpen?`<button id="closeR2">Close rating</button>`:`<button id="openR2">${had?'Reopen rating':'Open rating'}</button>`;
-  if(isAdmin&&!rOpen&&(!had||had.imported))h+=`<button id="scoreM">${had?'Edit scores':'Enter scores'}</button>`;
+  if(isAdmin&&!rOpen)h+=`<button id="scoreM">${had&&had.summary?'Edit scores':'Enter scores'}</button>`;
   if(had)h+=`<button id="viewR">Results</button>`;
   if(editor)h+=`<button id="editM">Edit date &amp; time</button>`;
   el.innerHTML=h+`</div></div>`;
@@ -540,10 +540,10 @@ $('#eDel').onclick=async()=>{
 };
 function openScores(){
   const ex=rounds[curMatch],f=$('#sForm');
-  const list=S.slots.map((s,i)=>({n:(S.players[s.p]||'').trim(),t:s.t,no:num(i)})).filter(x=>x.n);
+  const list=ex&&Array.isArray(ex.players)&&ex.players.length?ex.players:S.slots.map((s,i)=>({n:(S.players[s.p]||'').trim(),t:s.t,no:num(i)})).filter(x=>x.n);
   if(!list.length){toast('Add player names first');return}
-  const prev={};if(ex&&ex.summary)(ex.players||[]).forEach((p,i)=>{const v=ex.summary['p'+i];if(v)prev[p.n]=v});
-  $('#sGrid').innerHTML=list.map((p,i)=>`<label style="--c:${esc(S.teams[p.t].color)}"><span><i></i>${esc(p.n)}</span><input type="number" inputmode="decimal" min="1" max="10" step="0.01" data-si="${i}" value="${prev[p.n]??''}" aria-label="Score for ${esc(p.n)}"></label>`).join('');
+  const prev={};if(ex&&ex.summary)list.forEach((p,i)=>{const v=ex.summary['p'+i];if(v)prev[p.n]=v});const tc=t=>(ex&&ex.teams&&ex.teams[t]&&ex.teams[t].color)||S.teams[t].color;
+  $('#sGrid').innerHTML=list.map((p,i)=>`<label style="--c:${esc(tc(p.t))}"><span><i></i>${esc(p.n)}</span><input type="number" inputmode="decimal" min="1" max="10" step="0.01" data-si="${i}" value="${prev[p.n]??''}" aria-label="Score for ${esc(p.n)}"></label>`).join('');
   f.dataset.list=JSON.stringify(list);f.hidden=false;f.scrollIntoView({behavior:'smooth',block:'start'});
 }
 $('#sCancel').onclick=()=>{$('#sForm').hidden=true};
@@ -552,8 +552,8 @@ $('#sForm').addEventListener('submit',async e=>{
   const list=JSON.parse($('#sForm').dataset.list||'[]'),summary={};let n=0;
   $('#sGrid').querySelectorAll('input').forEach(inp=>{const v=parseFloat(String(inp.value).replace(',','.'));if(v>=1&&v<=10){summary['p'+inp.dataset.si]=Math.round(v*100)/100;n++}});
   if(!n){toast('Enter at least one score');return}
-  const r={id:curMatch,date:m.date,start:m.start||'',end:m.end||'',open:false,imported:true,players:list,teams:S.teams.map(x=>({name:x.name,color:x.color})),summary,createdAt:Date.now()};
-  try{await F.set(F.ref(db,'rounds/'+curMatch),r);$('#sForm').hidden=true;toast('Scores saved');selRound=curMatch;subResults()}catch(err){toast('Could not save scores')}
+  const ex=rounds[curMatch];
+  try{if(ex){await F.update(F.ref(db,'rounds/'+curMatch),{summary,imported:true,date:m.date,start:m.start||'',end:m.end||''})}else{await F.set(F.ref(db,'rounds/'+curMatch),{id:curMatch,date:m.date,start:m.start||'',end:m.end||'',open:false,imported:true,players:list,teams:S.teams.map(x=>({name:x.name,color:x.color})),summary,createdAt:Date.now()})}$('#sForm').hidden=true;toast('Scores saved');selRound=curMatch;subResults()}catch(err){toast('Could not save scores')}
 });
 async function openRating(m){
   if(!isAdmin)return;
