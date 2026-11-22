@@ -153,18 +153,65 @@ body:not([data-view=squads]) .bug{display:none}
 .meter{height:5px;border-radius:3px;background:#ffffff12;margin-top:10px;overflow:hidden}.meter i{display:block;height:100%;background:var(--c)}
 .cms{margin-top:10px;display:grid;gap:6px}.cm{margin:0;background:#0a110d;border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-size:15px}
 .acct{text-align:center;font-size:13px;color:var(--mut);margin:0}
+.mh{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.mh h2{margin:0}
+.sec{font:700 15px Barlow,sans-serif;color:var(--mut);margin:18px 2px 8px;letter-spacing:.2px}
+.mc{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px;color:var(--ink);text-decoration:none;min-height:72px}
+.mc:hover{border-color:#34483c}
+.md{flex:none;width:54px;height:54px;border-radius:11px;background:#f4f7f5;color:#101512;display:grid;place-items:center;align-content:center;line-height:1}
+.md b{font:800 24px/1 "Barlow Condensed",sans-serif}.md span{font:700 13px/1.1 Barlow,sans-serif;text-transform:uppercase}
+.mi{flex:1;display:grid;gap:2px}.mi b{font-size:17px}.mi span{color:var(--mut);font-size:14px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.mi i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.chev{flex:none;width:20px;height:20px;color:var(--mut)}
+.tag{flex:none;font-style:normal;font-size:12px;font-weight:700;color:#0d2414;background:#41d36a;padding:3px 8px;border-radius:20px}
+.empty.sm{padding:22px 16px}
+.mform{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.mform label{display:grid;gap:4px;font-size:14px;font-weight:600;color:var(--mut);flex:1 1 130px}
+.mform input[type=date],.mform input[type=time]{background:#0a110d;border:1px solid var(--line);border-radius:9px;padding:8px 10px;min-height:44px;color-scheme:dark;width:100%}
+.mform .chk{flex:1 1 100%;display:flex;align-items:center;gap:8px;color:var(--ink)}.mform .chk input{width:20px;height:20px}
+.mform .bar{flex:1 1 100%;justify-content:flex-start}
+.narrow2{max-width:1240px;margin:0 max(4vw,14px) 12px}
+@media(min-width:1290px){.narrow2{margin:0 auto 12px}}
+.mbar{max-width:1240px;margin:0 auto;padding:12px max(4vw,14px) 0}
+.mbar:empty{display:none}
+.back{color:var(--mut);font-weight:600;text-decoration:none;display:inline-block;min-height:32px}
+.mrow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.mt{display:flex;align-items:center;gap:10px}.mt b{font:800 24px/1.1 "Barlow Condensed",sans-serif}
+.btn{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:10px;border:1px solid var(--line);background:#18241d;color:var(--ink);font-weight:600;text-decoration:none}
+.btn.pri{background:#f4f7f5;color:#101512;border-color:#f4f7f5}
+button.danger{color:#ff8a7a;border-color:#5a2a24;background:#24130f}
+.foot{max-width:680px;margin:0 auto;padding:6px 14px 18px;display:grid;gap:8px}
+.foot .bar{justify-content:center}.foot input{max-width:150px;background:#0a110d;border:1px solid var(--line);border-radius:9px;padding:8px 10px;min-height:44px}
+body[data-view=rate] .foot,body[data-view=results] .foot{display:none}
 </style>
 </head>
 <body>
 <header class="hero">
   <div class="hin">
-    <div><h1>İTÜ Barça Academy</h1><div class="sub">Wednesday 22.00–23.00</div><div class="sq" id="sq">Squads</div></div>
+    <div><h1>İTÜ Barça Academy</h1><div class="sub" id="heroSub"></div><div class="sq" id="sq">Squads</div></div>
     <div class="bug" id="bug"></div>
   </div>
   <div class="mode" id="mode" hidden><i></i><span>Editor</span></div>
 </header>
-<div id="v-squads" class="view">
+<div id="v-matches" class="view narrow" hidden>
+  <div class="rh mh"><h2>Matches</h2><button class="pri ed-only" id="newM">+ New match</button></div>
+  <form class="mform" id="mForm" hidden>
+    <label>Date<input type="date" id="fDate" required></label>
+    <label>Start<input type="time" id="fStart" value="22:00" required></label>
+    <label>End<input type="time" id="fEnd" value="23:00"></label>
+    <label class="chk"><input type="checkbox" id="fCopy" checked> Copy players from the last match</label>
+    <div class="bar"><button class="pri" type="submit">Create match</button><button type="button" id="fCancel">Cancel</button></div>
+  </form>
+  <div id="matches"><div class="empty"><p>Loading matches…</p></div></div>
+</div>
+<div id="v-squads" class="view" hidden>
 <p class="status" id="status"></p>
+<div class="mbar" id="mbar"></div>
+<form class="mform narrow2" id="eForm" hidden>
+  <label>Date<input type="date" id="eDate" required></label>
+  <label>Start<input type="time" id="eStart" required></label>
+  <label>End<input type="time" id="eEnd"></label>
+  <div class="bar"><button class="pri" type="submit">Save</button><button type="button" id="eCancel">Cancel</button><button type="button" class="danger" id="eDel">Delete match</button></div>
+</form>
 <main class="wrap" id="wrap">
   <section class="card c0" id="card0"></section>
   <section class="pbox">
@@ -209,19 +256,21 @@ body:not([data-view=squads]) .bug{display:none}
     <button id="reset">Reset formations</button>
     <button id="copy">Copy lineup</button>
   </div>
-  <div class="bar" id="unlock" hidden><input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="Edit PIN" aria-label="Edit PIN" style="max-width:150px;background:#0a110d;border:1px solid var(--line);border-radius:9px;padding:8px 10px;min-height:44px"><button id="unlockBtn">Edit squads</button></div>
   <details class="ed-only">
     <summary>Enter all 16 names</summary>
     <textarea id="bulk" placeholder="One name per line or comma-separated. First 8 → team 1, next 8 → team 2"></textarea>
     <div class="bar"><button class="pri" id="applyBulk">Apply</button><button id="clearAll">Clear names</button></div>
   </details>
-  <p class="acct" id="acct"></p>
 </section>
 </div>
 <div id="v-rate" class="view narrow" hidden><div id="rate"></div><div class="sbar" id="sbar" hidden><div class="pg"><span id="prog">0 rated</span><div class="pbar"><i id="pfill"></i></div></div><button class="pri" id="submitBtn">Submit</button></div></div>
 <div id="v-results" class="view narrow" hidden><div id="results"></div></div>
+<section class="foot" id="foot">
+  <div class="bar" id="unlock" hidden><input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="Edit PIN" aria-label="Edit PIN"><button id="unlockBtn">Unlock editing</button></div>
+  <p class="acct" id="acct"></p>
+</section>
 <nav class="tabbar" aria-label="Sections">
-  <button data-go="squads" id="nav-squads"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="2.5" width="16" height="19" rx="1.5"/><path d="M4 12h16"/><circle cx="12" cy="12" r="2.6"/><path d="M9 2.5v3h6v-3M9 21.5v-3h6v3"/></svg>Squads</button>
+  <button data-go="matches" id="nav-matches"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="2.5" width="16" height="19" rx="1.5"/><path d="M4 12h16"/><circle cx="12" cy="12" r="2.6"/><path d="M9 2.5v3h6v-3M9 21.5v-3h6v3"/></svg>Matches</button>
   <button data-go="rate" id="nav-rate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg>Rate</button>
   <button data-go="results" id="nav-results" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>Results</button>
 </nav>
@@ -294,7 +343,7 @@ async function write(){
   writing=false;
   if(queued){queued=false;write()}else dirty=false;
 }
-function setMode(ed){editor=ed;document.body.classList.toggle('ed',ed);$('#mode').hidden=true;$('#unlock').hidden=ed;all()}
+function setMode(ed){editor=ed;document.body.classList.toggle('ed',ed);$('#mode').hidden=true;$('#unlock').hidden=ed;all();renderMbar();if(!ed){$('#mForm').hidden=true;$('#eForm').hidden=true}}
 $('#unlockBtn').onclick=async()=>{
   const v=$('#pin').value.trim();if(!v)return;
   if(!F||!uid){toast('Connecting…');return}
@@ -306,13 +355,9 @@ $('#pin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#unlockBtn').clic
     const [A,Au,D]=await Promise.all([import(G+'firebase-app.js'),import(G+'firebase-auth.js'),import(G+'firebase-database.js')]);
     F={...Au,...D};
     const app=A.initializeApp(FIREBASE_CONFIG);auth=Au.getAuth(app);db=D.getDatabase(app);
-    const r=D.ref(db,'board/main');ref={set:d=>D.set(r,d)};
+    ref={set:d=>curMatch&&MATCHES[curMatch]?D.set(D.ref(db,'matches/'+curMatch+'/board'),d):Promise.resolve()};
     const wait=setTimeout(()=>status('Connecting…'),8000);
-    D.onValue(r,snap=>{
-      clearTimeout(wait);status('');
-      if(!snap.exists()||dirty||writing||drag)return;
-      const c=clean(snap.val());if(!c)return;S=c;sel=null;all();
-    },()=>{clearTimeout(wait);status('Could not load squads.')});
+    D.onValue(D.ref(db,'matches'),snap=>{clearTimeout(wait);status('');onMatches(snap.val())},()=>{clearTimeout(wait);$('#matches').innerHTML='<div class="empty"><p>Could not load matches.</p></div>'});
     D.onValue(D.ref(db,'meta/current'),s=>{round=s.val();onRound()},()=>{});
     Au.getRedirectResult(auth).catch(()=>{});
     Au.onAuthStateChanged(auth,async u=>{
@@ -327,8 +372,8 @@ $('#pin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#unlockBtn').clic
 })();
 function renderAccount(){
   $('#acct').innerHTML=isAdmin?`Organizer · <button class="lnk" id="so">Sign out</button>`:`<button class="lnk" id="si">Organizer sign in</button>`;
-  $('#nav-results').hidden=!isAdmin;
-  if(!isAdmin&&view==='results')go('squads');
+  $('#nav-results').hidden=!isAdmin;renderMbar();
+  if(!isAdmin&&view==='results')go('matches');
 }
 $('#acct').addEventListener('click',async e=>{
   if(!F)return;
@@ -378,30 +423,122 @@ $('#applyBulk').onclick=()=>{
 };
 $('#clearAll').onclick=()=>{S.players=S.players.map(()=>'');all();change();toast('Names cleared')};
 $('#copy').onclick=async()=>{
-  const txt='İTÜ Barça Academy · Wednesday 22.00–23.00\nSquads\n\n'+S.teams.map((tm,t)=>{const r=roles(t);return `${tm.name} (${tm.form})\n`+[0,1,2,3,4,5,6,7].map(i=>`${num(t*8+i)}. ${S.players[S.slots[t*8+i].p]||'-'} (${r[i]})`).join('\n')}).join('\n\n');
+  const txt='İTÜ Barça Academy · '+mLabel(MATCHES[curMatch])+'\n\n'+S.teams.map((tm,t)=>{const r=roles(t);return `${tm.name} (${tm.form})\n`+[0,1,2,3,4,5,6,7].map(i=>`${num(t*8+i)}. ${S.players[S.slots[t*8+i].p]||'-'} (${r[i]})`).join('\n')}).join('\n\n');
   try{await navigator.clipboard.writeText(txt);toast('Lineup copied')}catch(e){toast('Copy failed')}
 };
 $('#fs').onclick=async e=>{e.stopPropagation();const on=!document.body.classList.contains('focus');document.body.classList.toggle('focus',on);$('#fs').textContent=on?'✕ Exit':'⤢ Tactics mode';window.scrollTo(0,0);try{if(on&&!document.fullscreenElement)await document.documentElement.requestFullscreen();else if(!on&&document.fullscreenElement)await document.exitFullscreen()}catch(err){}};
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&document.body.classList.contains('focus')){document.body.classList.remove('focus');$('#fs').textContent='⤢ Tactics mode'}});
 $('#fs').addEventListener('pointerdown',e=>e.stopPropagation());
 // ---------- views ----------
-let view='squads';
-const LABEL={squads:'Squads',rate:'Player ratings',results:'Results'};
-function go(v){
-  if(!LABEL[v]||(v==='results'&&!isAdmin))v='squads';
+let view='matches',MATCHES={},curMatch=null,showNew=false;
+const LABEL={matches:'Matches',match:'Squads',rate:'Player ratings',results:'Results'};
+const VIEWS={matches:'v-matches',match:'v-squads',rate:'v-rate',results:'v-results'};
+function freshBoard(){const keep=S;S=blank();applyForm(0);applyForm(1);const b=S;S=keep;return b}
+function go(h){
+  let v=h||'matches',id=null;
+  if(v.startsWith('m-')){id=v.slice(2);v='match'}
+  if(!LABEL[v]||(v==='results'&&!isAdmin)||(v==='match'&&!id))v='matches';
+  if(v==='match'&&curMatch!==id){curMatch=id;dirty=false;queued=false;clearTimeout(timer);S=freshBoard();const m=MATCHES[id],c=m&&clean(m.board);if(c)S=c;sel=null;all();$('#eForm').hidden=true}
   view=v;document.body.dataset.view=v;$('#sq').textContent=LABEL[v];
-  for(const x in LABEL){$('#v-'+x).hidden=x!==v;$('#nav-'+x).classList.toggle('on',x===v)}
-  if(location.hash.slice(1)!==v)history.replaceState(null,'','#'+v);
-  window.scrollTo(0,0);
+  for(const k in VIEWS)$('#'+VIEWS[k]).hidden=k!==v;
+  ['matches','rate','results'].forEach(x=>$('#nav-'+x).classList.toggle('on',x===v||(x==='matches'&&v==='match')));
+  const hs=v==='match'?'m-'+id:v;if(location.hash.slice(1)!==hs)history.replaceState(null,'','#'+hs);
+  renderMbar();heroUpdate();window.scrollTo(0,0);
 }
 document.querySelector('.tabbar').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});
 window.addEventListener('hashchange',()=>go(location.hash.slice(1)));
-go(location.hash.slice(1)||'squads');
 const pad=n=>String(n).padStart(2,'0');
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`};
 const fmtDate=d=>{try{return new Date(String(d).slice(0,10)+'T12:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}catch(e){return d}};
 const hue=v=>`hsl(${Math.round((v-1)*13)},72%,52%)`;
 const teamOf=(r,t)=>(r.teams&&r.teams[t])||{name:'',color:'#888'};
+const mLabel=m=>m?`${fmtDate(m.date)} · ${m.start||''}${m.end?'–'+m.end:''}`:'';
+const mKey=m=>(m.date||'')+(m.start||'');
+const nextWed=()=>{const d=new Date();d.setDate(d.getDate()+((3-d.getDay()+7)%7));return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`};
+const mList=()=>Object.entries(MATCHES).filter(([k,m])=>m&&m.date).map(([k,m])=>({...m,id:k}));
+const upcoming=()=>mList().filter(m=>m.date>=today()).sort((a,b)=>mKey(a).localeCompare(mKey(b)));
+function onMatches(v){
+  MATCHES=v||{};
+  if(view==='match'&&curMatch){
+    const m=MATCHES[curMatch];
+    if(!m){toast('Match not found');go('matches');}
+    else if(!(dirty||writing||drag)){const c=clean(m.board);if(c){S=c;sel=null;all()}}
+  }
+  renderMatches();renderMbar();heroUpdate();
+}
+function heroUpdate(){
+  let t='';
+  if(view==='match')t=mLabel(MATCHES[curMatch]);
+  else if(view==='rate'&&round&&round.open)t=mLabel(round);
+  else{const n=upcoming()[0];if(n)t='Next match · '+mLabel(n)}
+  $('#heroSub').textContent=t;
+}
+function mcard(m){
+  const b=m.board||{},t=b.teams||[],pl=(b.players||[]).filter(x=>x&&String(x).trim()).length;
+  const d=new Date(m.date+'T12:00'),rOpen=round&&round.open&&round.id===m.id;
+  const tn=(i,dn,dc)=>`<i style="background:${esc((t[i]&&t[i].color)||dc)}"></i>${esc((t[i]&&t[i].name)||dn)}`;
+  return `<a class="mc" href="#m-${esc(m.id)}"><div class="md"><b>${d.getDate()}</b><span>${esc(d.toLocaleDateString('en-GB',{month:'short'}))}</span></div><div class="mi"><b>${esc(d.toLocaleDateString('en-GB',{weekday:'long'}))} · ${esc(m.start||'')}${m.end?'–'+esc(m.end):''}</b><span>${tn(0,'Red','#d93a2b')} vs ${tn(1,'Blue','#2468d8')}</span><span>${pl}/16 players</span></div>${rOpen?'<em class="tag">Rating open</em>':''}<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>`;
+}
+function renderMatches(){
+  const t=today(),all_=mList(),up=upcoming(),past=all_.filter(m=>m.date<t).sort((a,b)=>mKey(b).localeCompare(mKey(a)));
+  $('#matches').innerHTML=`<h3 class="sec">Upcoming</h3>`+(up.length?up.map(mcard).join(''):`<div class="empty sm"><p>No upcoming matches.${editor?' Tap “New match” to add one.':''}</p></div>`)+(past.length?`<h3 class="sec">Past matches</h3>`+past.map(mcard).join(''):'');
+}
+function renderMbar(){
+  const el=$('#mbar');if(!el)return;const m=MATCHES[curMatch];
+  if(view!=='match'||!m){el.innerHTML='';return}
+  const rOpen=round&&round.open&&round.id===curMatch,had=isAdmin&&rounds[curMatch];
+  let h=`<a class="back" href="#matches">← All matches</a><div class="mrow"><div class="mt"><b>${esc(mLabel(m))}</b>${rOpen?'<em class="tag">Rating open</em>':''}</div><div class="bar">`;
+  if(rOpen)h+=`<a class="btn pri" href="#rate">Rate players</a>`;
+  if(isAdmin)h+=rOpen?`<button id="closeR2">Close rating</button>`:`<button id="openR2">${had?'Reopen rating':'Open rating'}</button>`;
+  if(had)h+=`<button id="viewR">Results</button>`;
+  if(editor)h+=`<button id="editM">Edit date &amp; time</button>`;
+  el.innerHTML=h+`</div></div>`;
+}
+$('#newM').onclick=()=>{const f=$('#mForm');f.hidden=!f.hidden;if(!f.hidden){$('#fDate').value=nextWed();$('#fDate').focus()}};
+$('#fCancel').onclick=()=>{$('#mForm').hidden=true};
+$('#mForm').addEventListener('submit',async e=>{
+  e.preventDefault();if(!F||!editor)return;
+  const date=$('#fDate').value,start=$('#fStart').value||'22:00',end=$('#fEnd').value||'';
+  if(!date){toast('Pick a date');return}
+  const id=date+'-'+start.replace(':','');
+  if(MATCHES[id]){toast('A match already exists at that time');return}
+  let board=freshBoard();
+  if($('#fCopy').checked){const last=mList().sort((a,b)=>mKey(b).localeCompare(mKey(a)))[0];const c=last&&clean(last.board);if(c)board=c}
+  try{await F.set(F.ref(db,'matches/'+id),{date,start,end,createdAt:Date.now(),board:JSON.parse(JSON.stringify(board))});$('#mForm').hidden=true;toast('Match created');go('m-'+id)}
+  catch(err){toast(denied(err)?'Enter the PIN to add matches':'Could not create match')}
+});
+let delT=0;
+$('#mbar').addEventListener('click',async e=>{
+  const t=e.target,m=MATCHES[curMatch];if(!m)return;
+  if(t.id==='editM'){const f=$('#eForm');f.hidden=!f.hidden;$('#eDate').value=m.date;$('#eStart').value=m.start||'';$('#eEnd').value=m.end||'';delT=0;$('#eDel').textContent='Delete match'}
+  if(t.id==='openR2')openRating(m);
+  if(t.id==='closeR2'&&round)setOpen(round.id,false);
+  if(t.id==='viewR'){selRound=curMatch;subResults();go('results')}
+});
+$('#eCancel').onclick=()=>{$('#eForm').hidden=true};
+$('#eForm').addEventListener('submit',async e=>{
+  e.preventDefault();const date=$('#eDate').value,start=$('#eStart').value,end=$('#eEnd').value||'';
+  if(!date||!start){toast('Date and start time are needed');return}
+  try{await F.update(F.ref(db,'matches/'+curMatch),{date,start,end});$('#eForm').hidden=true;toast('Saved')}catch(err){toast('Could not save')}
+});
+$('#eDel').onclick=async()=>{
+  if(!delT||Date.now()-delT>5000){delT=Date.now();$('#eDel').textContent='Tap again to delete';return}
+  try{const id=curMatch;await F.set(F.ref(db,'matches/'+id),null);toast('Match deleted');go('matches')}catch(err){toast('Could not delete')}
+};
+async function openRating(m){
+  if(!isAdmin)return;
+  const ex=rounds[curMatch];
+  try{
+    if(ex){await F.update(F.ref(db),{['rounds/'+curMatch+'/open']:true,'meta/current':{...ex,id:curMatch,open:true}})}
+    else{
+      const players=[];S.slots.forEach((s,i)=>{const n=(S.players[s.p]||'').trim();if(n)players.push({n,t:s.t,no:num(i)})});
+      if(players.length<2){toast('Add player names first');return}
+      const r={id:curMatch,date:m.date,start:m.start||'',end:m.end||'',open:true,players,teams:S.teams.map(x=>({name:x.name,color:x.color})),createdAt:Date.now()};
+      await F.update(F.ref(db),{['rounds/'+curMatch]:r,'meta/current':r});
+    }
+    toast('Rating opened');
+  }catch(err){toast('Could not open rating')}
+}
 // ---------- rating (everyone) ----------
 let submitted=false,checked=null,R={me:'',s:{},c:{},o:{}},confirmT=0;
 const draftKey=()=>'hs-draft-'+(round&&round.id);
@@ -415,7 +552,7 @@ async function onRound(){
     checked=round.id+uid;loadDraft();submitted=false;
     try{submitted=(await F.get(F.ref(db,'submitted/'+round.id+'/'+uid))).exists()}catch(e){}
   }
-  renderRate();if(isAdmin)renderResults();
+  renderRate();if(isAdmin)renderResults();renderMatches();renderMbar();heroUpdate();
 }
 function rcard(p,i){
   const v=R.s[i],c=R.c[i]||'',tm=teamOf(round,p.t);
@@ -424,9 +561,9 @@ function rcard(p,i){
 function renderRate(){
   const el=$('#rate'),bar=$('#sbar');
   if(!round||!round.open){el.innerHTML=`<div class="empty"><h2>Ratings are closed</h2><p>Ratings open after each match.</p></div>`;bar.hidden=true;return}
-  if(submitted){el.innerHTML=`<div class="empty"><h2>Thanks!</h2><p>Your ratings for ${esc(fmtDate(round.date))} are in.</p></div>`;bar.hidden=true;return}
+  if(submitted){el.innerHTML=`<div class="empty"><h2>Thanks!</h2><p>Your ratings for ${esc(mLabel(round))} are in.</p></div>`;bar.hidden=true;return}
   const ps=round.players||[];
-  let h=`<div class="rh"><h2>Rate the players</h2><p>${esc(fmtDate(round.date))} · fully anonymous</p></div><label class="me"><span>You are</span><select id="meSel"><option value="">Select your name</option>${ps.map(p=>`<option${p.n===R.me?' selected':''}>${esc(p.n)}</option>`).join('')}</select></label>`;
+  let h=`<div class="rh"><h2>Rate the players</h2><p>${esc(mLabel(round))} · fully anonymous</p></div><label class="me"><span>You are</span><select id="meSel"><option value="">Select your name</option>${ps.map(p=>`<option${p.n===R.me?' selected':''}>${esc(p.n)}</option>`).join('')}</select></label>`;
   if(!ps.some(p=>p.n===R.me)){el.innerHTML=h+`<p class="note">Your name is only used to hide you from the list. It is not sent.</p>`;bar.hidden=true;return}
   el.innerHTML=h+ps.map((p,i)=>p.n===R.me?'':rcard(p,i)).join('');bar.hidden=false;updBar();
 }
@@ -467,7 +604,7 @@ $('#submitBtn').onclick=async()=>{
 let rounds={},selRound=null,unsubRounds=null,unsubRes=null,subFor=null,results=null,openRow={};
 function startAdmin(){
   if(unsubRounds)return;
-  unsubRounds=F.onValue(F.ref(db,'rounds'),s=>{rounds=s.val()||{};if(!selRound||!rounds[selRound])selRound=Object.keys(rounds).sort().pop()||null;subResults();renderResults()},()=>{});
+  unsubRounds=F.onValue(F.ref(db,'rounds'),s=>{rounds=s.val()||{};if(!selRound||!rounds[selRound])selRound=Object.keys(rounds).sort((a,b)=>mKey(rounds[a]).localeCompare(mKey(rounds[b]))).pop()||null;subResults();renderResults();renderMbar()},()=>{});
 }
 function stopAdmin(){if(unsubRounds)unsubRounds();if(unsubRes)unsubRes();unsubRounds=unsubRes=null;subFor=null;rounds={};results=null}
 function subResults(){
@@ -476,13 +613,13 @@ function subResults(){
 }
 function renderResults(){
   if(!isAdmin)return;
-  const cur=round,ids=Object.keys(rounds).sort().reverse();
+  const cur=round,ids=Object.keys(rounds).sort((a,b)=>mKey(rounds[b]).localeCompare(mKey(rounds[a])));
   let h=`<div class="rh"><h2>Results</h2><p>Only you can see this page.</p></div>`;
-  if(cur&&cur.open)h+=`<div class="ctl-card"><div><b>Rating is open</b><span>${esc(fmtDate(cur.date))} · players can send ratings now</span></div><button id="closeR">Close rating</button></div>`;
-  else h+=`<div class="ctl-card"><div><b>Start a new rating</b><span>Uses the names in the current squads</span></div><input type="date" id="rDate" value="${today()}" aria-label="Match date"><button class="pri" id="openR">Open rating</button></div>`;
-  if(!ids.length){$('#results').innerHTML=h+`<div class="empty"><p>No ratings yet. Open a rating after the match and share the link.</p></div>`;return}
+  if(cur&&cur.open)h+=`<div class="ctl-card"><div><b>Rating is open</b><span>${esc(mLabel(cur))} · players can send ratings now</span></div><button id="closeR">Close rating</button></div>`;
+  else h+=`<div class="ctl-card"><div><b>No rating open</b><span>Open a rating from a match page after the game.</span></div><a class="btn" href="#matches">Matches</a></div>`;
+  if(!ids.length){$('#results').innerHTML=h+`<div class="empty"><p>No ratings yet. Open a rating from a match page after the game.</p></div>`;return}
   const rd=rounds[selRound]||{},subs=Object.values(results||{});
-  h+=`<div class="rsel"><select id="rSel" aria-label="Match">${ids.map(id=>`<option value="${esc(id)}"${id===selRound?' selected':''}>${esc(fmtDate(rounds[id].date))}${rounds[id].open?' · open':''}</option>`).join('')}</select><span class="rsum"><b>${subs.length}</b> ${subs.length===1?'response':'responses'}</span></div>`;
+  h+=`<div class="rsel"><select id="rSel" aria-label="Match">${ids.map(id=>`<option value="${esc(id)}"${id===selRound?' selected':''}>${esc(mLabel(rounds[id]))}${rounds[id].open?' · open':''}</option>`).join('')}</select><span class="rsum"><b>${subs.length}</b> ${subs.length===1?'response':'responses'}</span></div>`;
   if(cur&&!cur.open&&selRound===cur.id)h+=`<p class="note" style="text-align:left;margin:-4px 0 10px"><button class="lnk" id="reopenR">Reopen this rating</button></p>`;
   const rows=(rd.players||[]).map((p,i)=>{const vs=[],cs=[];subs.forEach(x=>{const o=x&&x.s&&x.s['p'+i];if(o&&o.v){vs.push(+o.v);if(o.c)cs.push(String(o.c))}});return{p,i,n:vs.length,avg:vs.length?vs.reduce((a,b)=>a+b,0)/vs.length:null,cs:cs.sort((a,b)=>a.localeCompare(b))}}).sort((a,b)=>(b.avg??-1)-(a.avg??-1));
   h+=rows.map((r,k)=>{const tm=teamOf(rd,r.p.t);return `<div class="rc${r.cs.length?' has':''}" data-r="${r.i}" style="--c:${esc(tm.color)}"><div class="rt"><span class="rk">${r.avg==null?'–':k+1}</span><div class="rn"><b>${esc(r.p.n)}</b><span>${esc(tm.name)} · ${r.n} ${r.n===1?'vote':'votes'}${r.cs.length?` · ${r.cs.length} ${r.cs.length===1?'comment':'comments'}`:''}</span></div><span class="avg"${r.avg!=null?` style="color:${hue(r.avg)}"`:''}>${r.avg==null?'–':r.avg.toFixed(1)}</span></div><div class="meter"><i style="width:${(r.avg||0)*10}%"></i></div>${openRow[r.i]&&r.cs.length?`<div class="cms">${r.cs.map(c=>`<p class="cm">${esc(c)}</p>`).join('')}</div>`:''}</div>`}).join('');
@@ -491,19 +628,12 @@ function renderResults(){
 async function setOpen(id,open){try{await F.update(F.ref(db),{['rounds/'+id+'/open']:open,'meta/current/open':open});toast(open?'Rating opened':'Rating closed')}catch(e){toast('Could not update')}}
 $('#results').addEventListener('click',async e=>{
   const t=e.target;
-  if(t.id==='openR'){
-    const players=[];S.slots.forEach((s,i)=>{const n=(S.players[s.p]||'').trim();if(n)players.push({n,t:s.t,no:num(i)})});
-    if(players.length<2){toast('Add player names to the squads first');return}
-    const date=$('#rDate').value||today();let id=date,k=2;while(rounds[id])id=date+'-'+(k++);
-    const r={id,date,open:true,players,teams:S.teams.map(x=>({name:x.name,color:x.color})),createdAt:Date.now()};
-    try{await F.update(F.ref(db),{['rounds/'+id]:r,'meta/current':r});selRound=id;subResults();toast('Rating opened')}catch(err){toast('Could not open rating')}
-    return;
-  }
   if(t.id==='closeR'&&round){setOpen(round.id,false);return}
   if(t.id==='reopenR'&&round){setOpen(round.id,true);return}
   const rc=t.closest('.rc.has');if(rc){openRow[rc.dataset.r]=!openRow[rc.dataset.r];renderResults()}
 });
 $('#results').addEventListener('change',e=>{if(e.target.id==='rSel'){selRound=e.target.value;subResults();renderResults()}});
+go(location.hash.slice(1));
 let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),1600)}
 }
 </script>
