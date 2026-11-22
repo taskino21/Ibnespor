@@ -272,6 +272,30 @@ body:not(.adm) .admin-only{display:none!important}
 .inst div{flex:1;display:grid;min-width:0}.inst span{color:var(--mut);font-size:14px}
 .inst .x{flex:none;width:36px;min-height:36px;padding:0;background:none;border:0;color:var(--mut);font-size:16px}
 @media(display-mode:standalone){.hero{padding-top:env(safe-area-inset-top)}}
+.mc2{display:block;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px 14px 12px;margin-bottom:10px;color:var(--ink);text-decoration:none}
+.mc2:hover{border-color:#34483c}
+.mh2{display:flex;align-items:center;gap:10px}
+.mdate{flex:none;display:flex;align-items:baseline;gap:4px;background:#f4f7f5;color:#101512;border-radius:8px;padding:2px 8px;font:700 13px Barlow,sans-serif;text-transform:uppercase}
+.mdate b{font:800 18px "Barlow Condensed",sans-serif}
+.mwk{flex:1;color:var(--mut);font-size:14px;font-weight:600}
+.tag.ok{background:#1f5132;color:#8ef0a9}
+.mu{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px;margin:12px 0 4px}
+.tmx{display:flex;align-items:center;gap:8px;min-width:0}.tmx.r{justify-content:flex-end}
+.tmx span{font:800 21px/1.1 "Barlow Condensed",sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kit{flex:none;width:30px;height:30px;filter:drop-shadow(0 2px 2px #0007)}
+.msc{display:flex;align-items:center;gap:8px}.msc b{font:800 34px/1 "Barlow Condensed",sans-serif;min-width:22px;text-align:center}.msc i{color:var(--mut);font-style:normal;font:700 22px "Barlow Condensed",sans-serif}
+.msc em{font-style:normal;font:800 14px "Barlow Condensed",sans-serif;color:var(--mut);border:1px solid var(--line);border-radius:6px;padding:2px 8px;letter-spacing:.5px}
+.mf{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid #ffffff0d;font-size:14px}
+.mvpb{background:#f5d020;color:#1b1600;font:800 11px Barlow,sans-serif;padding:2px 6px;border-radius:5px}
+.mvs{color:var(--mut);font-weight:700}
+.gsl{display:flex;align-items:center;gap:6px;color:var(--mut);margin-left:auto}.gsl svg{width:14px;height:14px}
+.lbar{flex:1;height:6px;border-radius:3px;background:#ffffff12;overflow:hidden;min-width:80px}.lbar i{display:block;height:100%;background:#41d36a}
+.lt{color:var(--mut);font-weight:600}
+.susbox{display:grid;gap:8px;background:#2a1d12;border:1px solid #6b4a23;border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.susbox>span{color:#e7c89a;font-size:14px}
+.susr{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid #6b4a2355;padding-top:8px;font-size:14px}
+.susr.ex span{text-decoration:line-through;color:var(--mut)}
+.lnk.dl{color:#ff8a7a}
 </style>
 </head>
 <body>
@@ -600,11 +624,30 @@ function heroUpdate(){
   else{const n=upcoming()[0];if(n)t='Next match · '+mLabel(n)}
   $('#heroSub').textContent=t;
 }
+function kitSVG(c){return `<svg class="kit" viewBox="0 0 40 38" aria-hidden="true"><path d="M12 3L3 8.5l3.4 7.6 5.6-2.6z M28 3l9 5.5-3.4 7.6-5.6-2.6z" fill="${c}"/><path d="M12 3c2.6 2.4 5 3.4 8 3.4s5.4-1 8-3.4l.6 10.5V35.5H11.4V13.5z" fill="${c}"/><path d="M12 3L3 8.5l3.4 7.6 5.6-2.6z M28 3l9 5.5-3.4 7.6-5.6-2.6z" fill="#0003"/><path d="M14.5 3.6c1.6 2.4 3.4 3.4 5.5 3.4s3.9-1 5.5-3.4" fill="none" stroke="#fff" stroke-width="1.6"/></svg>`}
 function mcard(m){
   const b=m.board||{},t=b.teams||[],pl=(b.players||[]).filter(x=>x&&String(x).trim()).length;
-  const d=new Date(m.date+'T12:00'),rOpen=round&&round.open&&round.id===m.id,P=PUB[m.id],mvp=P&&Array.isArray(P.players)&&P.players.slice().sort((a,b)=>b.avg-a.avg)[0];
-  const tn=(i,dn,dc)=>`<i style="background:${esc((t[i]&&t[i].color)||dc)}"></i>${esc((t[i]&&t[i].name)||dn)}`;
-  return `<a class="mc" href="#m-${esc(m.id)}"><div class="md"><b>${d.getDate()}</b><span>${esc(d.toLocaleDateString('en-GB',{month:'short'}))}</span></div><div class="mi"><b>${esc(d.toLocaleDateString('en-GB',{weekday:'long'}))} · ${esc(m.start||'')}${m.end?'–'+esc(m.end):''}</b><span>${(()=>{const sc=scoreOf(m);return sc?`${tn(0,'Red','#d93a2b')} <b class="mvpn">${sc[0]} – ${sc[1]}</b> ${tn(1,'Blue','#2468d8').replace(/^(<i[^>]*><\/i>)(.*)$/,'$2 $1')}`:`${tn(0,'Red','#d93a2b')} vs ${tn(1,'Blue','#2468d8')}`})()}</span><span>${mvp?`MVP · <b class="mvpn">${esc(mvp.n)}</b> ${(+mvp.avg).toFixed(2).replace(/0$/,'')}`:`${pl}/16 players`}</span></div>${rOpen?'<em class="tag">Rating open</em>':(isLocked(m)&&m.date<today()?'<em class="tag lock">Final</em>':'')}<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>`;
+  const d=new Date(m.date+'T12:00'),rOpen=round&&round.open&&round.id===m.id,P=PUB[m.id],sc=scoreOf(m),past=m.date<today();
+  const mvp=P&&Array.isArray(P.players)&&P.players.length?P.players.slice().sort((a,c)=>c.avg-a.avg)[0]:null;
+  const T=i=>({n:(t[i]&&t[i].name)||(i?'Blue':'Red'),c:isCol((t[i]||{}).color)?t[i].color:(i?'#2468d8':'#d93a2b')});
+  const A=T(0),B=T(1);
+  let pill='';
+  if(rOpen)pill='<em class="tag">Rating open</em>';
+  else if(past&&isLocked(m))pill='<em class="tag lock">Final</em>';
+  else if(!past)pill=pl>=16?'<em class="tag ok">Lineup ready</em>':`<em class="tag lock">${pl}/16</em>`;
+  let foot='';
+  if(sc){
+    const gl=[];(b.slots||[]).forEach(s=>{const g=+(((RESULTS[m.id]||{}).goals||{})['p'+s.p]||0);const n=String((b.players||[])[s.p]||'').trim();if(g&&n)gl.push({n,g})});
+    gl.sort((x,y)=>y.g-x.g);
+    const gs=gl.slice(0,3).map(x=>`${esc(x.n)}${x.g>1?' ×'+x.g:''}`).join(' · ');
+    foot=`<div class="mf">${mvp?`<span class="mvpb">MVP</span><b>${esc(mvp.n)}</b><span class="mvs">${(+mvp.avg).toFixed(1)}</span>`:''}${gs?`<span class="gsl">${BALL}${gs}</span>`:''}</div>`;
+  }else if(!past){
+    foot=`<div class="mf"><div class="lbar"><i style="width:${Math.min(100,pl/16*100)}%"></i></div><span class="lt">${pl>=16?'16 players confirmed':`${16-pl} ${16-pl===1?'spot':'spots'} left`}</span></div>`;
+  }else if(mvp){foot=`<div class="mf"><span class="mvpb">MVP</span><b>${esc(mvp.n)}</b><span class="mvs">${(+mvp.avg).toFixed(1)}</span></div>`}
+  return `<a class="mc2${sc?' played':''}" href="#m-${esc(m.id)}">
+    <div class="mh2"><span class="mdate"><b>${d.getDate()}</b>${esc(d.toLocaleDateString('en-GB',{month:'short'}))}</span><span class="mwk">${esc(d.toLocaleDateString('en-GB',{weekday:'long'}))} · ${esc(m.start||'')}${m.end?'–'+esc(m.end):''}</span>${pill}</div>
+    <div class="mu"><div class="tmx l">${kitSVG(A.c)}<span>${esc(A.n)}</span></div><div class="msc">${sc?`<b>${sc[0]}</b><i>–</i><b>${sc[1]}</b>`:'<em>VS</em>'}</div><div class="tmx r"><span>${esc(B.n)}</span>${kitSVG(B.c)}</div></div>
+    ${foot}</a>`;
 }
 function nameKey(n){return String(n||'').toLocaleLowerCase('tr').replace(/\s+/g,' ').trim()}
 function hasRoster(){try{return Object.keys(ROSTER).length>0}catch(e){return false}}
@@ -956,7 +999,7 @@ $('#submitBtn').onclick=async()=>{
   btn.disabled=false;confirmT=0;if(!submitted)btn.textContent='Submit';
 };
 // ---------- results (organizer) ----------
-let lastRows=null,rounds={},selRound=null,unsubRounds=null,unsubRes=null,subFor=null,results=null,openRow={};
+let delRT=0,lastRows=null,rounds={},selRound=null,unsubRounds=null,unsubRes=null,subFor=null,results=null,openRow={};
 function startAdmin(){
   if(unsubRounds)return;
   unsubRounds=F.onValue(F.ref(db,'rounds'),s=>{rounds=s.val()||{};if(!selRound||!rounds[selRound])selRound=Object.keys(rounds).sort((a,b)=>mKey(rounds[a]).localeCompare(mKey(rounds[b]))).pop()||null;subResults();renderResults();renderMbar()},()=>{});
@@ -973,20 +1016,35 @@ function renderResults(){
   if(cur&&cur.open)h+=`<div class="ctl-card"><div><b>Rating is open</b><span>${esc(mLabel(cur))} · players can send ratings now</span></div><button id="closeR">Close rating</button></div>`;
   else h+=`<div class="ctl-card"><div><b>No rating open</b><span>Open a rating from a match page after the game.</span></div><a class="btn" href="#matches">Matches</a></div>`;
   if(!ids.length){$('#results').innerHTML=h+`<div class="empty"><p>No ratings yet. Open a rating from a match page after the game.</p></div>`;return}
-  const rd=rounds[selRound]||{},subs=Object.values(results||{});const sum=rd.summary&&!subs.length?rd.summary:null;
-  h+=`<div class="rsel"><select id="rSel" aria-label="Match">${ids.map(id=>`<option value="${esc(id)}"${id===selRound?' selected':''}>${esc(mLabel(rounds[id]))}${rounds[id].open?' · open':''}</option>`).join('')}</select><span class="rsum">${sum?'Imported scores':`<b>${subs.length}</b> ${subs.length===1?'response':'responses'}`}</span></div>`;
-  if(cur&&!cur.open&&selRound===cur.id)h+=`<p class="note" style="text-align:left;margin:-4px 0 10px"><button class="lnk" id="reopenR">Reopen this rating</button></p>`;
-  const rows=(rd.players||[]).map((p,i)=>{const vs=[],cs=[];subs.forEach(x=>{const o=x&&x.s&&x.s['p'+i];if(o&&o.v){vs.push(+o.v);if(o.c)cs.push(String(o.c))}});const sv=sum&&+sum['p'+i];if(sum)return{p,i,n:null,avg:sv>0?sv:null,cs:[]};return{p,i,n:vs.length,avg:vs.length?vs.reduce((a,b)=>a+b,0)/vs.length:null,cs:cs.sort((a,b)=>a.localeCompare(b))}}).sort((a,b)=>(b.avg??-1)-(a.avg??-1));
+  const rd=rounds[selRound]||{},allSubs=Object.entries(results||{}).sort((a,b)=>a[0].localeCompare(b[0])),excl=rd.excluded||{};
+  const subsE=allSubs.filter(([k])=>!excl[k]),subs=subsE.map(([k,x])=>x);const sum=rd.summary&&!allSubs.length?rd.summary:null;
+  const sus=[];allSubs.forEach(([k,x],idx)=>{
+    const sc=x&&x.s||{};let n=0,dev=0,bias=0,given=0;
+    for(const pk in sc){const v=+((sc[pk]||{}).v);if(!v)continue;const others=subsE.filter(([k2])=>k2!==k).map(([,y])=>+(((y&&y.s||{})[pk]||{}).v)||0).filter(Boolean);
+      given+=v;if(others.length<2)continue;const c=others.reduce((a,b)=>a+b,0)/others.length;dev+=Math.abs(v-c);bias+=v-c;n++}
+    const cnt=Object.keys(sc).length;
+    if(n>=3&&dev/n>=2.5)sus.push({k,idx:idx+1,dev:dev/n,bias:bias/n,avgGiven:cnt?given/cnt:0,cnt,ex:!!excl[k]});
+    else if(excl[k])sus.push({k,idx:idx+1,dev:n?dev/n:0,bias:n?bias/n:0,avgGiven:cnt?given/cnt:0,cnt,ex:true});
+  });
+  h+=`<div class="rsel"><select id="rSel" aria-label="Match">${ids.map(id=>`<option value="${esc(id)}"${id===selRound?' selected':''}>${esc(mLabel(rounds[id]))}${rounds[id].open?' · open':''}</option>`).join('')}</select><span class="rsum">${sum?'Imported scores':`<b>${subs.length}</b> ${subs.length===1?'response':'responses'}${allSubs.length>subs.length?` · ${allSubs.length-subs.length} excluded`:''}`}</span></div>`;
+  if(sus.length)h+=`<div class="susbox"><b>Unusual voting</b><span>These submissions are far from what everyone else gave (more than 2.5 points off on average). Who sent them stays hidden. Excluded ones don’t count.</span>${sus.map(x=>`<div class="susr${x.ex?' ex':''}"><span>Submission #${x.idx} · ${x.cnt} players · gave ${x.avgGiven.toFixed(1)} on average, ${x.bias>=0?'+':''}${x.bias.toFixed(1)} vs others</span><button data-ex="${esc(x.k)}" data-on="${x.ex?0:1}">${x.ex?'Include again':'Exclude'}</button></div>`).join('')}</div>`;
+  h+=`<p class="note" style="text-align:left;margin:-4px 0 10px;display:flex;gap:14px;flex-wrap:wrap">${cur&&!cur.open&&selRound===cur.id?'<button class="lnk" id="reopenR">Reopen this rating</button>':''}<button class="lnk dl" id="delR">Delete this rating</button></p>`;
+  const rows=(rd.players||[]).map((p,i)=>{const vs=[],cs=[];subs.forEach(x=>{const o=x&&x.s&&x.s['p'+i];if(o&&o.v){vs.push(+o.v);if(o.c)cs.push(String(o.c))}});const sv=sum&&+sum['p'+i];if(sum)return{p,i,n:null,avg:sv>0?sv:null,cs:[]};const so=vs.slice().sort((a,b)=>a-b),tr=so.length>=10?2:so.length>=5?1:0,kept=so.slice(tr,so.length-tr);const raw=vs.length?vs.reduce((a,b)=>a+b,0)/vs.length:null;return{p,i,n:vs.length,tr,raw,avg:kept.length?kept.reduce((a,b)=>a+b,0)/kept.length:null,cs:cs.sort((a,b)=>a.localeCompare(b))}}).sort((a,b)=>(b.avg??-1)-(a.avg??-1));
   lastRows={id:selRound,rd,rows};
   const pub=PUB[selRound],rated=rows.filter(r=>r.avg!=null).length;
   if(rated)h+=`<div class="pubbar"><div><b>${pub?'Published':'Not published'}</b><span>${pub?`Everyone can see these scores on the match page${pub.publishedAt?' · '+esc(new Date(pub.publishedAt).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})):''}`:'Only you can see these scores until you publish them. Comments stay private.'}</span></div><button class="pri" id="pubR">${pub?'Update published scores':'Publish results'}</button>${pub?'<button id="unpubR">Unpublish</button>':''}</div>`;
-  h+=rows.map((r,k)=>{const tm=teamOf(rd,r.p.t);return `<div class="rc${r.cs.length?' has':''}" data-r="${r.i}" style="--c:${esc(tm.color)}"><div class="rt"><span class="rk">${r.avg==null?'–':k+1}</span><div class="rn"><b>${esc(r.p.n)}</b><span>${esc(tm.name)} · ${r.n==null?'final score':`${r.n} ${r.n===1?'vote':'votes'}`}${r.cs.length?` · ${r.cs.length} ${r.cs.length===1?'comment':'comments'}`:''}</span></div><span class="avg"${r.avg!=null?` style="color:${hue(r.avg)}"`:''}>${r.avg==null?'–':r.avg.toFixed(2).replace(/0$/,"")}</span></div><div class="meter"><i style="width:${(r.avg||0)*10}%"></i></div>${openRow[r.i]&&r.cs.length?`<div class="cms">${r.cs.map(c=>`<p class="cm">${esc(c)}</p>`).join('')}</div>`:''}</div>`}).join('');
+  h+=rows.map((r,k)=>{const tm=teamOf(rd,r.p.t);return `<div class="rc${r.cs.length?' has':''}" data-r="${r.i}" style="--c:${esc(tm.color)}"><div class="rt"><span class="rk">${r.avg==null?'–':k+1}</span><div class="rn"><b>${esc(r.p.n)}</b><span>${esc(tm.name)} · ${r.n==null?'final score':`${r.n} ${r.n===1?'vote':'votes'}`}${r.tr&&r.raw!=null&&Math.abs(r.raw-r.avg)>=.05?` · ${r.tr*2} extreme votes dropped (raw ${r.raw.toFixed(2)})`:''}${r.cs.length?` · ${r.cs.length} ${r.cs.length===1?'comment':'comments'}`:''}</span></div><span class="avg"${r.avg!=null?` style="color:${hue(r.avg)}"`:''}>${r.avg==null?'–':r.avg.toFixed(2).replace(/0$/,"")}</span></div><div class="meter"><i style="width:${(r.avg||0)*10}%"></i></div>${openRow[r.i]&&r.cs.length?`<div class="cms">${r.cs.map(c=>`<p class="cm">${esc(c)}</p>`).join('')}</div>`:''}</div>`}).join('');
   $('#results').innerHTML=h;
 }
 async function setOpen(id,open){try{await F.update(F.ref(db),{['rounds/'+id+'/open']:open,'meta/current/open':open});toast(open?'Rating opened':'Rating closed')}catch(e){toast('Could not update')}}
 $('#results').addEventListener('click',async e=>{
   const t=e.target;
   if(t.id==='closeR'&&round){setOpen(round.id,false);return}
+  if(t.dataset.ex){try{await F.set(F.ref(db,'rounds/'+selRound+'/excluded/'+t.dataset.ex),t.dataset.on==='1'?true:null);toast(t.dataset.on==='1'?'Submission excluded':'Submission included')}catch(err){toast('Could not update')}return}
+  if(t.id==='delR'&&selRound){
+    if(!delRT||Date.now()-delRT>5000){delRT=Date.now();t.textContent='Tap again to delete all votes, comments and published scores for this match';return}
+    const id=selRound,ops={['rounds/'+id]:null,['ratings/'+id]:null,['submitted/'+id]:null,['published/'+id]:null};if(round&&round.id===id)ops['meta/current']=null;
+    try{await F.update(F.ref(db),ops);delRT=0;selRound=null;subFor=null;toast('Rating deleted')}catch(err){toast('Could not delete')}return}
   if(t.id==='pubR'&&lastRows&&lastRows.id===selRound){
     const {rd,rows}=lastRows;const players=rows.filter(r=>r.avg!=null).map(r=>({n:r.p.n,t:r.p.t,pid:r.p.pid||resolve(r.p.n),avg:Math.round(r.avg*100)/100,votes:r.n==null?0:r.n}));
     try{await F.set(F.ref(db,'published/'+selRound),{publishedAt:Date.now(),date:rd.date||'',start:rd.start||'',end:rd.end||'',teams:(rd.teams||[]).map(x=>({name:x.name||'',color:x.color||'#888'})),players});toast('Results published')}catch(err){toast('Could not publish')}
