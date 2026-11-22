@@ -2,7 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b110e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="İTÜ Barça">
+<link rel="icon" href="data:image/png;base64,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">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
 <title>İTÜ Barça Academy Squads</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -96,16 +103,67 @@ body:not(.ed) .view-only{display:block}
 body.focus .hero,body.focus .card,body.focus .tools,body.focus .status{display:none}
 body.focus .wrap{display:block;max-width:none;padding:12px}
 body.focus .pitch{width:min(100%,calc((100vh - 24px) * .6667));min-width:0}
+body{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;justify-content:center;gap:4px;padding:6px 8px calc(6px + env(safe-area-inset-bottom));background:#0b110ef2;border-top:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.tabbar button{flex:1;max-width:150px;display:grid;justify-items:center;gap:2px;background:none;border:0;min-height:54px;padding:5px 4px;color:var(--mut);font:600 13px Barlow,sans-serif;border-radius:10px}
+.tabbar button svg{width:24px;height:24px}
+.tabbar button.on{color:#fff;background:#ffffff12}
+body.focus .tabbar{display:none}body.focus{padding-bottom:0}
+body:not([data-view=squads]) .bug{display:none}
+@media(max-width:700px){.hero{min-height:168px}.hero h1{font-size:34px}}
+.hin{padding-top:calc(14px + env(safe-area-inset-top))}
+.narrow{max-width:680px;margin:0 auto;padding:16px max(4vw,14px) 24px}
+.rh h2,.empty h2{font:800 30px/1.05 "Barlow Condensed",sans-serif;margin:0}
+.rh p,.empty p{color:var(--mut);margin:4px 0 14px}
+.empty{text-align:center;padding:44px 18px;background:var(--panel);border:1px solid var(--line);border-radius:14px}
+.empty p{margin-bottom:0}
+.me{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:12px}
+.me span{font-weight:600;flex:none}.me select{flex:1;width:100%}
+.pc{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:12px;padding:12px;margin-bottom:10px}
+.pc.done{background:#15231b}
+.pt{display:flex;align-items:center;gap:10px}
+.pt .no{flex:none;width:30px;height:30px;border-radius:7px;display:grid;place-items:center;background:var(--c);color:#fff;font:700 16px "Barlow Condensed",sans-serif}
+.pt b{flex:1;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pt .tm{color:var(--mut);font-size:13px;white-space:nowrap}
+.pt .val{flex:none;min-width:36px;text-align:right;font:800 26px/1 "Barlow Condensed",sans-serif;color:var(--v,#55665b)}
+.sc{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px;margin-top:10px}
+@media(max-width:520px){.sc{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}}
+.sc button{min-height:44px;padding:0;font:700 19px "Barlow Condensed",sans-serif;border-radius:9px}
+.sc button.on{background:#f4f7f5;color:#101512;border-color:#f4f7f5}
+.pc textarea{width:100%;min-height:64px;margin:10px 0 0}
+.lnk{background:none;border:0;color:var(--mut);padding:0 2px;min-height:40px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.lnk:hover{background:none;color:var(--ink)}
+.addc{margin-top:4px}
+.sbar{position:sticky;bottom:calc(76px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:12px;padding:10px 12px;margin-top:12px;background:#111a15f5;border:1px solid #2c3d33;border-radius:14px;box-shadow:0 10px 30px #000a}
+.pg{flex:1;display:grid;gap:6px;font-weight:600;font-size:14px}
+.pbar{height:6px;border-radius:3px;background:#ffffff18;overflow:hidden}.pbar i{display:block;height:100%;width:0;background:#41d36a;transition:width .25s}
+.sbar .pri{min-width:150px}
+.ctl-card{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.ctl-card div{flex:1 1 200px;display:grid}.ctl-card span{color:var(--mut);font-size:14px}
+.ctl-card input[type=date]{background:#0a110d;border:1px solid var(--line);border-radius:9px;padding:8px 10px;min-height:44px;color-scheme:dark}
+.rsel{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 10px}
+.rsel select{flex:1;max-width:260px}
+.rsum{color:var(--mut);white-space:nowrap}.rsum b{color:var(--ink);font-size:18px}
+.rc{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:12px;padding:12px;margin-bottom:8px}
+.rc.has{cursor:pointer}
+.rt{display:flex;align-items:center;gap:12px}
+.rk{flex:none;width:26px;text-align:center;font:800 20px "Barlow Condensed",sans-serif;color:var(--mut)}
+.rn{flex:1;display:grid}.rn b{font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rn span{color:var(--mut);font-size:13px}
+.avg{font:800 32px/1 "Barlow Condensed",sans-serif;color:#55665b}
+.meter{height:5px;border-radius:3px;background:#ffffff12;margin-top:10px;overflow:hidden}.meter i{display:block;height:100%;background:var(--c)}
+.cms{margin-top:10px;display:grid;gap:6px}.cm{margin:0;background:#0a110d;border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-size:15px}
+.acct{text-align:center;font-size:13px;color:var(--mut);margin:0}
 </style>
 </head>
 <body>
 <header class="hero">
   <div class="hin">
-    <div><h1>İTÜ Barça Academy</h1><div class="sub">Wednesday 22.00–23.00</div><div class="sq">Squads</div></div>
+    <div><h1>İTÜ Barça Academy</h1><div class="sub">Wednesday 22.00–23.00</div><div class="sq" id="sq">Squads</div></div>
     <div class="bug" id="bug"></div>
   </div>
   <div class="mode" id="mode" hidden><i></i><span>Editor</span></div>
 </header>
+<div id="v-squads" class="view">
 <p class="status" id="status"></p>
 <main class="wrap" id="wrap">
   <section class="card c0" id="card0"></section>
@@ -151,23 +209,32 @@ body.focus .pitch{width:min(100%,calc((100vh - 24px) * .6667));min-width:0}
     <button id="reset">Reset formations</button>
     <button id="copy">Copy lineup</button>
   </div>
-  <div class="bar" id="unlock" hidden><input id="pin" type="password" inputmode="numeric" placeholder="Edit PIN" aria-label="Edit PIN" style="max-width:160px;background:#0a110d;border:1px solid var(--line);border-radius:9px;padding:8px 10px;min-height:44px"><button id="unlockBtn">Edit</button></div>
+  <div class="bar" id="unlock" hidden><input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="Edit PIN" aria-label="Edit PIN" style="max-width:150px;background:#0a110d;border:1px solid var(--line);border-radius:9px;padding:8px 10px;min-height:44px"><button id="unlockBtn">Edit squads</button></div>
   <details class="ed-only">
     <summary>Enter all 16 names</summary>
     <textarea id="bulk" placeholder="One name per line or comma-separated. First 8 → team 1, next 8 → team 2"></textarea>
     <div class="bar"><button class="pri" id="applyBulk">Apply</button><button id="clearAll">Clear names</button></div>
   </details>
+  <p class="acct" id="acct"></p>
 </section>
+</div>
+<div id="v-rate" class="view narrow" hidden><div id="rate"></div><div class="sbar" id="sbar" hidden><div class="pg"><span id="prog">0 rated</span><div class="pbar"><i id="pfill"></i></div></div><button class="pri" id="submitBtn">Submit</button></div></div>
+<div id="v-results" class="view narrow" hidden><div id="results"></div></div>
+<nav class="tabbar" aria-label="Sections">
+  <button data-go="squads" id="nav-squads"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="2.5" width="16" height="19" rx="1.5"/><path d="M4 12h16"/><circle cx="12" cy="12" r="2.6"/><path d="M9 2.5v3h6v-3M9 21.5v-3h6v3"/></svg>Squads</button>
+  <button data-go="rate" id="nav-rate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg>Rate</button>
+  <button data-go="results" id="nav-results" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>Results</button>
+</nav>
 <div class="toast" id="toast"></div>
 <script>
 {
-const F={'3-3-1':[[.25,[.2,.5,.8]],[.55,[.2,.5,.8]],[.85,[.5]]],'3-2-2':[[.25,[.2,.5,.8]],[.56,[.32,.68]],[.85,[.32,.68]]],'2-3-2':[[.25,[.3,.7]],[.55,[.14,.5,.86]],[.85,[.32,.68]]],'3-1-3':[[.25,[.2,.5,.8]],[.5,[.5]],[.82,[.17,.5,.83]]],'2-4-1':[[.25,[.3,.7]],[.56,[.1,.37,.63,.9]],[.86,[.5]]],'4-2-1':[[.22,[.12,.38,.62,.88]],[.55,[.32,.68]],[.85,[.5]]],'2-2-3':[[.25,[.3,.7]],[.52,[.32,.68]],[.82,[.17,.5,.83]]]};
+const FORM={'3-3-1':[[.25,[.2,.5,.8]],[.55,[.2,.5,.8]],[.85,[.5]]],'3-2-2':[[.25,[.2,.5,.8]],[.56,[.32,.68]],[.85,[.32,.68]]],'2-3-2':[[.25,[.3,.7]],[.55,[.14,.5,.86]],[.85,[.32,.68]]],'3-1-3':[[.25,[.2,.5,.8]],[.5,[.5]],[.82,[.17,.5,.83]]],'2-4-1':[[.25,[.3,.7]],[.56,[.1,.37,.63,.9]],[.86,[.5]]],'4-2-1':[[.22,[.12,.38,.62,.88]],[.55,[.32,.68]],[.85,[.5]]],'2-2-3':[[.25,[.3,.7]],[.52,[.32,.68]],[.82,[.17,.5,.83]]]};
 const ROLE=['DF','MF','FW'];
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const isCol=c=>/^#[0-9a-f]{6}$/i.test(c);
-const formPos=f=>{const o=[[.5,.03,'GK']];F[f].forEach(([d,xs],li)=>xs.forEach(x=>o.push([x,Math.min(d+.05,.88),ROLE[li]])));return o};
+const formPos=f=>{const o=[[.5,.03,'GK']];FORM[f].forEach(([d,xs],li)=>xs.forEach(x=>o.push([x,Math.min(d+.05,.88),ROLE[li]])));return o};
 const toXY=(t,[x,d])=>t===0?{x,y:1-d*.5}:{x:1-x,y:d*.5};
 const roles=t=>formPos(S.teams[t].form).map(p=>p[2]);
 function blank(){
@@ -181,7 +248,7 @@ applyForm(0);applyForm(1);
 function clean(d){
   if(!d||!Array.isArray(d.slots)||d.slots.length!==16||!Array.isArray(d.players)||!Array.isArray(d.teams))return null;
   const s=blank();
-  s.teams=s.teams.map((tm,t)=>{const x=d.teams[t]||{};return{name:String(x.name||tm.name).slice(0,30),color:isCol(x.color)?x.color:tm.color,form:F[x.form]?x.form:tm.form}});
+  s.teams=s.teams.map((tm,t)=>{const x=d.teams[t]||{};return{name:String(x.name||tm.name).slice(0,30),color:isCol(x.color)?x.color:tm.color,form:FORM[x.form]?x.form:tm.form}});
   s.players=s.players.map((_,i)=>String(d.players[i]??'').slice(0,30));
   s.numbers=s.numbers.map((_,i)=>String((d.numbers||[])[i]??'').replace(/\D/g,'').slice(0,2));
   s.slots=s.slots.map((sl,i)=>{const x=d.slots[i]||{};const p=Number.isInteger(x.p)&&x.p>=0&&x.p<16?x.p:i;return{t:sl.t,p,x:clamp(+x.x||.5,0,1),y:clamp(+x.y||.5,0,1)}});
@@ -205,49 +272,69 @@ function renderCard(t){
   el.style.setProperty('--c',tm.color);
   const rows=[0,1,2,3,4,5,6,7].map(i=>{const p=S.slots[t*8+i].p,nm=S.players[p];
     return `<li class="${i===0?'gk':''}">${editor?`<input class="n ni" type="text" inputmode="numeric" maxlength="2" value="${esc(num(t*8+i))}" data-num="${p}" aria-label="Shirt number">`:`<span class="n">${num(t*8+i)}</span>`}${editor?`<input type="text" value="${esc(nm)}" data-p="${p}" placeholder="${i===0?'Goalkeeper':'Player '+(i+1)}" aria-label="${i===0?'Goalkeeper':'Player '+(i+1)}" maxlength="30">`:`<span class="nm">${esc(nm)||'—'}</span>`}<span class="r">${r[i]}</span></li>`}).join('');
-  el.innerHTML=`<div class="ch">${editor?`<input class="tn" type="text" value="${esc(tm.name)}" data-tn="${t}" aria-label="Team name" maxlength="30">`:`<span class="tn">${esc(tm.name)}</span>`}<span class="fm">${tm.form}</span></div><ol class="list">${rows}</ol>${editor?`<div class="ctl"><select data-tf="${t}" aria-label="Formation">${Object.keys(F).map(f=>`<option${f===tm.form?' selected':''}>${f}</option>`).join('')}</select><input type="color" value="${tm.color}" data-tc="${t}" aria-label="Kit colour"></div>`:''}`;
+  el.innerHTML=`<div class="ch">${editor?`<input class="tn" type="text" value="${esc(tm.name)}" data-tn="${t}" aria-label="Team name" maxlength="30">`:`<span class="tn">${esc(tm.name)}</span>`}<span class="fm">${tm.form}</span></div><ol class="list">${rows}</ol>${editor?`<div class="ctl"><select data-tf="${t}" aria-label="Formation">${Object.keys(FORM).map(f=>`<option${f===tm.form?' selected':''}>${f}</option>`).join('')}</select><input type="color" value="${tm.color}" data-tc="${t}" aria-label="Kit colour"></div>`:''}`;
 }
 function all(){renderTokens();renderBug();renderCard(0);renderCard(1)}
 all();
-// ---------- shared store (Firebase Realtime Database) ----------
-// 1) Paste your Firebase web config below (Project settings → Your apps → Web app).
-// 2) Optional: set an edit PIN. Anyone with the link can view; only people who enter the PIN can edit.
-//    Leave '' so everyone with the link can edit.
-const FIREBASE_CONFIG=null; /* e.g. {apiKey:"...",authDomain:"...",databaseURL:"https://xxx-default-rtdb.europe-west1.firebasedatabase.app",projectId:"...",appId:"..."} */
-const EDIT_PIN='';
+// ---------- Firebase ----------
+const FIREBASE_CONFIG={apiKey:"AIzaSyAeh3rrFw_GRYpeCz0nsMxneUxNS5_apbU",authDomain:"ibnespor-1773.firebaseapp.com",databaseURL:"https://ibnespor-1773-default-rtdb.europe-west1.firebasedatabase.app",projectId:"ibnespor-1773",storageBucket:"ibnespor-1773.firebasestorage.app",messagingSenderId:"655877038763",appId:"1:655877038763:web:0bdabf75bab4029a0a4dee"};
+const ADMIN_EMAIL='taskinofficall@gmail.com';
+const G='https://www.gstatic.com/firebasejs/10.12.2/';
+let F=null,db=null,auth=null,uid=null,isAdmin=false,round=null;
 let ref=null,dirty=false,writing=false,queued=false,timer=null;
 function status(m){$('#status').textContent=m||''}
 function change(){dirty=true;clearTimeout(timer);timer=setTimeout(write,500)}
+const denied=e=>/PERMISSION/i.test(String(e&&(e.code||e.message)));
 async function write(){
   if(!ref||!editor){dirty=false;return}
   if(writing){queued=true;return}
   writing=true;
   try{await ref.set({...JSON.parse(JSON.stringify(S)),updatedAt:Date.now()});status('')}
-  catch(e){status('Save failed, retrying…');setTimeout(change,2000)}
+  catch(e){writing=false;if(denied(e)){dirty=false;queued=false;setMode(false);toast('Enter the PIN to edit');return}status('Save failed, retrying…');setTimeout(change,2000);return}
   writing=false;
   if(queued){queued=false;write()}else dirty=false;
 }
-const pinOK=()=>{if(!EDIT_PIN)return true;try{return localStorage.getItem('hs-pin')===EDIT_PIN}catch(e){return false}};
-function setMode(ed){editor=ed;document.body.classList.toggle('ed',ed);$('#mode').hidden=true;$('#unlock').hidden=ed||!EDIT_PIN;all()}
-$('#unlockBtn').onclick=()=>{const v=$('#pin').value.trim();if(v===EDIT_PIN){try{localStorage.setItem('hs-pin',v)}catch(e){}setMode(true);toast('Editing unlocked')}else toast('Wrong PIN')};
+function setMode(ed){editor=ed;document.body.classList.toggle('ed',ed);$('#mode').hidden=true;$('#unlock').hidden=ed;all()}
+$('#unlockBtn').onclick=async()=>{
+  const v=$('#pin').value.trim();if(!v)return;
+  if(!F||!uid){toast('Connecting…');return}
+  try{await F.set(F.ref(db,'editors/'+uid),v);$('#pin').value='';setMode(true);toast('Editing unlocked')}catch(e){toast('Wrong PIN')}
+};
+$('#pin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#unlockBtn').click()});
 (async()=>{
-  if(!FIREBASE_CONFIG){setMode(true);status('Not connected to a database yet: changes stay on this device.');return}
   try{
-    const V='10.12.2';
-    const {initializeApp}=await import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`);
-    const {getDatabase,ref:dbRef,onValue,set}=await import(`https://www.gstatic.com/firebasejs/${V}/firebase-database.js`);
-    const r=dbRef(getDatabase(initializeApp(FIREBASE_CONFIG)),'board/main');
-    ref={set:d=>set(r,d)};
-    setMode(pinOK());
+    const [A,Au,D]=await Promise.all([import(G+'firebase-app.js'),import(G+'firebase-auth.js'),import(G+'firebase-database.js')]);
+    F={...Au,...D};
+    const app=A.initializeApp(FIREBASE_CONFIG);auth=Au.getAuth(app);db=D.getDatabase(app);
+    const r=D.ref(db,'board/main');ref={set:d=>D.set(r,d)};
     const wait=setTimeout(()=>status('Connecting…'),8000);
-    onValue(r,snap=>{
+    D.onValue(r,snap=>{
       clearTimeout(wait);status('');
       if(!snap.exists()||dirty||writing||drag)return;
-      const c=clean(snap.val());if(!c)return;
-      S=c;sel=null;all();
+      const c=clean(snap.val());if(!c)return;S=c;sel=null;all();
     },()=>{clearTimeout(wait);status('Could not load squads.')});
+    D.onValue(D.ref(db,'meta/current'),s=>{round=s.val();onRound()},()=>{});
+    Au.getRedirectResult(auth).catch(()=>{});
+    Au.onAuthStateChanged(auth,async u=>{
+      if(!u){Au.signInAnonymously(auth).catch(()=>status('Could not connect.'));return}
+      uid=u.uid;isAdmin=!u.isAnonymous&&u.email===ADMIN_EMAIL&&u.emailVerified;
+      let ed=isAdmin;
+      if(!ed){try{ed=(await D.get(D.ref(db,'editors/'+uid))).exists()}catch(e){}}
+      setMode(ed);renderAccount();checked=null;onRound();
+      if(isAdmin)startAdmin();else stopAdmin();
+    });
   }catch(e){status('Could not connect to the database.')}
 })();
+function renderAccount(){
+  $('#acct').innerHTML=isAdmin?`Organizer · <button class="lnk" id="so">Sign out</button>`:`<button class="lnk" id="si">Organizer sign in</button>`;
+  $('#nav-results').hidden=!isAdmin;
+  if(!isAdmin&&view==='results')go('squads');
+}
+$('#acct').addEventListener('click',async e=>{
+  if(!F)return;
+  if(e.target.id==='si'){const p=new F.GoogleAuthProvider();try{await F.signInWithPopup(auth,p)}catch(err){const c=err.code||'';if(/popup-blocked|operation-not-supported/.test(c))F.signInWithRedirect(auth,p);else if(!/cancelled|closed/.test(c))toast('Sign-in failed')}}
+  if(e.target.id==='so'){await F.signOut(auth);toast('Signed out')}
+});
 // ---------- editing ----------
 const wrap=$('#wrap');
 wrap.addEventListener('input',e=>{
@@ -297,6 +384,126 @@ $('#copy').onclick=async()=>{
 $('#fs').onclick=async e=>{e.stopPropagation();const on=!document.body.classList.contains('focus');document.body.classList.toggle('focus',on);$('#fs').textContent=on?'✕ Exit':'⤢ Tactics mode';window.scrollTo(0,0);try{if(on&&!document.fullscreenElement)await document.documentElement.requestFullscreen();else if(!on&&document.fullscreenElement)await document.exitFullscreen()}catch(err){}};
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&document.body.classList.contains('focus')){document.body.classList.remove('focus');$('#fs').textContent='⤢ Tactics mode'}});
 $('#fs').addEventListener('pointerdown',e=>e.stopPropagation());
+// ---------- views ----------
+let view='squads';
+const LABEL={squads:'Squads',rate:'Player ratings',results:'Results'};
+function go(v){
+  if(!LABEL[v]||(v==='results'&&!isAdmin))v='squads';
+  view=v;document.body.dataset.view=v;$('#sq').textContent=LABEL[v];
+  for(const x in LABEL){$('#v-'+x).hidden=x!==v;$('#nav-'+x).classList.toggle('on',x===v)}
+  if(location.hash.slice(1)!==v)history.replaceState(null,'','#'+v);
+  window.scrollTo(0,0);
+}
+document.querySelector('.tabbar').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});
+window.addEventListener('hashchange',()=>go(location.hash.slice(1)));
+go(location.hash.slice(1)||'squads');
+const pad=n=>String(n).padStart(2,'0');
+const today=()=>{const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`};
+const fmtDate=d=>{try{return new Date(String(d).slice(0,10)+'T12:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}catch(e){return d}};
+const hue=v=>`hsl(${Math.round((v-1)*13)},72%,52%)`;
+const teamOf=(r,t)=>(r.teams&&r.teams[t])||{name:'',color:'#888'};
+// ---------- rating (everyone) ----------
+let submitted=false,checked=null,R={me:'',s:{},c:{},o:{}},confirmT=0;
+const draftKey=()=>'hs-draft-'+(round&&round.id);
+function loadDraft(){
+  R={me:'',s:{},c:{},o:{}};
+  try{Object.assign(R,JSON.parse(localStorage.getItem(draftKey())||'{}'));if(!R.me)R.me=localStorage.getItem('hs-me')||''}catch(e){}
+}
+function saveDraft(){try{localStorage.setItem(draftKey(),JSON.stringify(R));localStorage.setItem('hs-me',R.me)}catch(e){}}
+async function onRound(){
+  if(round&&uid&&checked!==round.id+uid){
+    checked=round.id+uid;loadDraft();submitted=false;
+    try{submitted=(await F.get(F.ref(db,'submitted/'+round.id+'/'+uid))).exists()}catch(e){}
+  }
+  renderRate();if(isAdmin)renderResults();
+}
+function rcard(p,i){
+  const v=R.s[i],c=R.c[i]||'',tm=teamOf(round,p.t);
+  return `<div class="pc${v?' done':''}" data-i="${i}" style="--c:${esc(tm.color)}"><div class="pt"><span class="no">${esc(p.no)}</span><b>${esc(p.n)}</b><span class="tm">${esc(tm.name)}</span><span class="val"${v?` style="--v:${hue(v)}"`:''}>${v||'–'}</span></div><div class="sc">${[1,2,3,4,5,6,7,8,9,10].map(k=>`<button type="button" data-v="${k}" class="${v===k?'on':''}" aria-label="Score ${k}">${k}</button>`).join('')}</div>${R.o[i]||c?`<textarea data-c="${i}" maxlength="280" rows="2" placeholder="Anonymous comment (optional)">${esc(c)}</textarea>`:`<button type="button" class="lnk addc" data-a="${i}">+ Add comment</button>`}</div>`;
+}
+function renderRate(){
+  const el=$('#rate'),bar=$('#sbar');
+  if(!round||!round.open){el.innerHTML=`<div class="empty"><h2>Ratings are closed</h2><p>Ratings open after each match.</p></div>`;bar.hidden=true;return}
+  if(submitted){el.innerHTML=`<div class="empty"><h2>Thanks!</h2><p>Your ratings for ${esc(fmtDate(round.date))} are in.</p></div>`;bar.hidden=true;return}
+  const ps=round.players||[];
+  let h=`<div class="rh"><h2>Rate the players</h2><p>${esc(fmtDate(round.date))} · fully anonymous</p></div><label class="me"><span>You are</span><select id="meSel"><option value="">Select your name</option>${ps.map(p=>`<option${p.n===R.me?' selected':''}>${esc(p.n)}</option>`).join('')}</select></label>`;
+  if(!ps.some(p=>p.n===R.me)){el.innerHTML=h+`<p class="note">Your name is only used to hide you from the list. It is not sent.</p>`;bar.hidden=true;return}
+  el.innerHTML=h+ps.map((p,i)=>p.n===R.me?'':rcard(p,i)).join('');bar.hidden=false;updBar();
+}
+function updBar(){
+  const ps=round.players||[],me=ps.findIndex(p=>p.n===R.me),tot=ps.length-(me>=0?1:0);
+  const n=Object.keys(R.s).filter(i=>+i!==me).length;
+  $('#prog').textContent=`${n}/${tot} rated`;$('#pfill').style.width=(tot?n/tot*100:0)+'%';
+  confirmT=0;$('#submitBtn').textContent='Submit';
+}
+const rateEl=$('#rate');
+rateEl.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;const pc=b.closest('.pc');if(!pc)return;const i=pc.dataset.i;
+  if(b.dataset.v){const v=+b.dataset.v;if(R.s[i]===v)delete R.s[i];else R.s[i]=v}
+  else if(b.dataset.a!==undefined)R.o[i]=1;
+  else return;
+  saveDraft();pc.outerHTML=rcard(round.players[i],+i);updBar();
+  if(b.dataset.a!==undefined)rateEl.querySelector(`textarea[data-c="${i}"]`)?.focus();
+});
+rateEl.addEventListener('input',e=>{if(e.target.dataset.c!==undefined){R.c[e.target.dataset.c]=e.target.value;saveDraft()}});
+rateEl.addEventListener('change',e=>{if(e.target.id==='meSel'){R.me=e.target.value;const i=(round.players||[]).findIndex(p=>p.n===R.me);if(i>=0){delete R.s[i];delete R.c[i]}saveDraft();renderRate()}});
+$('#submitBtn').onclick=async()=>{
+  if(!round||!F||!uid)return;
+  const ps=round.players||[],me=ps.findIndex(p=>p.n===R.me),s={};
+  for(const i in R.s){if(+i===me||!ps[i])continue;const o={v:R.s[i]};const c=(R.c[i]||'').trim().slice(0,280);if(c)o.c=c;s['p'+i]=o}
+  if(!Object.keys(s).length){toast('Rate at least one player');return}
+  const btn=$('#submitBtn');
+  if(!confirmT||Date.now()-confirmT>5000){confirmT=Date.now();btn.textContent='Tap again to send';return}
+  btn.disabled=true;btn.textContent='Sending…';
+  try{
+    const k=F.push(F.ref(db,'ratings/'+round.id)).key;
+    await F.update(F.ref(db),{['ratings/'+round.id+'/'+k]:{s,at:F.serverTimestamp()},['submitted/'+round.id+'/'+uid]:true});
+    submitted=true;try{localStorage.removeItem(draftKey())}catch(e){}
+    renderRate();window.scrollTo(0,0);toast('Ratings sent');
+  }catch(e){toast(denied(e)?'Ratings are closed or already sent':'Could not send, try again')}
+  btn.disabled=false;confirmT=0;if(!submitted)btn.textContent='Submit';
+};
+// ---------- results (organizer) ----------
+let rounds={},selRound=null,unsubRounds=null,unsubRes=null,subFor=null,results=null,openRow={};
+function startAdmin(){
+  if(unsubRounds)return;
+  unsubRounds=F.onValue(F.ref(db,'rounds'),s=>{rounds=s.val()||{};if(!selRound||!rounds[selRound])selRound=Object.keys(rounds).sort().pop()||null;subResults();renderResults()},()=>{});
+}
+function stopAdmin(){if(unsubRounds)unsubRounds();if(unsubRes)unsubRes();unsubRounds=unsubRes=null;subFor=null;rounds={};results=null}
+function subResults(){
+  if(subFor===selRound)return;if(unsubRes)unsubRes();unsubRes=null;subFor=selRound;results=null;openRow={};
+  if(selRound)unsubRes=F.onValue(F.ref(db,'ratings/'+selRound),s=>{results=s.val()||{};renderResults()},()=>{});
+}
+function renderResults(){
+  if(!isAdmin)return;
+  const cur=round,ids=Object.keys(rounds).sort().reverse();
+  let h=`<div class="rh"><h2>Results</h2><p>Only you can see this page.</p></div>`;
+  if(cur&&cur.open)h+=`<div class="ctl-card"><div><b>Rating is open</b><span>${esc(fmtDate(cur.date))} · players can send ratings now</span></div><button id="closeR">Close rating</button></div>`;
+  else h+=`<div class="ctl-card"><div><b>Start a new rating</b><span>Uses the names in the current squads</span></div><input type="date" id="rDate" value="${today()}" aria-label="Match date"><button class="pri" id="openR">Open rating</button></div>`;
+  if(!ids.length){$('#results').innerHTML=h+`<div class="empty"><p>No ratings yet. Open a rating after the match and share the link.</p></div>`;return}
+  const rd=rounds[selRound]||{},subs=Object.values(results||{});
+  h+=`<div class="rsel"><select id="rSel" aria-label="Match">${ids.map(id=>`<option value="${esc(id)}"${id===selRound?' selected':''}>${esc(fmtDate(rounds[id].date))}${rounds[id].open?' · open':''}</option>`).join('')}</select><span class="rsum"><b>${subs.length}</b> ${subs.length===1?'response':'responses'}</span></div>`;
+  if(cur&&!cur.open&&selRound===cur.id)h+=`<p class="note" style="text-align:left;margin:-4px 0 10px"><button class="lnk" id="reopenR">Reopen this rating</button></p>`;
+  const rows=(rd.players||[]).map((p,i)=>{const vs=[],cs=[];subs.forEach(x=>{const o=x&&x.s&&x.s['p'+i];if(o&&o.v){vs.push(+o.v);if(o.c)cs.push(String(o.c))}});return{p,i,n:vs.length,avg:vs.length?vs.reduce((a,b)=>a+b,0)/vs.length:null,cs:cs.sort((a,b)=>a.localeCompare(b))}}).sort((a,b)=>(b.avg??-1)-(a.avg??-1));
+  h+=rows.map((r,k)=>{const tm=teamOf(rd,r.p.t);return `<div class="rc${r.cs.length?' has':''}" data-r="${r.i}" style="--c:${esc(tm.color)}"><div class="rt"><span class="rk">${r.avg==null?'–':k+1}</span><div class="rn"><b>${esc(r.p.n)}</b><span>${esc(tm.name)} · ${r.n} ${r.n===1?'vote':'votes'}${r.cs.length?` · ${r.cs.length} ${r.cs.length===1?'comment':'comments'}`:''}</span></div><span class="avg"${r.avg!=null?` style="color:${hue(r.avg)}"`:''}>${r.avg==null?'–':r.avg.toFixed(1)}</span></div><div class="meter"><i style="width:${(r.avg||0)*10}%"></i></div>${openRow[r.i]&&r.cs.length?`<div class="cms">${r.cs.map(c=>`<p class="cm">${esc(c)}</p>`).join('')}</div>`:''}</div>`}).join('');
+  $('#results').innerHTML=h;
+}
+async function setOpen(id,open){try{await F.update(F.ref(db),{['rounds/'+id+'/open']:open,'meta/current/open':open});toast(open?'Rating opened':'Rating closed')}catch(e){toast('Could not update')}}
+$('#results').addEventListener('click',async e=>{
+  const t=e.target;
+  if(t.id==='openR'){
+    const players=[];S.slots.forEach((s,i)=>{const n=(S.players[s.p]||'').trim();if(n)players.push({n,t:s.t,no:num(i)})});
+    if(players.length<2){toast('Add player names to the squads first');return}
+    const date=$('#rDate').value||today();let id=date,k=2;while(rounds[id])id=date+'-'+(k++);
+    const r={id,date,open:true,players,teams:S.teams.map(x=>({name:x.name,color:x.color})),createdAt:Date.now()};
+    try{await F.update(F.ref(db),{['rounds/'+id]:r,'meta/current':r});selRound=id;subResults();toast('Rating opened')}catch(err){toast('Could not open rating')}
+    return;
+  }
+  if(t.id==='closeR'&&round){setOpen(round.id,false);return}
+  if(t.id==='reopenR'&&round){setOpen(round.id,true);return}
+  const rc=t.closest('.rc.has');if(rc){openRow[rc.dataset.r]=!openRow[rc.dataset.r];renderResults()}
+});
+$('#results').addEventListener('change',e=>{if(e.target.id==='rSel'){selRound=e.target.value;subResults();renderResults()}});
 let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),1600)}
 }
 </script>
