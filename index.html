@@ -204,6 +204,33 @@ body[data-view=rate] .foot,body[data-view=results] .foot{display:none}
 .pr b{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pr .avg{font-size:26px}
 .mvpn{color:var(--ink);font-weight:700}
+.tk .gl{position:absolute;top:-4px;right:-6px;min-width:18px;height:18px;border-radius:9px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23fff' stroke='%23222' stroke-width='1.5'/%3E%3Cpath d='M12 6.5l4.2 3-1.6 5h-5.2l-1.6-5z' fill='%23222'/%3E%3C/svg%3E") center/18px no-repeat;color:#101512;font:800 11px/18px Barlow,sans-serif;text-align:right;padding:0 1px;box-shadow:0 1px 3px #0008;font-style:normal}
+.tk .gl:not(:empty){background:#fff;text-align:center;padding:0 5px;border:1.5px solid #222}
+.mres{max-width:900px;margin:0 auto;padding:10px max(4vw,14px) 4px}.mres:empty{display:none}
+.rescard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
+.rescard.empty2{display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--mut)}
+.scoreb{display:flex;align-items:center;justify-content:center;gap:12px}
+.scoreb b{font:800 54px/1 "Barlow Condensed",sans-serif;min-width:40px;text-align:center}
+.scoreb i{font:700 34px "Barlow Condensed",sans-serif;color:var(--mut);font-style:normal}
+.scoreb span{flex:1;font:800 22px/1.1 "Barlow Condensed",sans-serif;display:flex;align-items:center;gap:8px;min-width:0}
+.scoreb .tn0{justify-content:flex-end;text-align:right}.scoreb span::before{content:"";flex:none;width:12px;height:12px;border-radius:50%;background:var(--c)}
+.scoreb .tn0::before{order:2}
+.scl{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}
+.scl ul{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:15px}
+.scl ul:first-child{text-align:right}.scl ul:first-child li{justify-content:flex-end}
+.scl li{display:flex;align-items:center;gap:6px}.scl svg{width:15px;height:15px;flex:none}
+.scl .ogl{color:var(--mut);font-style:italic}
+.gcols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:12px}
+@media(max-width:600px){.gcols{grid-template-columns:minmax(0,1fr)}}
+.gcol{border-top:4px solid var(--c);background:#0f1813;border-radius:10px;padding:8px 10px}
+.gcol h4{margin:2px 0 8px;font:800 20px "Barlow Condensed",sans-serif;display:flex;justify-content:space-between}
+.gr{display:flex;align-items:center;gap:8px;min-height:46px;border-bottom:1px solid #ffffff0d}.gr:last-child{border:0}
+.gr .no{flex:none;width:26px;height:26px;border-radius:6px;display:grid;place-items:center;background:var(--c);font:700 14px "Barlow Condensed",sans-serif}
+.gr b{flex:1;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gr.og b{color:var(--mut);font-weight:500;font-size:14px}
+.stp{display:flex;align-items:center;gap:6px}.stp button{min-height:38px;width:38px;padding:0;font-size:20px}.stp span{min-width:18px;text-align:center;font:800 20px "Barlow Condensed",sans-serif}
+.tops{display:grid;gap:6px}
+.ts{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:9px 12px}
+.ts b{font-size:16px}.ts .tg{font:800 24px "Barlow Condensed",sans-serif;margin-left:auto}
 </style>
 </head>
 <body>
@@ -228,6 +255,7 @@ body[data-view=rate] .foot,body[data-view=results] .foot{display:none}
 <div id="v-squads" class="view" hidden>
 <p class="status" id="status"></p>
 <div class="mbar" id="mbar"></div>
+<section class="mres" id="mres"></section>
 <form class="mform narrow2" id="eForm" hidden>
   <label>Date<input type="date" id="eDate" required></label>
   <label>Start<input type="time" id="eStart" required></label>
@@ -337,7 +365,7 @@ $('#stripes').innerHTML=Array.from({length:12},(_,i)=>`<rect x="4" y="${6+i*7.5}
 let editor=false,baseEd=false,sel=null,drag=null;
 const num=i=>S.numbers[S.slots[i].p]||String(i%8+1);
 function renderTokens(){
-  $('#tokens').innerHTML=S.slots.map((s,i)=>{const b=toBox(s);return `<div class="tk${i%8===0?' gk':''}${sel===i?' sel':''}" data-s="${i}" style="left:${b.l}%;top:${b.t}%;--c:${S.teams[s.t].color}"><svg class="j" viewBox="0 0 40 38"><path class="sl" d="M12 3L3 8.5l3.4 7.6 5.6-2.6z M28 3l9 5.5-3.4 7.6-5.6-2.6z"/><path class="sh" d="M12 3c2.6 2.4 5 3.4 8 3.4s5.4-1 8-3.4l.6 10.5V35.5H11.4V13.5z"/><path class="tr" d="M14.5 3.6c1.6 2.4 3.4 3.4 5.5 3.4s3.9-1 5.5-3.4" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="1.4"/><path d="M12 3L3 8.5l3.4 7.6 5.6-2.6zM28 3l9 5.5-3.4 7.6-5.6-2.6z" fill="#0000002a"/><path d="M11.4 33.5H28.6v2H11.4z" fill="#0000003a"/><text class="no" x="20" y="27">${num(i)}</text></svg><span>${esc(S.players[s.p])||'—'}</span></div>`}).join('');
+  $('#tokens').innerHTML=S.slots.map((s,i)=>{const b=toBox(s);return `<div class="tk${i%8===0?' gk':''}${sel===i?' sel':''}" data-s="${i}" style="left:${b.l}%;top:${b.t}%;--c:${S.teams[s.t].color}"><svg class="j" viewBox="0 0 40 38"><path class="sl" d="M12 3L3 8.5l3.4 7.6 5.6-2.6z M28 3l9 5.5-3.4 7.6-5.6-2.6z"/><path class="sh" d="M12 3c2.6 2.4 5 3.4 8 3.4s5.4-1 8-3.4l.6 10.5V35.5H11.4V13.5z"/><path class="tr" d="M14.5 3.6c1.6 2.4 3.4 3.4 5.5 3.4s3.9-1 5.5-3.4" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="1.4"/><path d="M12 3L3 8.5l3.4 7.6 5.6-2.6zM28 3l9 5.5-3.4 7.6-5.6-2.6z" fill="#0000002a"/><path d="M11.4 33.5H28.6v2H11.4z" fill="#0000003a"/><text class="no" x="20" y="27">${num(i)}</text></svg>${goalsOf(s.p)?`<em class="gl" aria-label="${goalsOf(s.p)} goals">${goalsOf(s.p)>1?goalsOf(s.p):''}</em>`:''}<span>${esc(S.players[s.p])||'—'}</span></div>`}).join('');
 }
 function renderBug(){
   const [a,b]=S.teams;
@@ -387,6 +415,7 @@ $('#pin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#unlockBtn').clic
     const wait=setTimeout(()=>status('Connecting…'),8000);
     D.onValue(D.ref(db,'matches'),snap=>{clearTimeout(wait);status('');onMatches(snap.val())},()=>{clearTimeout(wait);$('#matches').innerHTML='<div class="empty"><p>Could not load matches.</p></div>'});
     D.onValue(D.ref(db,'meta/current'),s=>{round=s.val();onRound()},()=>{});
+    D.onValue(D.ref(db,'results'),s=>{RESULTS=s.val()||{};renderMatches();renderResult();renderTokens()},()=>{});
     D.onValue(D.ref(db,'published'),s=>{PUB=s.val()||{};renderMatches();renderPub();if(isAdmin)renderResults()},()=>{});
     Au.getRedirectResult(auth).catch(()=>{});
     Au.onAuthStateChanged(auth,async u=>{
@@ -459,7 +488,7 @@ $('#fs').onclick=async e=>{e.stopPropagation();const on=!document.body.classList
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&document.body.classList.contains('focus')){document.body.classList.remove('focus');$('#fs').textContent='⤢ Tactics mode'}});
 $('#fs').addEventListener('pointerdown',e=>e.stopPropagation());
 // ---------- views ----------
-let view='matches',MATCHES={},curMatch=null,showNew=false,PUB={};
+let view='matches',MATCHES={},curMatch=null,showNew=false,PUB={},RESULTS={};
 const LABEL={matches:'Matches',match:'Squads',rate:'Player ratings',results:'Results'};
 const VIEWS={matches:'v-matches',match:'v-squads',rate:'v-rate',results:'v-results'};
 const isLocked=m=>!!m&&(m.locked===true||!(+m.lockAt>Date.now()));
@@ -468,7 +497,7 @@ function applyEd(){
   const m=MATCHES[curMatch],lk=view==='match'&&m&&isLocked(m);
   const ed=baseEd&&(!lk||isAdmin);
   if(ed!==editor){editor=ed;sel=null;if(!ed)drag=null}
-  document.body.classList.toggle('ed',editor);all();renderMbar();
+  document.body.classList.toggle('ed',editor);all();renderMbar();if(!isAdmin)resEdit=false;renderResult();
   if(!editor){$('#eForm').hidden=true}
 }
 function freshBoard(){const keep=S;S=blank();applyForm(0);applyForm(1);const b=S;S=keep;return b}
@@ -476,7 +505,7 @@ function go(h){
   let v=h||'matches',id=null;
   if(v.startsWith('m-')){id=v.slice(2);v='match'}
   if(!LABEL[v]||(v==='results'&&!isAdmin)||(v==='match'&&!id))v='matches';
-  if(v==='match'&&curMatch!==id){curMatch=id;dirty=false;queued=false;clearTimeout(timer);S=freshBoard();const m=MATCHES[id],c=m&&clean(m.board);if(c)S=c;sel=null;all();$('#eForm').hidden=true;$('#sForm').hidden=true}
+  if(v==='match'&&curMatch!==id){curMatch=id;dirty=false;queued=false;clearTimeout(timer);S=freshBoard();const m=MATCHES[id],c=m&&clean(m.board);if(c)S=c;sel=null;resEdit=false;all();$('#eForm').hidden=true;$('#sForm').hidden=true}
   view=v;document.body.dataset.view=v;$('#sq').textContent=LABEL[v];
   for(const k in VIEWS)$('#'+VIEWS[k]).hidden=k!==v;
   ['matches','rate','results'].forEach(x=>$('#nav-'+x).classList.toggle('on',x===v||(x==='matches'&&v==='match')));
@@ -515,7 +544,50 @@ function mcard(m){
   const b=m.board||{},t=b.teams||[],pl=(b.players||[]).filter(x=>x&&String(x).trim()).length;
   const d=new Date(m.date+'T12:00'),rOpen=round&&round.open&&round.id===m.id,P=PUB[m.id],mvp=P&&Array.isArray(P.players)&&P.players.slice().sort((a,b)=>b.avg-a.avg)[0];
   const tn=(i,dn,dc)=>`<i style="background:${esc((t[i]&&t[i].color)||dc)}"></i>${esc((t[i]&&t[i].name)||dn)}`;
-  return `<a class="mc" href="#m-${esc(m.id)}"><div class="md"><b>${d.getDate()}</b><span>${esc(d.toLocaleDateString('en-GB',{month:'short'}))}</span></div><div class="mi"><b>${esc(d.toLocaleDateString('en-GB',{weekday:'long'}))} · ${esc(m.start||'')}${m.end?'–'+esc(m.end):''}</b><span>${tn(0,'Red','#d93a2b')} vs ${tn(1,'Blue','#2468d8')}</span><span>${mvp?`MVP · <b class="mvpn">${esc(mvp.n)}</b> ${(+mvp.avg).toFixed(2).replace(/0$/,'')}`:`${pl}/16 players`}</span></div>${rOpen?'<em class="tag">Rating open</em>':(isLocked(m)&&m.date<today()?'<em class="tag lock">Final</em>':'')}<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>`;
+  return `<a class="mc" href="#m-${esc(m.id)}"><div class="md"><b>${d.getDate()}</b><span>${esc(d.toLocaleDateString('en-GB',{month:'short'}))}</span></div><div class="mi"><b>${esc(d.toLocaleDateString('en-GB',{weekday:'long'}))} · ${esc(m.start||'')}${m.end?'–'+esc(m.end):''}</b><span>${(()=>{const sc=scoreOf(m);return sc?`${tn(0,'Red','#d93a2b')} <b class="mvpn">${sc[0]} – ${sc[1]}</b> ${tn(1,'Blue','#2468d8').replace(/^(<i[^>]*><\/i>)(.*)$/,'$2 $1')}`:`${tn(0,'Red','#d93a2b')} vs ${tn(1,'Blue','#2468d8')}`})()}</span><span>${mvp?`MVP · <b class="mvpn">${esc(mvp.n)}</b> ${(+mvp.avg).toFixed(2).replace(/0$/,'')}`:`${pl}/16 players`}</span></div>${rOpen?'<em class="tag">Rating open</em>':(isLocked(m)&&m.date<today()?'<em class="tag lock">Final</em>':'')}<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>`;
+}
+function goalsOf(p){try{const r=view==='match'&&RESULTS[curMatch];return r&&r.goals?(+r.goals['p'+p]||0):0}catch(e){return 0}}
+function scoreOf(m){
+  const r=m&&RESULTS[m.id],b=m&&m.board;if(!r||!b||!Array.isArray(b.slots))return null;
+  const sc=[0,0];b.slots.forEach(s=>{sc[s.t]+=+((r.goals||{})['p'+s.p]||0)});
+  const og=r.og||[];sc[0]+=+(og[0]||0);sc[1]+=+(og[1]||0);return sc;
+}
+function scorers(m,t){
+  const r=RESULTS[m.id]||{},b=m.board||{},out=[];
+  (b.slots||[]).forEach(s=>{if(s.t!==t)return;const g=+((r.goals||{})['p'+s.p]||0);const n=((b.players||[])[s.p]||'').trim();if(g>0&&n)out.push({n,g})});
+  out.sort((a,b)=>b.g-a.g);const og=+((r.og||[])[t]||0);if(og)out.push({n:'Own goal',g:og,og:1});return out;
+}
+let resEdit=false,resDraft=null;
+function renderResult(){
+  const el=$('#mres');if(!el)return;const m=view==='match'&&MATCHES[curMatch]&&{...MATCHES[curMatch],id:curMatch};
+  if(!m){el.innerHTML='';return}
+  const sc=scoreOf(m),T=S.teams;
+  if(resEdit&&isAdmin){
+    const col=t=>{const rows=S.slots.map((s,i)=>({s,i})).filter(x=>x.s.t===t&&(S.players[x.s.p]||'').trim()).map(({s,i})=>`<div class="gr"><span class="no" style="--c:${esc(T[t].color)}">${esc(num(i))}</span><b>${esc(S.players[s.p])}</b><div class="stp"><button type="button" data-gp="${s.p}" data-d="-1" aria-label="Remove goal">−</button><span>${resDraft.goals['p'+s.p]||0}</span><button type="button" data-gp="${s.p}" data-d="1" aria-label="Add goal">+</button></div></div>`).join('');
+      return `<div class="gcol" style="--c:${esc(T[t].color)}"><h4>${esc(T[t].name)} <span>${draftScore()[t]}</span></h4>${rows||'<p class="note">Add player names first.</p>'}<div class="gr og"><b>Own goals for ${esc(T[t].name)}</b><div class="stp"><button type="button" data-og="${t}" data-d="-1" aria-label="Remove own goal">−</button><span>${resDraft.og[t]||0}</span><button type="button" data-og="${t}" data-d="1" aria-label="Add own goal">+</button></div></div></div>`};
+    el.innerHTML=`<div class="rescard edit"><div class="rh"><h2>Result</h2><p>Tap + for every goal. The score is added up for you.</p></div><div class="gcols">${col(0)}${col(1)}</div><div class="bar"><button class="pri" id="resSave">Save result</button><button id="resCancel">Cancel</button>${sc?'<button class="danger" id="resClear">Remove result</button>':''}</div></div>`;
+    return;
+  }
+  if(!sc){el.innerHTML=isAdmin?`<div class="rescard empty2"><span>No result yet.</span><button class="pri" id="resEditBtn">Add score &amp; goals</button></div>`:'';return}
+  const sl=t=>scorers(m,t).map(x=>`<li${x.og?' class="ogl"':''}><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#fff"/><path d="M12 7.6l3.3 2.4-1.3 3.9h-4L8.7 10z" fill="#1b1f1d"/></svg>${esc(x.n)}${x.g>1?` <b>×${x.g}</b>`:''}</li>`).join('');
+  el.innerHTML=`<div class="rescard"><div class="scoreb"><span class="tn0" style="--c:${esc(T[0].color)}">${esc(T[0].name)}</span><b>${sc[0]}</b><i>–</i><b>${sc[1]}</b><span class="tn1" style="--c:${esc(T[1].color)}">${esc(T[1].name)}</span></div><div class="scl"><ul>${sl(0)}</ul><ul>${sl(1)}</ul></div>${isAdmin?'<div class="bar" style="justify-content:center"><button id="resEditBtn">Edit score &amp; goals</button></div>':''}</div>`;
+}
+function draftScore(){const sc=[0,0];S.slots.forEach(s=>{sc[s.t]+=resDraft.goals['p'+s.p]||0});sc[0]+=resDraft.og[0]||0;sc[1]+=resDraft.og[1]||0;return sc}
+$('#mres').addEventListener('click',async e=>{
+  const b=e.target.closest('button');if(!b)return;const m=MATCHES[curMatch];if(!m)return;
+  if(b.id==='resEditBtn'){const r=RESULTS[curMatch]||{};resDraft={goals:{...(r.goals||{})},og:[+((r.og||[])[0]||0),+((r.og||[])[1]||0)]};resEdit=true;renderResult();return}
+  if(b.id==='resCancel'){resEdit=false;renderResult();return}
+  if(b.dataset.gp!==undefined){const k='p'+b.dataset.gp;resDraft.goals[k]=Math.max(0,Math.min(30,(resDraft.goals[k]||0)+(+b.dataset.d)));if(!resDraft.goals[k])delete resDraft.goals[k];renderResult();return}
+  if(b.dataset.og!==undefined){const t=+b.dataset.og;resDraft.og[t]=Math.max(0,Math.min(30,(resDraft.og[t]||0)+(+b.dataset.d)));renderResult();return}
+  if(b.id==='resSave'){try{await F.set(F.ref(db,'results/'+curMatch),{goals:resDraft.goals,og:resDraft.og,updatedAt:Date.now()});resEdit=false;renderResult();toast('Result saved')}catch(err){toast(denied(err)?'Only the organizer can save results':'Could not save result')}return}
+  if(b.id==='resClear'){try{await F.set(F.ref(db,'results/'+curMatch),null);resEdit=false;renderResult();toast('Result removed')}catch(err){toast('Could not remove')}return}
+});
+function renderScorers(){
+  const tally={};
+  mList().forEach(m=>{const R=RESULTS[m.id];if(!R)return;const b=m.board||{},seen={};(b.slots||[]).forEach(s=>{const n=((b.players||[])[s.p]||'').trim();if(!n)return;const g=+((R.goals||{})['p'+s.p]||0);if(!g)return;const k=n.toLocaleLowerCase('tr');tally[k]=tally[k]||{n,g:0,m:0};tally[k].g+=g;if(!seen[k]){tally[k].m++;seen[k]=1}})});
+  const list=Object.values(tally).sort((a,b)=>b.g-a.g||a.n.localeCompare(b.n)).slice(0,10);
+  if(!list.length)return '';
+  return `<h3 class="sec">Top scorers</h3><div class="tops">${list.map((x,i)=>`<div class="ts"><span class="rk">${i+1}</span><b>${esc(x.n)}</b><span class="tmn">${x.m} ${x.m===1?'match':'matches'}</span><span class="tg">${x.g}</span></div>`).join('')}</div>`;
 }
 function renderPub(){
   const el=$('#pubres');if(!el)return;const P=view==='match'&&PUB[curMatch];
@@ -529,7 +601,7 @@ function renderPub(){
 }
 function renderMatches(){
   const t=today(),all_=mList(),up=upcoming(),past=all_.filter(m=>m.date<t).sort((a,b)=>mKey(b).localeCompare(mKey(a)));
-  $('#matches').innerHTML=`<h3 class="sec">Upcoming</h3>`+(up.length?up.map(mcard).join(''):`<div class="empty sm"><p>No upcoming matches.${baseEd?' Tap “New match” to add one.':''}</p></div>`)+(past.length?`<h3 class="sec">Past matches</h3>`+past.map(mcard).join(''):'');
+  $('#matches').innerHTML=`<h3 class="sec">Upcoming</h3>`+(up.length?up.map(mcard).join(''):`<div class="empty sm"><p>No upcoming matches.${baseEd?' Tap “New match” to add one.':''}</p></div>`)+(past.length?`<h3 class="sec">Past matches</h3>`+past.map(mcard).join(''):'')+renderScorers();
 }
 function renderMbar(){
   const el=$('#mbar');if(!el)return;const m=MATCHES[curMatch];
