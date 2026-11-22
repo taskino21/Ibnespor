@@ -182,6 +182,12 @@ button.danger{color:#ff8a7a;border-color:#5a2a24;background:#24130f}
 .foot{max-width:680px;margin:0 auto;padding:6px 14px 18px;display:grid;gap:8px}
 .foot .bar{justify-content:center}.foot input{max-width:150px;background:#0a110d;border:1px solid var(--line);border-radius:9px;padding:8px 10px;min-height:44px}
 body[data-view=rate] .foot,body[data-view=results] .foot{display:none}
+.sgrid{flex:1 1 100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px}
+@media(min-width:700px){.sgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.sgrid label{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--ink);font-size:15px}
+.sgrid span{display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.sgrid i{flex:none;width:9px;height:9px;border-radius:50%;background:var(--c)}
+.sgrid input{width:78px;flex:none;background:#0a110d;border:1px solid var(--line);border-radius:9px;padding:8px;min-height:44px;text-align:center}
 </style>
 </head>
 <body>
@@ -211,6 +217,11 @@ body[data-view=rate] .foot,body[data-view=results] .foot{display:none}
   <label>Start<input type="time" id="eStart" required></label>
   <label>End<input type="time" id="eEnd"></label>
   <div class="bar"><button class="pri" type="submit">Save</button><button type="button" id="eCancel">Cancel</button><button type="button" class="danger" id="eDel">Delete match</button></div>
+</form>
+<form class="mform narrow2 sform" id="sForm" hidden>
+  <p class="note" style="flex:1 1 100%;text-align:left;margin:0">Final scores for this match (1–10). Leave empty for players who weren’t rated.</p>
+  <div class="sgrid" id="sGrid"></div>
+  <div class="bar"><button class="pri" type="submit">Save scores</button><button type="button" id="sCancel">Cancel</button></div>
 </form>
 <main class="wrap" id="wrap">
   <section class="card c0" id="card0"></section>
@@ -438,7 +449,7 @@ function go(h){
   let v=h||'matches',id=null;
   if(v.startsWith('m-')){id=v.slice(2);v='match'}
   if(!LABEL[v]||(v==='results'&&!isAdmin)||(v==='match'&&!id))v='matches';
-  if(v==='match'&&curMatch!==id){curMatch=id;dirty=false;queued=false;clearTimeout(timer);S=freshBoard();const m=MATCHES[id],c=m&&clean(m.board);if(c)S=c;sel=null;all();$('#eForm').hidden=true}
+  if(v==='match'&&curMatch!==id){curMatch=id;dirty=false;queued=false;clearTimeout(timer);S=freshBoard();const m=MATCHES[id],c=m&&clean(m.board);if(c)S=c;sel=null;all();$('#eForm').hidden=true;$('#sForm').hidden=true}
   view=v;document.body.dataset.view=v;$('#sq').textContent=LABEL[v];
   for(const k in VIEWS)$('#'+VIEWS[k]).hidden=k!==v;
   ['matches','rate','results'].forEach(x=>$('#nav-'+x).classList.toggle('on',x===v||(x==='matches'&&v==='match')));
@@ -490,6 +501,7 @@ function renderMbar(){
   let h=`<a class="back" href="#matches">← All matches</a><div class="mrow"><div class="mt"><b>${esc(mLabel(m))}</b>${rOpen?'<em class="tag">Rating open</em>':''}</div><div class="bar">`;
   if(rOpen)h+=`<a class="btn pri" href="#rate">Rate players</a>`;
   if(isAdmin)h+=rOpen?`<button id="closeR2">Close rating</button>`:`<button id="openR2">${had?'Reopen rating':'Open rating'}</button>`;
+  if(isAdmin&&!rOpen&&(!had||had.imported))h+=`<button id="scoreM">${had?'Edit scores':'Enter scores'}</button>`;
   if(had)h+=`<button id="viewR">Results</button>`;
   if(editor)h+=`<button id="editM">Edit date &amp; time</button>`;
   el.innerHTML=h+`</div></div>`;
@@ -512,6 +524,7 @@ $('#mbar').addEventListener('click',async e=>{
   const t=e.target,m=MATCHES[curMatch];if(!m)return;
   if(t.id==='editM'){const f=$('#eForm');f.hidden=!f.hidden;$('#eDate').value=m.date;$('#eStart').value=m.start||'';$('#eEnd').value=m.end||'';delT=0;$('#eDel').textContent='Delete match'}
   if(t.id==='openR2')openRating(m);
+  if(t.id==='scoreM')openScores();
   if(t.id==='closeR2'&&round)setOpen(round.id,false);
   if(t.id==='viewR'){selRound=curMatch;subResults();go('results')}
 });
@@ -525,6 +538,23 @@ $('#eDel').onclick=async()=>{
   if(!delT||Date.now()-delT>5000){delT=Date.now();$('#eDel').textContent='Tap again to delete';return}
   try{const id=curMatch;await F.set(F.ref(db,'matches/'+id),null);toast('Match deleted');go('matches')}catch(err){toast('Could not delete')}
 };
+function openScores(){
+  const ex=rounds[curMatch],f=$('#sForm');
+  const list=S.slots.map((s,i)=>({n:(S.players[s.p]||'').trim(),t:s.t,no:num(i)})).filter(x=>x.n);
+  if(!list.length){toast('Add player names first');return}
+  const prev={};if(ex&&ex.summary)(ex.players||[]).forEach((p,i)=>{const v=ex.summary['p'+i];if(v)prev[p.n]=v});
+  $('#sGrid').innerHTML=list.map((p,i)=>`<label style="--c:${esc(S.teams[p.t].color)}"><span><i></i>${esc(p.n)}</span><input type="number" inputmode="decimal" min="1" max="10" step="0.01" data-si="${i}" value="${prev[p.n]??''}" aria-label="Score for ${esc(p.n)}"></label>`).join('');
+  f.dataset.list=JSON.stringify(list);f.hidden=false;f.scrollIntoView({behavior:'smooth',block:'start'});
+}
+$('#sCancel').onclick=()=>{$('#sForm').hidden=true};
+$('#sForm').addEventListener('submit',async e=>{
+  e.preventDefault();const m=MATCHES[curMatch];if(!isAdmin||!m)return;
+  const list=JSON.parse($('#sForm').dataset.list||'[]'),summary={};let n=0;
+  $('#sGrid').querySelectorAll('input').forEach(inp=>{const v=parseFloat(String(inp.value).replace(',','.'));if(v>=1&&v<=10){summary['p'+inp.dataset.si]=Math.round(v*100)/100;n++}});
+  if(!n){toast('Enter at least one score');return}
+  const r={id:curMatch,date:m.date,start:m.start||'',end:m.end||'',open:false,imported:true,players:list,teams:S.teams.map(x=>({name:x.name,color:x.color})),summary,createdAt:Date.now()};
+  try{await F.set(F.ref(db,'rounds/'+curMatch),r);$('#sForm').hidden=true;toast('Scores saved');selRound=curMatch;subResults()}catch(err){toast('Could not save scores')}
+});
 async function openRating(m){
   if(!isAdmin)return;
   const ex=rounds[curMatch];
@@ -618,11 +648,11 @@ function renderResults(){
   if(cur&&cur.open)h+=`<div class="ctl-card"><div><b>Rating is open</b><span>${esc(mLabel(cur))} · players can send ratings now</span></div><button id="closeR">Close rating</button></div>`;
   else h+=`<div class="ctl-card"><div><b>No rating open</b><span>Open a rating from a match page after the game.</span></div><a class="btn" href="#matches">Matches</a></div>`;
   if(!ids.length){$('#results').innerHTML=h+`<div class="empty"><p>No ratings yet. Open a rating from a match page after the game.</p></div>`;return}
-  const rd=rounds[selRound]||{},subs=Object.values(results||{});
-  h+=`<div class="rsel"><select id="rSel" aria-label="Match">${ids.map(id=>`<option value="${esc(id)}"${id===selRound?' selected':''}>${esc(mLabel(rounds[id]))}${rounds[id].open?' · open':''}</option>`).join('')}</select><span class="rsum"><b>${subs.length}</b> ${subs.length===1?'response':'responses'}</span></div>`;
+  const rd=rounds[selRound]||{},subs=Object.values(results||{});const sum=rd.summary&&!subs.length?rd.summary:null;
+  h+=`<div class="rsel"><select id="rSel" aria-label="Match">${ids.map(id=>`<option value="${esc(id)}"${id===selRound?' selected':''}>${esc(mLabel(rounds[id]))}${rounds[id].open?' · open':''}</option>`).join('')}</select><span class="rsum">${sum?'Imported scores':`<b>${subs.length}</b> ${subs.length===1?'response':'responses'}`}</span></div>`;
   if(cur&&!cur.open&&selRound===cur.id)h+=`<p class="note" style="text-align:left;margin:-4px 0 10px"><button class="lnk" id="reopenR">Reopen this rating</button></p>`;
-  const rows=(rd.players||[]).map((p,i)=>{const vs=[],cs=[];subs.forEach(x=>{const o=x&&x.s&&x.s['p'+i];if(o&&o.v){vs.push(+o.v);if(o.c)cs.push(String(o.c))}});return{p,i,n:vs.length,avg:vs.length?vs.reduce((a,b)=>a+b,0)/vs.length:null,cs:cs.sort((a,b)=>a.localeCompare(b))}}).sort((a,b)=>(b.avg??-1)-(a.avg??-1));
-  h+=rows.map((r,k)=>{const tm=teamOf(rd,r.p.t);return `<div class="rc${r.cs.length?' has':''}" data-r="${r.i}" style="--c:${esc(tm.color)}"><div class="rt"><span class="rk">${r.avg==null?'–':k+1}</span><div class="rn"><b>${esc(r.p.n)}</b><span>${esc(tm.name)} · ${r.n} ${r.n===1?'vote':'votes'}${r.cs.length?` · ${r.cs.length} ${r.cs.length===1?'comment':'comments'}`:''}</span></div><span class="avg"${r.avg!=null?` style="color:${hue(r.avg)}"`:''}>${r.avg==null?'–':r.avg.toFixed(1)}</span></div><div class="meter"><i style="width:${(r.avg||0)*10}%"></i></div>${openRow[r.i]&&r.cs.length?`<div class="cms">${r.cs.map(c=>`<p class="cm">${esc(c)}</p>`).join('')}</div>`:''}</div>`}).join('');
+  const rows=(rd.players||[]).map((p,i)=>{const vs=[],cs=[];subs.forEach(x=>{const o=x&&x.s&&x.s['p'+i];if(o&&o.v){vs.push(+o.v);if(o.c)cs.push(String(o.c))}});const sv=sum&&+sum['p'+i];if(sum)return{p,i,n:null,avg:sv>0?sv:null,cs:[]};return{p,i,n:vs.length,avg:vs.length?vs.reduce((a,b)=>a+b,0)/vs.length:null,cs:cs.sort((a,b)=>a.localeCompare(b))}}).sort((a,b)=>(b.avg??-1)-(a.avg??-1));
+  h+=rows.map((r,k)=>{const tm=teamOf(rd,r.p.t);return `<div class="rc${r.cs.length?' has':''}" data-r="${r.i}" style="--c:${esc(tm.color)}"><div class="rt"><span class="rk">${r.avg==null?'–':k+1}</span><div class="rn"><b>${esc(r.p.n)}</b><span>${esc(tm.name)} · ${r.n==null?'final score':`${r.n} ${r.n===1?'vote':'votes'}`}${r.cs.length?` · ${r.cs.length} ${r.cs.length===1?'comment':'comments'}`:''}</span></div><span class="avg"${r.avg!=null?` style="color:${hue(r.avg)}"`:''}>${r.avg==null?'–':r.avg.toFixed(2).replace(/0$/,"")}</span></div><div class="meter"><i style="width:${(r.avg||0)*10}%"></i></div>${openRow[r.i]&&r.cs.length?`<div class="cms">${r.cs.map(c=>`<p class="cm">${esc(c)}</p>`).join('')}</div>`:''}</div>`}).join('');
   $('#results').innerHTML=h;
 }
 async function setOpen(id,open){try{await F.update(F.ref(db),{['rounds/'+id+'/open']:open,'meta/current/open':open});toast(open?'Rating opened':'Rating closed')}catch(e){toast('Could not update')}}
