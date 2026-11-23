@@ -362,6 +362,17 @@ body:not([data-view=matches]) .hero .sub{display:none}
 .lbr .tg{font:800 21px "Barlow Condensed",sans-serif}.lbr.top .tg{color:#f5d020}.lbr small{font-size:11px;color:var(--mut);margin-left:2px}
 .mmeta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:4px 0 8px}
 .mc2 .wx{margin-left:auto}.mc2 .wx+.tag{margin-left:0}
+.lmode{display:grid;gap:8px;margin:0 auto 12px;width:min(100%,560px)}
+.seg2{display:grid;grid-template-columns:1fr 1fr;background:#0f1813;border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+.seg2 button{border:0;background:none;min-height:42px;border-radius:9px;color:var(--mut);font-weight:700}
+.seg2 button.on{background:#f4f7f5;color:#101512}
+body.mine .seg2 button.on{background:#ffd23f;color:#1b1600}
+.mybar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.mybar span{color:var(--mut);font-size:13px;flex:1 1 200px}
+.mybar .bar button{min-height:38px;padding:0 12px;font-size:14px}
+body.mine .pitch{box-shadow:0 24px 60px #000a,0 0 0 4px #ffd23f}
+body.mine #mres,body.mine #mpred,body.mine #pubres{opacity:.45;pointer-events:none}
+@media(min-width:1100px){.lmode{width:min(780px,calc((100vh - 36px) * .6667))}}
 </style>
 </head>
 <body>
@@ -403,6 +414,8 @@ body:not([data-view=matches]) .hero .sub{display:none}
 <main class="wrap" id="wrap">
   <section class="card c0" id="card0"></section>
   <section class="pbox">
+    <div class="lmode" id="lmode"><div class="seg2" role="tablist" aria-label="Lineup"><button type="button" data-lm="0" class="on" role="tab">Official lineup</button><button type="button" data-lm="1" role="tab">My lineup</button></div>
+      <div class="mybar"><span id="mytxt">The lineup set by the organizer.</span><div class="bar"><button type="button" class="pri" id="myShare">Share</button><button type="button" id="myDl">Download image</button><button type="button" id="myReset" hidden>Reset</button></div></div></div>
     <div class="pitch" id="pitch"><button class="fs" id="fs" aria-label="Tactics mode">⤢ Tactics mode</button>
       <svg viewBox="0 0 68 102" preserveAspectRatio="none" aria-hidden="true">
         <defs>
@@ -541,6 +554,7 @@ function status(m){$('#status').textContent=m||''}
 function change(){dirty=true;clearTimeout(timer);timer=setTimeout(write,500)}
 const denied=e=>/PERMISSION/i.test(String(e&&(e.code||e.message)));
 async function write(){
+  if(mine){saveMine();dirty=false;return}
   if(!ref||!editor){dirty=false;return}
   if(writing){queued=true;return}
   writing=true;
@@ -573,7 +587,7 @@ $('#pin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#unlockBtn').clic
       if(!u){Au.signInAnonymously(auth).catch(()=>status('Could not connect.'));return}
       uid=u.uid;isAdmin=!u.isAnonymous&&u.email===ADMIN_EMAIL&&u.emailVerified;
       let ed=isAdmin;
-      if(!ed){try{ed=(await D.get(D.ref(db,'editors/'+uid))).exists()}catch(e){}}
+      if(!ed){try{const ev=(await D.get(D.ref(db,'editors/'+uid))).val();if(ev){try{await D.set(D.ref(db,'editors/'+uid),ev);ed=true}catch(e2){ed=false}}}catch(e){}}
       setMode(ed);renderAccount();checked=null;onRound();
       if(isAdmin)startAdmin();else stopAdmin();
     });
@@ -644,9 +658,10 @@ const LABEL={matches:'Matches',match:'Squads',players:'Players',rate:'Player rat
 const VIEWS={matches:'v-matches',match:'v-squads',players:'v-players',rate:'v-rate',results:'v-results'};
 const isLocked=m=>!!m&&(m.locked===true||!(+m.lockAt>Date.now()));
 const lockAtFor=(date,start,end)=>{const t=new Date(`${date}T${(end&&end>=start?end:start)||'23:59'}`).getTime();return (isNaN(t)?Date.now():t)+86400000};
+let mine=false;
 function applyEd(){
   const m=MATCHES[curMatch],lk=view==='match'&&m&&isLocked(m);
-  const ed=baseEd&&(!lk||isAdmin);
+  const ed=mine?true:(baseEd&&(!lk||isAdmin));document.body.classList.toggle('mine',mine);renderLmode();
   if(ed!==editor){editor=ed;sel=null;if(!ed)drag=null}
   document.body.classList.toggle('ed',editor);all();renderMbar();if(!isAdmin)resEdit=false;renderResult();
   if(!editor){$('#eForm').hidden=true}
@@ -656,7 +671,7 @@ function go(h){
   let v=h||'matches',id=null;
   if(v.startsWith('m-')){id=v.slice(2);v='match'}
   if(!LABEL[v]||(v==='results'&&!isAdmin)||(v==='match'&&!id))v='matches';
-  if(v==='match'&&curMatch!==id){curMatch=id;dirty=false;queued=false;clearTimeout(timer);S=freshBoard();const m=MATCHES[id],c=m&&clean(m.board);if(c)S=c;sel=null;resEdit=false;all();$('#eForm').hidden=true;$('#sForm').hidden=true}
+  if(v==='match'&&curMatch!==id){mine=false;curMatch=id;dirty=false;queued=false;clearTimeout(timer);S=freshBoard();const m=MATCHES[id],c=m&&clean(m.board);if(c)S=c;sel=null;resEdit=false;all();$('#eForm').hidden=true;$('#sForm').hidden=true}
   view=v;document.body.dataset.view=v;$('#sq').textContent=LABEL[v];
   for(const k in VIEWS)$('#'+VIEWS[k]).hidden=k!==v;
   ['matches','players','rate','results'].forEach(x=>$('#nav-'+x).classList.toggle('on',x===v||(x==='matches'&&v==='match')));
@@ -680,7 +695,7 @@ function onMatches(v){
   if(view==='match'&&curMatch){
     const m=MATCHES[curMatch];
     if(!m){toast('Match not found');go('matches');}
-    else if(!(dirty||writing||drag)){const c=clean(m.board);if(c){S=c;sel=null;all()}}
+    else if(!mine&&!(dirty||writing||drag)){const c=clean(m.board);if(c){S=c;sel=null;all()}}
   }
   subPredictions();renderMatches();applyEd();renderPred();heroUpdate();renderPlayers();
 }
@@ -972,7 +987,7 @@ function renderMbar(){
   if(isAdmin)h+=rOpen?`<button id="closeR2">Close rating</button>`:(lk?'':`<button id="openR2">${had?'Reopen rating':'Open rating'}</button>`);
   if(isAdmin&&!rOpen)h+=`<button id="scoreM">${had&&had.summary?'Edit scores':'Enter scores'}</button>`;
   if(had)h+=`<button id="viewR">Results</button>`;
-  if(editor)h+=`<button id="editM">Edit date &amp; time</button>`;
+  if(editor&&!mine)h+=`<button id="editM">Edit date &amp; time</button>`;
   if(isAdmin)h+=lk?`<button id="unlockM">Unlock match</button>`:`<button id="lockM">Lock now</button>`;
   if(lk&&!isAdmin)h+=`<span class="lknote">This match is final and can’t be changed.</span>`;
   else if(!lk&&m.lockAt)h+=`<span class="lknote">Locks ${esc(new Date(+m.lockAt).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}))}</span>`;
@@ -1173,6 +1188,72 @@ $('#results').addEventListener('click',async e=>{
   const rc=t.closest('.rc.has');if(rc){openRow[rc.dataset.r]=!openRow[rc.dataset.r];renderResults()}
 });
 $('#results').addEventListener('change',e=>{if(e.target.id==='rSel'){selRound=e.target.value;subResults();renderResults()}});
+// ---------- my lineup (personal sandbox) + image export ----------
+function offS(){if(!mine)return S;const c=clean((MATCHES[curMatch]||{}).board);return c||S}
+const myKey=()=>'hs-my-'+curMatch;
+function saveMine(){try{localStorage.setItem(myKey(),JSON.stringify(S))}catch(e){}}
+function enterMine(){
+  if(mine||!MATCHES[curMatch])return;mine=true;
+  let c=null;try{c=clean(JSON.parse(localStorage.getItem(myKey())||'null'))}catch(e){}
+  S=c||clean(MATCHES[curMatch].board)||S;S=JSON.parse(JSON.stringify(S));sel=null;applyEd();
+  toast('My lineup · only you see this');
+}
+function exitMine(){if(!mine)return;saveMine();mine=false;const c=clean((MATCHES[curMatch]||{}).board);if(c)S=c;sel=null;applyEd()}
+function renderLmode(){
+  const el=$('#lmode');if(!el)return;
+  el.querySelectorAll('[data-lm]').forEach(b=>b.classList.toggle('on',(b.dataset.lm==='1')===mine));
+  $('#mytxt').textContent=mine?'Your own lineup, saved only on this phone. The official lineup doesn’t change.':'The lineup set by the organizer.';
+  $('#myReset').hidden=!mine;
+}
+$('#lmode').addEventListener('click',async e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.lm==='1')enterMine();
+  else if(b.dataset.lm==='0')exitMine();
+  else if(b.id==='myReset'){const c=clean((MATCHES[curMatch]||{}).board);if(c){S=JSON.parse(JSON.stringify(c));saveMine();sel=null;all();toast('Reset to the official lineup')}}
+  else if(b.id==='myShare'||b.id==='myDl'){
+    let blob;try{blob=await lineupPNG()}catch(err){toast('Could not create the image');return}
+    const file=new File([blob],`ibnespor-${mine?'my-':''}lineup-${curMatch}.png`,{type:'image/png'});
+    if(b.id==='myShare'&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:'Ibnespor lineup'});return}catch(err){if(err&&err.name==='AbortError')return}}
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);
+    if(b.id==='myShare')toast('Image downloaded · send it on WhatsApp');
+  }
+});
+async function lineupPNG(){
+  try{await document.fonts.ready}catch(e){}
+  const W=1080,H=1700,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const FC='"Barlow Condensed", "Arial Narrow", Arial, sans-serif',FB='Barlow, Arial, sans-serif';
+  const rr=(X,Y,w,h,r)=>{x.beginPath();x.moveTo(X+r,Y);x.arcTo(X+w,Y,X+w,Y+h,r);x.arcTo(X+w,Y+h,X,Y+h,r);x.arcTo(X,Y+h,X,Y,r);x.arcTo(X,Y,X+w,Y,r);x.closePath()};
+  x.fillStyle='#0b110e';x.fillRect(0,0,W,H);
+  const m=MATCHES[curMatch]||{};let who='';try{who=localStorage.getItem('hs-me')||''}catch(e){}
+  x.fillStyle='#8ef0a9';x.font=`700 30px ${FB}`;x.fillText('IBNESPOR',90,82);
+  x.fillStyle='#f1f6f2';x.font=`800 74px ${FC}`;x.fillText(mine?(who?`${who}'s lineup`:'My lineup'):'Official lineup',90,160);
+  x.fillStyle='#98ab9e';x.font=`600 32px ${FB}`;x.fillText(`${mLabel(m)}  ·  ${S.teams[0].name} ${S.teams[0].form}  vs  ${S.teams[1].name} ${S.teams[1].form}`,90,208);
+  const PX=90,PY=250,PW=900,PH=1350,sx=PW/68,sy=PH/102;
+  x.save();rr(PX,PY,PW,PH,22);x.clip();
+  x.fillStyle='#8e3628';x.fillRect(PX,PY,PW,PH);
+  for(let i=0;i<12;i++){x.fillStyle=i%2?'#43a542':'#3a963a';x.fillRect(PX+4*sx,PY+(6+i*7.5)*sy,60*sx,7.5*sy+1)}
+  x.strokeStyle='rgba(255,255,255,.92)';x.lineWidth=4;
+  const L=(a,b,c2,d)=>{x.beginPath();x.moveTo(PX+a*sx,PY+b*sy);x.lineTo(PX+c2*sx,PY+d*sy);x.stroke()};
+  const RC=(a,b,w,h)=>x.strokeRect(PX+a*sx,PY+b*sy,w*sx,h*sy);
+  RC(4,6,60,90);L(4,51,64,51);RC(20,6,28,12);RC(20,84,28,12);RC(27.5,6,13,4.5);RC(27.5,91.5,13,4.5);
+  x.beginPath();x.ellipse(PX+34*sx,PY+51*sy,7*sx,7*sy,0,0,Math.PI*2);x.stroke();
+  x.fillStyle='#fff';x.beginPath();x.arc(PX+34*sx,PY+51*sy,6,0,Math.PI*2);x.fill();
+  x.fillStyle='rgba(0,0,0,.35)';x.fillRect(PX+30*sx,PY+3.2*sy,8*sx,2.8*sy);x.fillRect(PX+30*sx,PY+96*sy,8*sx,2.8*sy);
+  x.restore();
+  const body=new Path2D('M12 3c2.6 2.4 5 3.4 8 3.4s5.4-1 8-3.4l.6 10.5V35.5H11.4V13.5z'),sl=new Path2D('M12 3L3 8.5l3.4 7.6 5.6-2.6z M28 3l9 5.5-3.4 7.6-5.6-2.6z');
+  S.slots.forEach((s,i)=>{
+    const b=toBox(s),cx=PX+b.l/100*PW,cy=PY+b.t/100*PH,gk=i%8===0,col=S.teams[s.t].color,k=2.2;
+    x.save();x.translate(cx-20*k,cy-34*k);x.scale(k,k);x.shadowColor='rgba(0,0,0,.5)';x.shadowBlur=6;x.shadowOffsetY=2;
+    x.fillStyle=gk?'#1d2320':col;x.fill(sl);x.fill(body);x.shadowColor='transparent';x.fillStyle='rgba(0,0,0,.16)';x.fill(sl);
+    if(gk){x.strokeStyle=col;x.lineWidth=1.4;x.stroke(body)}
+    x.fillStyle='#fff';x.font=`700 13px ${FC}`;x.textAlign='center';x.fillText(num(i),20,27);x.restore();
+    const nm=String(S.players[s.p]||'').trim()||'—';x.font=`700 30px ${FB}`;const tw=Math.min(x.measureText(nm).width,210)+26;
+    x.fillStyle='rgba(12,18,15,.92)';rr(cx-tw/2,cy+18,tw,44,8);x.fill();x.fillStyle=col;x.fillRect(cx-tw/2+6,cy+58,tw-12,4);
+    x.fillStyle='#fff';x.textAlign='center';x.fillText(nm.length>14?nm.slice(0,13)+'…':nm,cx,cy+50);x.textAlign='left';
+  });
+  x.fillStyle='#98ab9e';x.font=`600 28px ${FB}`;x.fillText('taskino21.github.io/Ibnespor',90,H-46);
+  return await new Promise((res,rej)=>c.toBlob(bl=>bl?res(bl):rej(new Error('blob')),'image/png'));
+}
 // ---------- shared helpers (v5) ----------
 const AW=[['goal','Goal of the match'],['best','Best moment'],['worst','Worst moment']];
 function kickoffFor(date,start){const t=new Date(`${date}T${start||'22:00'}`).getTime();return isNaN(t)?Date.now():t}
@@ -1251,6 +1332,7 @@ function predLabel(m,pr){
 }
 function rosterActive(){return Object.entries(ROSTER).filter(([id,p])=>p&&!p.archived).map(([id,p])=>({id,name:p.name})).sort((a,b)=>a.name.localeCompare(b.name,'tr'))}
 function renderPred(){
+  const S=offS();
   const el=$('#mpred');if(!el)return;const m=view==='match'&&MATCHES[curMatch]&&{...MATCHES[curMatch],id:curMatch};
   if(!m){el.innerHTML='';return}
   const ko=kickoffOf(m),started=Date.now()>=ko,T=S.teams;
@@ -1292,6 +1374,7 @@ $('#mpred').addEventListener('click',async e=>{
   if(b.dataset.pw!==undefined){PD.w=+b.dataset.pw;renderPred();return}
   if(b.dataset.pm){PD.m=Math.max(1,Math.min(15,PD.m+(+b.dataset.pm)));renderPred();return}
   if(b.id==='pdSend'){
+    const S=offS();
     const m=MATCHES[curMatch];const me=S.slots.map(s=>({id:'p'+s.p,p:s.p,name:String(S.players[s.p]||'').trim()})).find(r=>r.name&&nameKey(r.name)===nameKey(PD.name));
     if(!m||!me||PD.w==null||!F||!uid)return;
     if(!predT||Date.now()-predT>5000){predT=Date.now();b.textContent='Tap again to confirm';return}
