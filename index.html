@@ -1260,12 +1260,12 @@ function renderPred(){
   }
   const head=`<div class="sech"><h2>Predictions</h2><span>${started?'Revealed':`Closes at kick-off · ${esc(untilText(ko))}`}</span></div>`;
   if(!started){
-    const ros=rosterActive();
-    if(!ros.length){el.innerHTML=`<div class="panel">${head}<p class="note" style="text-align:left">Predictions open once the organizer adds the players list.</p></div>`;return}
+    const ros=S.slots.map(s=>({id:'p'+s.p,name:String(S.players[s.p]||'').trim()})).filter(x=>x.name).sort((a,b)=>a.name.localeCompare(b.name,'tr'));
+    if(!ros.length){el.innerHTML=`<div class="panel">${head}<p class="note" style="text-align:left">Predictions open once the squad is set.</p></div>`;return}
     const cnt=Object.keys(PREDICTED).length;
     const me=ros.find(r=>nameKey(r.name)===nameKey(PD.name));
     const done=me&&PREDICTED[me.id];
-    let h=`<div class="panel">${head}<p class="pnote">Pick the winner, the winning margin and the player of the match. Points: right winner 1 · right margin +2 · right player of the match +1. Predictions stay hidden until kick-off.${cnt?` <b>${cnt} ${cnt===1?'prediction':'predictions'} so far.</b>`:''}</p>
+    let h=`<div class="panel">${head}<p class="pnote">Only players in this squad can predict. Pick the winner, the winning margin and the player of the match. Points: right winner 1 · right margin +2 · right player of the match +1. Predictions stay hidden until kick-off.${cnt?` <b>${cnt} ${cnt===1?'prediction':'predictions'} so far.</b>`:''}</p>
       <label class="me"><span>You are</span><select id="pdName"><option value="">Select your name</option>${ros.map(r=>`<option value="${esc(r.name)}"${me&&me.id===r.id?' selected':''}${PREDICTED[r.id]?' disabled':''}>${esc(r.name)}${PREDICTED[r.id]?' (done)':''}</option>`).join('')}</select></label>`;
     if(done){el.innerHTML=h+`<div class="empty sm"><p><b>${esc(me.name)}</b> has made a prediction. It will be shown at kick-off.</p></div></div>`;return}
     if(!me){el.innerHTML=h+`</div>`;return}
@@ -1278,7 +1278,7 @@ function renderPred(){
   }
   const P=PREDS[m.id];
   if(!P){el.innerHTML=`<div class="panel">${head}<p class="note" style="text-align:left">Loading predictions…</p></div>`;return}
-  const list=Object.entries(P).map(([pid,pr])=>({pid,pr,name:(ROSTER[pid]&&ROSTER[pid].name)||'Player',pt:predPoints(m,pr)})).sort((a,b)=>((b.pt&&b.pt.pts)||0)-((a.pt&&a.pt.pts)||0)||a.name.localeCompare(b.name,'tr'));
+  const list=Object.entries(P).map(([pid,pr])=>({pid,pr,name:pr.n||(ROSTER[pid]&&ROSTER[pid].name)||'Player',pt:predPoints(m,pr)})).sort((a,b)=>((b.pt&&b.pt.pts)||0)-((a.pt&&a.pt.pts)||0)||a.name.localeCompare(b.name,'tr'));
   if(!list.length){el.innerHTML=`<div class="panel">${head}<p class="note" style="text-align:left">Nobody made a prediction for this match.</p></div>`;return}
   const a=actualOf(m);
   el.innerHTML=`<div class="panel">${head}${a?'':'<p class="pnote">Points are added once the organizer enters the score.</p>'}<div class="pdl">${list.map(x=>`<div class="pdr"><b>${esc(x.name)}</b><span class="pk">${predLabel(m,x.pr)}${x.pr.mvpN?` · POTM ${esc(x.pr.mvpN)}`:''}</span>${x.pt?`<span class="pts${x.pt.pts?'':' z'}">${x.pt.pts}<small>pt</small></span>`:''}</div>`).join('')}</div></div>`;
@@ -1292,11 +1292,11 @@ $('#mpred').addEventListener('click',async e=>{
   if(b.dataset.pw!==undefined){PD.w=+b.dataset.pw;renderPred();return}
   if(b.dataset.pm){PD.m=Math.max(1,Math.min(15,PD.m+(+b.dataset.pm)));renderPred();return}
   if(b.id==='pdSend'){
-    const m=MATCHES[curMatch];const me=rosterActive().find(r=>nameKey(r.name)===nameKey(PD.name));
+    const m=MATCHES[curMatch];const me=S.slots.map(s=>({id:'p'+s.p,p:s.p,name:String(S.players[s.p]||'').trim()})).find(r=>r.name&&nameKey(r.name)===nameKey(PD.name));
     if(!m||!me||PD.w==null||!F||!uid)return;
     if(!predT||Date.now()-predT>5000){predT=Date.now();b.textContent='Tap again to confirm';return}
     const mvpN=PD.mvp!==''?String(S.players[+PD.mvp]||'').trim():'';
-    const pr={w:PD.w,m:PD.w===1?0:PD.m,at:F.serverTimestamp()};
+    const pr={w:PD.w,m:PD.w===1?0:PD.m,n:me.name.slice(0,30),at:F.serverTimestamp()};const mypid=S.pids[me.p]||resolve(me.name);if(mypid)pr.pid=mypid;
     if(mvpN){pr.mvp='p'+PD.mvp;pr.mvpN=mvpN.slice(0,30);const mp=S.pids[+PD.mvp]||resolve(mvpN);if(mp)pr.mvpPid=mp}
     b.disabled=true;b.textContent='Sending…';
     try{await F.update(F.ref(db),{['predictions/'+curMatch+'/'+me.id]:pr,['predicted/'+curMatch+'/'+me.id]:true});toast('Prediction saved')}
@@ -1307,7 +1307,7 @@ $('#mpred').addEventListener('click',async e=>{
 function predLeague(){
   const tot={};
   mList().forEach(m=>{const P=PREDS[m.id];if(!P||!actualOf(m))return;
-    for(const pid in P){const pt=predPoints(m,P[pid]);if(!pt)continue;const x=tot[pid]=tot[pid]||{pid,n:(ROSTER[pid]&&ROSTER[pid].name)||'Player',pts:0,c:0,ex:0};x.pts+=pt.pts;x.c++;if(pt.mg)x.ex++}
+    for(const key in P){const pr=P[key],pt=predPoints(m,pr);if(!pt)continue;const pid=pr.pid||(ROSTER[key]?key:'')||resolve(pr.n),k=pid||nameKey(pr.n);const x=tot[k]=tot[k]||{pid,n:(pid&&ROSTER[pid]&&ROSTER[pid].name)||pr.n||'Player',pts:0,c:0,ex:0};x.pts+=pt.pts;x.c++;if(pt.mg)x.ex++}
   });
   return Object.values(tot).sort((a,b)=>b.pts-a.pts||b.ex-a.ex||a.n.localeCompare(b.n,'tr'));
 }
