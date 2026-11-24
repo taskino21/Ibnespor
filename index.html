@@ -62,6 +62,10 @@ h1{margin:0;font:800 clamp(34px,6vw,52px)/1.02 "Barlow Condensed",sans-serif;tex
 .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .ch{background:var(--c);padding:12px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background-image:linear-gradient(100deg,#0000 40%,#0003)}
 .ch .tn{flex:1 1 120px;font:800 26px/1.05 "Barlow Condensed",sans-serif;color:#fff;text-shadow:0 1px 3px #0006;background:none;border:0;padding:0;min-height:0}
+.ch .tav{display:flex;align-items:baseline;gap:5px;background:#0006;color:#fff;padding:4px 10px;border-radius:6px;font:700 18px "Barlow Condensed",sans-serif}
+.ch .tav small{font:600 11px "Barlow",sans-serif;letter-spacing:.06em;text-transform:uppercase;opacity:.8}
+.ch .tav i{font:500 12px "Barlow",sans-serif;font-style:normal;opacity:.7}
+.bug .bav{font-style:normal;font-weight:700;font-size:15px;background:#101512;color:#fff;padding:3px 6px;border-radius:5px}
 .ch .fm{font:700 18px "Barlow Condensed",sans-serif;color:#fff;background:#0004;padding:4px 10px;border-radius:6px}
 .list{margin:0;padding:6px 0;list-style:none}
 .list li{display:flex;align-items:center;gap:10px;padding:5px 14px;min-height:44px;border-bottom:1px solid #ffffff0d}
@@ -140,7 +144,12 @@ body:not([data-view=squads]) .bug{display:none}
 .pbar{height:6px;border-radius:3px;background:#ffffff18;overflow:hidden}.pbar i{display:block;height:100%;width:0;background:#41d36a;transition:width .25s}
 .sbar .pri{min-width:150px}
 .ctl-card{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px}
-.ctl-card div{flex:1 1 200px;display:grid}.ctl-card span{color:var(--mut);font-size:14px}
+.ctl-card div{flex:1 1 200px;display:grid}
+.ctl-card .vcode{flex:0 0 auto;text-align:center;background:#0a110d;border:1px solid var(--line);border-radius:10px;padding:4px 14px}
+.ctl-card .vcode small{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+.ctl-card .vcode b{font:800 28px/1.1 "Barlow Condensed",sans-serif;letter-spacing:.12em}
+.codeg{display:grid;gap:8px;max-width:440px;margin:0 auto}.codeg b{font:700 20px "Barlow Condensed",sans-serif}.codeg p{margin:0;color:var(--mut);font-size:14px}
+.codeg .row{display:flex;gap:8px}.codeg input{flex:1;min-width:0;font:700 26px "Barlow Condensed",sans-serif;letter-spacing:.3em;text-align:center;background:#0a110d;border:1px solid var(--line);border-radius:10px;padding:8px;color:inherit}.ctl-card span{color:var(--mut);font-size:14px}
 .ctl-card input[type=date]{background:#0a110d;border:1px solid var(--line);border-radius:9px;padding:8px 10px;min-height:44px;color-scheme:dark}
 .rsel{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 10px}
 .rsel select{flex:1;max-width:260px}
@@ -529,10 +538,25 @@ let editor=false,baseEd=false,sel=null,drag=null;
 const num=i=>S.numbers[S.slots[i].p]||String(i%8+1);
 function renderTokens(){
   $('#tokens').innerHTML=S.slots.map((s,i)=>{const b=toBox(s);return `<div class="tk${i%8===0?' gk':''}${sel===i?' sel':''}" data-s="${i}" style="left:${b.l}%;top:${b.t}%;--c:${S.teams[s.t].color}"><svg class="j" viewBox="0 0 40 38"><path class="sl" d="M12 3L3 8.5l3.4 7.6 5.6-2.6z M28 3l9 5.5-3.4 7.6-5.6-2.6z"/><path class="sh" d="M12 3c2.6 2.4 5 3.4 8 3.4s5.4-1 8-3.4l.6 10.5V35.5H11.4V13.5z"/><path class="tr" d="M14.5 3.6c1.6 2.4 3.4 3.4 5.5 3.4s3.9-1 5.5-3.4" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="1.4"/><path d="M12 3L3 8.5l3.4 7.6 5.6-2.6zM28 3l9 5.5-3.4 7.6-5.6-2.6z" fill="#0000002a"/><path d="M11.4 33.5H28.6v2H11.4z" fill="#0000003a"/><text class="no" x="20" y="27">${num(i)}</text></svg>${badgeHTML(s.p)}${eventsHTML(s.p)}<span>${esc(S.players[s.p])||'—'}</span></div>`}).join('');
+  try{updateAvgs()}catch(e){}
+}
+function teamAvg(t){
+  try{if(view!=='match')return null;const pub=!!PUB[curMatch];let sum=0,n=0,tot=0;
+    for(let i=0;i<8;i++){const p=S.slots[t*8+i].p;if(!String(S.players[p]||'').trim())continue;tot++;
+      let v=null;if(pub){const R=ratingOf(p);v=R?R.v:null}else v=seasonAvg(p);
+      if(v!=null&&+v>0){sum+=+v;n++}}
+    return n?{v:sum/n,n,tot,pub}:null;
+  }catch(e){return null}
+}
+function updateAvgs(){
+  for(const t of [0,1]){const a=teamAvg(t),c=document.getElementById('tav'+t),b=document.getElementById('bav'+t);
+    const lbl=a?(a.pub?'Match avg':'Team avg'):'',tip=a?`${lbl} · ${a.n}/${a.tot} rated players`:'';
+    if(c){c.innerHTML=a?`<small>${lbl}</small><b>${a.v.toFixed(2)}</b>${a.n<a.tot?`<i>${a.n}/${a.tot}</i>`:''}`:'';c.title=tip;c.style.display=a?'':'none'}
+    if(b){b.textContent=a?a.v.toFixed(2):'';b.title=tip;b.style.display=a?'':'none'}}
 }
 function renderBug(){
-  const [a,b]=S.teams;
-  $('#bug').innerHTML=`<span class="k" style="--c:${a.color}"></span><span>${esc(a.name)} <em>${a.form}</em></span><span class="v">VS</span><span><em>${b.form}</em> ${esc(b.name)}</span><span class="k" style="--c:${b.color}"></span>`;
+  const [a,b]=S.teams;setTimeout(()=>{try{updateAvgs()}catch(e){}},0);
+  $('#bug').innerHTML=`<span class="k" style="--c:${a.color}"></span><span>${esc(a.name)} <em>${a.form}</em><i class="bav" id="bav0"></i></span><span class="v">VS</span><span><i class="bav" id="bav1"></i><em>${b.form}</em> ${esc(b.name)}</span><span class="k" style="--c:${b.color}"></span>`;
 }
 function renderCard(t){
   const tm=S.teams[t],r=roles(t),el=$('#card'+t);
@@ -540,9 +564,9 @@ function renderCard(t){
   el.style.setProperty('--c',tm.color);
   const rows=[0,1,2,3,4,5,6,7].map(i=>{const p=S.slots[t*8+i].p,nm=S.players[p];
     return `<li class="${i===0?'gk':''}">${editor?`<input class="n ni" type="text" inputmode="numeric" maxlength="2" value="${esc(num(t*8+i))}" data-num="${p}" aria-label="Shirt number">`:`<span class="n">${num(t*8+i)}</span>`}${editor?`<input type="text" list="rosterDL" autocomplete="off" class="${nm&&!S.pids[p]&&!resolve(nm)&&hasRoster()?'unk':''}" title="${nm&&!S.pids[p]&&!resolve(nm)&&hasRoster()?'Not in the Players list (guest)':''}" value="${esc(nm)}" data-p="${p}" placeholder="${i===0?'Goalkeeper':'Player '+(i+1)}" aria-label="${i===0?'Goalkeeper':'Player '+(i+1)}" maxlength="30">`:`<span class="nm">${esc(nm)||'—'}</span>`}<span class="r">${r[i]}</span></li>`}).join('');
-  el.innerHTML=`<div class="ch">${editor?`<input class="tn" type="text" value="${esc(tm.name)}" data-tn="${t}" aria-label="Team name" maxlength="30">`:`<span class="tn">${esc(tm.name)}</span>`}<span class="fm">${tm.form}</span></div><ol class="list">${rows}</ol>${editor?`<div class="ctl"><select data-tf="${t}" aria-label="Formation">${Object.keys(FORM).map(f=>`<option${f===tm.form?' selected':''}>${f}</option>`).join('')}</select><input type="color" value="${tm.color}" data-tc="${t}" aria-label="Kit colour"></div>`:''}`;
+  el.innerHTML=`<div class="ch">${editor?`<input class="tn" type="text" value="${esc(tm.name)}" data-tn="${t}" aria-label="Team name" maxlength="30">`:`<span class="tn">${esc(tm.name)}</span>`}<span class="tav" id="tav${t}"></span><span class="fm">${tm.form}</span></div><ol class="list">${rows}</ol>${editor?`<div class="ctl"><select data-tf="${t}" aria-label="Formation">${Object.keys(FORM).map(f=>`<option${f===tm.form?' selected':''}>${f}</option>`).join('')}</select><input type="color" value="${tm.color}" data-tc="${t}" aria-label="Kit colour"></div>`:''}`;
 }
-function all(){renderTokens();renderBug();renderCard(0);renderCard(1)}
+function all(){renderTokens();renderBug();renderCard(0);renderCard(1);updateAvgs()}
 all();
 // ---------- Firebase ----------
 const FIREBASE_CONFIG={apiKey:"AIzaSyAeh3rrFw_GRYpeCz0nsMxneUxNS5_apbU",authDomain:"ibnespor-1773.firebaseapp.com",databaseURL:"https://ibnespor-1773-default-rtdb.europe-west1.firebasedatabase.app",projectId:"ibnespor-1773",storageBucket:"ibnespor-1773.firebasestorage.app",messagingSenderId:"655877038763",appId:"1:655877038763:web:0bdabf75bab4029a0a4dee"};
@@ -1048,17 +1072,26 @@ async function openRating(m){
   if(!isAdmin)return;
   const ex=rounds[curMatch];
   try{
-    if(ex){await F.update(F.ref(db),{['rounds/'+curMatch+'/open']:true,'meta/current':{...ex,id:curMatch,open:true}})}
+    let code=null;try{code=(await F.get(F.ref(db,'vcode/'+curMatch))).val()}catch(e){}
+    if(!code)code=newCode();
+    if(ex){await F.update(F.ref(db),{['vcode/'+curMatch]:code,['rounds/'+curMatch+'/open']:true,'meta/current':{...ex,id:curMatch,open:true}})}
     else{
       const players=[];S.slots.forEach((s,i)=>{const n=(S.players[s.p]||'').trim();if(n)players.push({n,t:s.t,no:num(i),pid:S.pids[s.p]||resolve(n)})});
       if(players.length<2){toast('Add player names first');return}
       const r={id:curMatch,date:m.date,start:m.start||'',end:m.end||'',open:true,players,teams:S.teams.map(x=>({name:x.name,color:x.color})),createdAt:Date.now()};
-      await F.update(F.ref(db),{['rounds/'+curMatch]:r,'meta/current':r});
+      await F.update(F.ref(db),{['vcode/'+curMatch]:code,['rounds/'+curMatch]:r,'meta/current':r});
     }
-    selRound=curMatch;subResults();toast('Rating opened');
+    selRound=curMatch;subResults();toast('Rating opened · match code '+code);
   }catch(err){toast('Could not open rating')}
 }
 // ---------- rating (everyone) ----------
+function newCode(){const a=new Uint32Array(1);crypto.getRandomValues(a);return String(1000+a[0]%9000)}
+let codeOk=false,VCODE=null,vcodeFor=null,unsubVcode=null;
+function subVcode(){
+  const id=isAdmin&&round&&round.open?round.id:null;if(vcodeFor===id)return;
+  if(unsubVcode){unsubVcode();unsubVcode=null}vcodeFor=id;VCODE=null;
+  if(id&&F&&db)unsubVcode=F.onValue(F.ref(db,'vcode/'+id),s=>{VCODE=s.val();renderResults()},()=>{});
+}
 let submitted=false,checked=null,R={me:'',s:{},c:{},o:{},aw:{}},confirmT=0;
 const draftKey=()=>'hs-draft-'+(round&&round.id);
 function loadDraft(){
@@ -1073,10 +1106,11 @@ function subVoted(){
   if(id&&F&&db)unsubVoted=F.onValue(F.ref(db,'voted/'+id),s=>{VOTED=s.val()||{};if(view==='rate')renderRate()},()=>{});
 }
 async function onRound(){
-  subVoted();
+  subVoted();subVcode();
   if(round&&uid&&checked!==round.id+uid){
-    checked=round.id+uid;loadDraft();submitted=false;
+    checked=round.id+uid;loadDraft();submitted=false;codeOk=false;
     try{submitted=(await F.get(F.ref(db,'submitted/'+round.id+'/'+uid))).exists()}catch(e){}
+    try{codeOk=(await F.get(F.ref(db,'vkey/'+round.id+'/'+uid))).exists()}catch(e){}
   }
   renderRate();if(isAdmin)renderResults();renderMatches();renderMbar();heroUpdate();
 }
@@ -1088,6 +1122,7 @@ function renderRate(){
   const el=$('#rate'),bar=$('#sbar');
   if(!round||!round.open){el.innerHTML=`<div class="empty"><h2>Ratings are closed</h2><p>Ratings open after each match.</p></div>`;bar.hidden=true;return}
   if(submitted){el.innerHTML=`<div class="empty"><h2>Thanks!</h2><p>Your ratings for ${esc(mLabel(round))} are in.</p></div>`;bar.hidden=true;return}
+  if(!codeOk){el.innerHTML=`<div class="rh"><h2>Rate the players</h2><p>${esc(mLabel(round))} · fully anonymous</p></div><form class="panel codeg" id="codeF"><b>Match code</b><p>Only players of this match can vote. Ask the organizer for the 4-digit code.</p><div class="row"><input id="codeIn" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="0000" aria-label="Match code"><button class="pri" type="submit">Continue</button></div></form>`;bar.hidden=true;return}
   const ps=round.players||[];
   let h=`<div class="rh"><h2>Rate the players</h2><p>${esc(mLabel(round))} · fully anonymous</p></div><label class="me"><span>You are</span><select id="meSel"><option value="">Select your name</option>${ps.map((p,i)=>`<option value="${esc(p.n)}"${p.n===R.me?' selected':''}${VOTED['p'+i]?' disabled':''}>${esc(p.n)}${VOTED['p'+i]?' (already voted)':''}</option>`).join('')}</select></label>`;
   const mi=ps.findIndex(p=>p.n===R.me);if(mi>=0&&VOTED['p'+mi]){el.innerHTML=h+`<div class="empty sm"><p><b>${esc(R.me)}</b> has already voted for this match. Each name can vote once.</p></div>`;bar.hidden=true;return}
@@ -1103,6 +1138,14 @@ function updBar(){
   confirmT=0;$('#submitBtn').textContent='Submit';
 }
 const rateEl=$('#rate');
+rateEl.addEventListener('submit',async e=>{
+  if(e.target.id!=='codeF')return;e.preventDefault();
+  const v=($('#codeIn').value||'').trim(),btn=e.target.querySelector('button');
+  if(!/^\d{4}$/.test(v)){toast('Enter the 4-digit code');return}
+  if(!round||!F||!uid)return;btn.disabled=true;
+  try{await F.set(F.ref(db,'vkey/'+round.id+'/'+uid),v);codeOk=true;renderRate()}
+  catch(err){toast(denied(err)?'Wrong code':'Could not check, try again');btn.disabled=false}
+});
 rateEl.addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;const pc=b.closest('.pc');if(!pc)return;const i=pc.dataset.i;
   if(b.dataset.v){const v=+b.dataset.v;if(R.s[i]===v)delete R.s[i];else R.s[i]=v}
@@ -1127,16 +1170,19 @@ $('#submitBtn').onclick=async()=>{
     await F.update(F.ref(db),{['ratings/'+round.id+'/'+k]:Object.assign({s,at:F.serverTimestamp()},(()=>{const aw={};for(const [ak] of AW){const v=R.aw&&R.aw[ak];if(v&&/^p\d+$/.test(v)&&+v.slice(1)!==me&&ps[+v.slice(1)])aw[ak]=v}return Object.keys(aw).length?{aw}:{}})()),['submitted/'+round.id+'/'+uid]:'p'+me,['voted/'+round.id+'/p'+me]:true});
     submitted=true;try{localStorage.removeItem(draftKey())}catch(e){}
     renderRate();window.scrollTo(0,0);toast('Ratings sent');
-  }catch(e){toast(denied(e)?(VOTED['p'+me]?'This name has already voted':'Ratings are closed or this name already voted'):'Could not send, try again')}
+  }catch(e){
+    if(denied(e)&&!VOTED['p'+me]&&round&&round.open){codeOk=false;toast('The match code changed. Enter the new code.');renderRate();btn.disabled=false;confirmT=0;return}
+    toast(denied(e)?(VOTED['p'+me]?'This name has already voted':'Ratings are closed or this name already voted'):'Could not send, try again')}
   btn.disabled=false;confirmT=0;if(!submitted)btn.textContent='Submit';
 };
 // ---------- results (organizer) ----------
 let delRT=0,lastRows=null,rounds={},selRound=null,unsubRounds=null,unsubRes=null,subFor=null,results=null,openRow={};
 function startAdmin(){
+  try{subVcode()}catch(e){}
   if(unsubRounds)return;
   unsubRounds=F.onValue(F.ref(db,'rounds'),s=>{rounds=s.val()||{};if(!selRound||!rounds[selRound])selRound=Object.keys(rounds).sort((a,b)=>mKey(rounds[a]).localeCompare(mKey(rounds[b]))).pop()||null;subResults();renderResults();renderMbar()},()=>{});
 }
-function stopAdmin(){if(unsubRounds)unsubRounds();if(unsubRes)unsubRes();unsubRounds=unsubRes=null;subFor=null;rounds={};results=null}
+function stopAdmin(){try{if(unsubVcode)unsubVcode();unsubVcode=null;vcodeFor=null;VCODE=null}catch(e){}if(unsubRounds)unsubRounds();if(unsubRes)unsubRes();unsubRounds=unsubRes=null;subFor=null;rounds={};results=null}
 function subResults(){
   if(subFor===selRound)return;if(unsubRes)unsubRes();unsubRes=null;subFor=selRound;results=null;openRow={};
   if(selRound)unsubRes=F.onValue(F.ref(db,'ratings/'+selRound),s=>{results=s.val()||{};renderResults()},()=>{});
@@ -1145,7 +1191,7 @@ function renderResults(){
   if(!isAdmin)return;
   const cur=round,ids=Object.keys(rounds).sort((a,b)=>mKey(rounds[b]).localeCompare(mKey(rounds[a])));
   let h=`<div class="rh"><h2>Results</h2><p>Only you can see this page.</p></div>`;
-  if(cur&&cur.open)h+=`<div class="ctl-card"><div><b>Rating is open</b><span>${esc(mLabel(cur))} · players can send ratings now</span></div><button id="closeR">Close rating</button></div>`;
+  if(cur&&cur.open)h+=`<div class="ctl-card"><div><b>Rating is open</b><span>${esc(mLabel(cur))} · players can send ratings now</span></div><div class="vcode"><small>Match code</small><b>${esc(VCODE||'····')}</b></div><button id="newCode">New code</button><button id="closeR">Close rating</button></div><p class="note" style="text-align:left;margin:-4px 0 12px">Give this code only to the players of this match. Making a new code means anyone who has not voted yet needs the new one.</p>`;
   else h+=`<div class="ctl-card"><div><b>No rating open</b><span>Open a rating from a match page after the game.</span></div><a class="btn" href="#matches">Matches</a></div>`;
   if(!ids.length){$('#results').innerHTML=h+`<div class="empty"><p>No ratings yet. Open a rating from a match page after the game.</p></div>`;return}
   const rd=rounds[selRound]||{},allSubs=Object.entries(results||{}).sort((a,b)=>a[0].localeCompare(b[0])),excl=rd.excluded||{};
@@ -1174,10 +1220,11 @@ async function setOpen(id,open){try{await F.update(F.ref(db),{['rounds/'+id+'/op
 $('#results').addEventListener('click',async e=>{
   const t=e.target;
   if(t.id==='closeR'&&round){setOpen(round.id,false);return}
+  if(t.id==='newCode'&&round){const c=newCode();try{await F.set(F.ref(db,'vcode/'+round.id),c);toast('New match code '+c)}catch(err){toast('Could not update')}return}
   if(t.dataset.ex){try{await F.set(F.ref(db,'rounds/'+selRound+'/excluded/'+t.dataset.ex),t.dataset.on==='1'?true:null);toast(t.dataset.on==='1'?'Submission excluded':'Submission included')}catch(err){toast('Could not update')}return}
   if(t.id==='delR'&&selRound){
     if(!delRT||Date.now()-delRT>5000){delRT=Date.now();t.textContent='Tap again to delete all votes, comments and published scores for this match';return}
-    const id=selRound,ops={['rounds/'+id]:null,['ratings/'+id]:null,['submitted/'+id]:null,['published/'+id]:null,['voted/'+id]:null};if(round&&round.id===id)ops['meta/current']=null;
+    const id=selRound,ops={['rounds/'+id]:null,['ratings/'+id]:null,['submitted/'+id]:null,['published/'+id]:null,['voted/'+id]:null,['vcode/'+id]:null,['vkey/'+id]:null};if(round&&round.id===id)ops['meta/current']=null;
     try{await F.update(F.ref(db),ops);delRT=0;selRound=null;subFor=null;toast('Rating deleted')}catch(err){toast('Could not delete')}return}
   if(t.id==='pubR'&&lastRows&&lastRows.id===selRound){
     const {rd,rows,awt}=lastRows;const players=rows.filter(r=>r.avg!=null).map(r=>({n:r.p.n,t:r.p.t,pid:r.p.pid||resolve(r.p.n),avg:Math.round(r.avg*100)/100,votes:r.n==null?0:r.n}));
