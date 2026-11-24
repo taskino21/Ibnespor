@@ -29,7 +29,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Barlow,system-
 h1{margin:0;font:800 clamp(34px,6vw,52px)/1.02 "Barlow Condensed",sans-serif;text-shadow:0 2px 12px #000a}
 .sub{color:#e6efe9;font:600 20px/1.2 "Barlow Condensed",sans-serif;margin-top:6px;text-shadow:0 1px 6px #000}
 .sq{display:inline-block;margin-top:10px;padding:3px 12px;border-radius:5px;background:#f4f7f5;color:#101512;font:800 18px/1.3 "Barlow Condensed",sans-serif;letter-spacing:.3px}
-.mode{position:absolute;top:14px;right:max(4vw,14px);display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:20px;background:#000a;border:1px solid #ffffff30;font-weight:600;font-size:14px;backdrop-filter:blur(6px)}
+.mode{position:absolute;top:calc(62px + env(safe-area-inset-top));right:max(4vw,14px);display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:20px;background:#000a;border:1px solid #ffffff30;font-weight:600;font-size:14px;backdrop-filter:blur(6px)}
 .mode i{width:9px;height:9px;border-radius:50%;background:#7c8b81}
 .mode.ed i{background:#41d36a;box-shadow:0 0 8px #41d36a}
 .bug{display:flex;align-items:stretch;border-radius:10px;overflow:hidden;box-shadow:0 8px 24px #0009;font:700 22px/1 "Barlow Condensed",sans-serif;width:max-content;max-width:100%}
@@ -280,6 +280,46 @@ body:not(.adm) .admin-only{display:none!important}
 .inst img{flex:none;border-radius:10px}
 .inst div{flex:1;display:grid;min-width:0}.inst span{color:var(--mut);font-size:14px}
 .inst .x{flex:none;width:36px;min-height:36px;padding:0;background:none;border:0;color:var(--mut);font-size:16px}
+.htools{position:absolute;top:calc(14px + env(safe-area-inset-top));right:max(4vw,14px);display:flex;gap:8px;z-index:5}
+.htools button{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:6px 12px;border-radius:20px;background:#000a;border:1px solid #ffffff30;color:#fff;font:700 14px "Barlow",sans-serif;backdrop-filter:blur(6px);cursor:pointer}
+.htools button svg{width:20px;height:20px}.htools button:active{transform:scale(.96)}
+@media(max-width:600px){.htools #helpBtn span{display:none}.htools #helpBtn{padding:6px 9px}}
+.help h2{font:800 34px/1.05 "Barlow Condensed",sans-serif;margin:6px 0 6px}.help .lead{color:var(--mut);margin:0 0 16px;font-size:16px;line-height:1.5}
+.help .hs{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.help .hs h3{display:flex;align-items:center;gap:10px;margin:0 0 6px;font:700 21px "Barlow Condensed",sans-serif}
+.help .hs h3 i{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;background:#8ef0a91f;color:#8ef0a9;font-style:normal;font-size:15px;font-family:"Barlow",sans-serif}
+.help .hs p,.help .hs li{color:#c9d4cc;font-size:15px;line-height:1.55;margin:0 0 6px}.help .hs ul{margin:0;padding-left:20px}
+.help .hs b{color:#fff}.help .rules{border-color:#f5d02055;background:#f5d0200d}.help .rules h3 i{background:#f5d02022;color:#f5d020}
+.help .bk{display:inline-block;margin-top:8px}
+.pview{max-width:320px;margin:0 0 10px}
+.futg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:8px}
+@media(min-width:640px){.futg{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(min-width:900px){.futg{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.futn{text-align:left;margin:4px 0 18px}
+.fut{position:relative;container-type:inline-size;aspect-ratio:.7;border-radius:9% / 6.3%;overflow:hidden;cursor:pointer;color:var(--fc);background:var(--g);box-shadow:0 10px 24px #0008,inset 0 0 0 1px #ffffff55;user-select:none;transition:transform .15s}
+.fut:active{transform:scale(.97)}
+.fut::after{content:"";position:absolute;inset:2.6%;border:1px solid color-mix(in srgb,var(--fc) 30%,transparent);border-radius:7% / 5%;pointer-events:none}
+.fsh{position:absolute;inset:0;background:radial-gradient(120% 70% at 25% 8%,#ffffff66,#fff0 55%),linear-gradient(115deg,#fff0 40%,#ffffff2a 48%,#fff0 56%);pointer-events:none;z-index:3}
+.t-gold{--g:linear-gradient(155deg,#fff2b8 0%,#e9c45a 30%,#c9972a 65%,#8f6514 100%);--fc:#2a2110;--fd:#c9972a}
+.t-silver{--g:linear-gradient(155deg,#fff 0%,#d9dfe3 35%,#a8b3ba 70%,#76828a 100%);--fc:#1f262b;--fd:#a8b3ba}
+.t-bronze{--g:linear-gradient(155deg,#ffd9b8 0%,#d99a63 35%,#a96535 70%,#6d3f1d 100%);--fc:#2b1709;--fd:#a96535}
+.t-none{--g:linear-gradient(155deg,#6a7a70 0%,#4a574f 35%,#333d37 70%,#1f2621 100%);--fc:#eef3ef;--fd:#333d37}
+.fo{position:absolute;left:4%;top:7%;width:25%;display:grid;justify-items:center;z-index:2;line-height:1}
+.fo b{font:800 18cqw/.9 "Barlow Condensed",sans-serif}.fo span{font:700 8.5cqw "Barlow Condensed",sans-serif;margin-top:1.5cqw}
+.fo i{font-style:normal;font-size:6cqw;margin-top:2cqw}.fo i.f-up{color:#137a2c}.fo i.f-down{color:#b3261e}.t-none .fo i.f-up{color:#8ef0a9}.t-none .fo i.f-down{color:#ff8a80}
+.fph{position:absolute;left:30%;right:4.5%;top:5.5%;height:49%;border-radius:6cqw;overflow:hidden;z-index:1}
+.fph img{width:100%;height:100%;object-fit:cover;display:block;-webkit-mask-image:linear-gradient(#000 62%,transparent);mask-image:linear-gradient(#000 62%,transparent)}
+.fph .sil{width:100%;height:100%;fill:color-mix(in srgb,var(--fc) 22%,transparent)}
+.fnm{position:absolute;left:6%;right:6%;top:56%;text-align:center;z-index:2;border-bottom:1px solid color-mix(in srgb,var(--fc) 35%,transparent);padding-bottom:1.5cqw}
+.fnm span{display:block;font:800 11.5cqw/1.05 "Barlow Condensed",sans-serif;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fst{position:absolute;left:8%;right:8%;top:69.5%;display:grid;grid-template-columns:repeat(3,1fr);row-gap:2cqw;z-index:2;text-align:center}
+.fst span{display:grid;line-height:1}.fst b{font:800 8.6cqw "Barlow Condensed",sans-serif}.fst em{font:700 4.4cqw "Barlow Condensed",sans-serif;font-style:normal;opacity:.75;letter-spacing:.04em}
+.flg{position:absolute;bottom:3.2%;left:0;right:0;text-align:center;font:700 3.6cqw "Barlow",sans-serif;letter-spacing:.3em;opacity:.55;z-index:2}
+.cmod{position:fixed;inset:0;z-index:60;background:#000c;backdrop-filter:blur(6px);display:grid;place-items:center;padding:20px;overflow:auto}
+.cmod[hidden]{display:none}.cin{position:relative;width:min(380px,88vw);display:grid;gap:12px}
+.cin .fut{cursor:default}.cin .bar{justify-content:center}
+.cx{position:absolute;top:-6px;right:-6px;z-index:5;width:40px;height:40px;border-radius:50%;background:#000b;border:1px solid #ffffff40;color:#fff;font-size:16px}
+body.noscroll{overflow:hidden}
+.pav{width:36px;height:36px;border-radius:50%;object-fit:cover;flex:0 0 auto;border:1px solid var(--line)}
 @media(display-mode:standalone){.hero{padding-top:env(safe-area-inset-top)}}
 .mc2{display:block;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px 14px 12px;margin-bottom:10px;color:var(--ink);text-decoration:none}
 .mc2:hover{border-color:#34483c}
@@ -391,6 +431,7 @@ body.mine #mres,body.mine #mpred,body.mine #pubres{opacity:.45;pointer-events:no
     <div class="bug" id="bug"></div>
   </div>
   <div class="mode" id="mode" hidden><i></i><span>Editor</span></div>
+  <div class="htools" data-noi18n><button type="button" id="helpBtn" aria-label="How it works"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.8"/><circle cx="12" cy="17.2" r=".6" fill="currentColor"/></svg><span></span></button><button type="button" id="langBtn"></button></div>
 </header>
 <div id="v-matches" class="view narrow" hidden>
   <div class="rh mh"><h2>Matches</h2><button class="pri ed-only" id="newM">+ New match</button></div>
@@ -477,6 +518,7 @@ body.mine #mres,body.mine #mpred,body.mine #pubres{opacity:.45;pointer-events:no
 </div>
 <div id="v-rate" class="view narrow" hidden><div id="rate"></div><div class="sbar" id="sbar" hidden><div class="pg"><span id="prog">0 rated</span><div class="pbar"><i id="pfill"></i></div></div><button class="pri" id="submitBtn">Submit</button></div></div>
 <div id="v-results" class="view narrow" hidden><div id="results"></div></div>
+<div id="v-help" class="view narrow" hidden data-noi18n><div id="help"></div></div>
 <div id="v-players" class="view narrow" hidden>
   <div class="rh mh"><h2>Players</h2><div class="bar admin-only"><button id="bulkP">Edit list</button><button class="pri" id="addP">+ Add player</button></div></div>
   <form class="mform" id="bForm" hidden>
@@ -491,6 +533,10 @@ body.mine #mres,body.mine #mpred,body.mine #pubres{opacity:.45;pointer-events:no
   <div id="players"><div class="empty"><p>Loading players…</p></div></div>
 </div>
 <datalist id="rosterDL"></datalist>
+<div class="cmod" id="cmod" hidden><div class="cin"><button type="button" class="cx" id="cmX" aria-label="Close">✕</button><div id="cmCard"></div>
+  <div class="bar"><button type="button" class="pri" id="cmShare">Share card</button><button type="button" id="cmDl">Download card</button></div>
+  <div class="bar" id="cmAdm" hidden><label class="btn" for="cmFile" id="cmAddL">Add photo</label><input type="file" id="cmFile" accept="image/*" hidden><button type="button" class="danger" id="cmDel">Remove photo</button></div>
+</div></div>
 <section class="foot" id="foot">
   <div class="bar" id="unlock" hidden><input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="Edit PIN" aria-label="Edit PIN"><button id="unlockBtn">Unlock editing</button></div>
   <p class="acct" id="acct"></p>
@@ -503,6 +549,85 @@ body.mine #mres,body.mine #mpred,body.mine #pubres{opacity:.45;pointer-events:no
 </nav>
 <div class="toast" id="toast"></div>
 <script>
+
+// ---------- language ----------
+const LANG=(()=>{try{const l=localStorage.getItem('hs-lang');if(l==='tr'||l==='en')return l}catch(e){}return /^tr/i.test(navigator.language||'')?'tr':'en'})();
+document.documentElement.lang=LANG;
+const LOC=LANG==='tr'?'tr-TR':'en-GB';
+const TR={"Cards": "Kartlar", "List": "Liste", "View": "Görünüm", "APP": "MAÇ", "GLS": "GOL", "AST": "AST", "WIN": "GAL", "ATT": "KAT", "View card": "Kartı gör", "Share card": "Kartı paylaş", "Download card": "Kartı indir", "Add photo": "Fotoğraf ekle", "Change photo": "Fotoğrafı değiştir", "Remove photo": "Fotoğrafı kaldır", "Photo saved": "Fotoğraf kaydedildi", "Photo removed": "Fotoğraf kaldırıldı", "Could not save the photo": "Fotoğraf kaydedilemedi", "Close": "Kapat", "OVR = average rating × 10. Gold 75+, silver 65–74, bronze below 65.": "GEN = puan ortalaması × 10. Altın 75+, gümüş 65–74, bronz 65 altı.", "Remove": "Sil", "View lineup": "Kadroyu gör","Matches": "Maçlar", "Players": "Oyuncular", "Rate": "Puanla", "Results": "Sonuçlar", "Squads": "Kadrolar", "Player ratings": "Oyuncu puanları", "How it works": "Nasıl kullanılır", "Sections": "Bölümler", "Editor": "Düzenleme modu", "← All matches": "← Tüm maçlar", "Next match": "Sıradaki maç", "Hide": "Gizle", "+ New match": "+ Yeni maç", "Date": "Tarih", "Start": "Başlangıç", "End": "Bitiş", "Copy players from the last match": "Oyuncuları son maçtan kopyala", "Create match": "Maç oluştur", "Cancel": "İptal", "Get the Ibnespor app": "Ibnespor uygulamasını yükle", "Add it to your home screen for quick access.": "Hızlı erişim için ana ekranına ekle.", "Install": "Yükle", "Loading matches…": "Maçlar yükleniyor…", "No matches yet.": "Henüz maç yok.", "No upcoming matches.": "Yaklaşan maç yok.", "No upcoming matches. Tap “New match” to add one.": "Yaklaşan maç yok. Eklemek için “Yeni maç”a dokun.", "Could not load matches.": "Maçlar yüklenemedi.", "View lineup": "Kadroyu gör", "Predict": "Tahmin et", "Rating open": "Oylama açık", "Final": "Bitti", "Lineup ready": "Kadro hazır", "Tomorrow": "Yarın", "Kicked off": "Başladı", "Add to Home Screen": "Ana Ekrana Ekle", "Save": "Kaydet", "Delete match": "Maçı sil", "Edit date & time": "Tarih ve saati düzenle", "Final scores for this match (1–10). Leave empty for players who weren’t rated.": "Bu maçın final puanları (1–10). Puanlanmayan oyuncular için boş bırak.", "Save scores": "Puanları kaydet", "Lineup": "Kadro", "Official lineup": "Resmi kadro", "My lineup": "Benim kadrom", "The lineup set by the organizer.": "Organizatörün belirlediği kadro.", "Your own lineup, saved only on this phone. The official lineup doesn’t change.": "Kendi kadron, sadece bu telefona kaydedilir. Resmi kadro değişmez.", "Share": "Paylaş", "Download image": "Resmi indir", "Reset": "Sıfırla", "Reset to the official lineup": "Resmi kadroya dön", "Tactics mode": "Taktik modu", "⤢ Tactics mode": "⤢ Taktik modu", "Balance teams": "Takımları dengele", "Shuffle teams": "Takımları karıştır", "Reset formations": "Dizilişleri sıfırla", "Copy lineup": "Kadroyu kopyala", "Enter all 16 names": "16 ismi birden gir", "One name per line or comma-separated. First 8 → team 1, next 8 → team 2": "Her satıra bir isim ya da virgülle ayır. İlk 8 → 1. takım, sonraki 8 → 2. takım", "Apply": "Uygula", "Clear names": "İsimleri temizle", "Goalkeeper": "Kaleci", "Team name": "Takım adı", "Formation": "Diziliş", "Kit colour": "Forma rengi", "Shirt number": "Forma numarası", "Not in the Players list (guest)": "Oyuncular listesinde yok (misafir)", "GK": "KL", "DF": "DF", "MF": "OS", "FW": "FV", "VS": "VS", "Red": "Kırmızı", "Blue": "Mavi", "Team avg": "Takım ort.", "Match avg": "Maç ort.", "Average rating before this match": "Bu maçtan önceki puan ortalaması", "No rating yet": "Henüz puanı yok", "Lock now": "Şimdi kilitle", "Locked": "Kilitli", "Unlock match": "Maçın kilidini aç", "This match is final and can’t be changed.": "Bu maç bitti, artık değiştirilemez.", "Open rating": "Oylamayı aç", "Reopen rating": "Oylamayı yeniden aç", "Close rating": "Oylamayı kapat", "Enter scores": "Puanları gir", "Edit scores": "Puanları düzenle", "Add score & goals": "Skor ve golleri ekle", "Edit score & goals": "Skor ve golleri düzenle", "G = goals, A = assists. Tap + for each one; the score is added up for you.": "G = gol, A = asist. Her biri için + düğmesine dokun, skor otomatik toplanır.", "Add goal": "Gol ekle", "Remove goal": "Gol çıkar", "Add assist": "Asist ekle", "Remove assist": "Asist çıkar", "Add own goal": "Kendi kalesine gol ekle", "Remove own goal": "Kendi kalesine golü çıkar", "Save result": "Sonucu kaydet", "Remove result": "Sonucu sil", "No result yet.": "Henüz sonuç yok.", "Result": "Sonuç", "Average of anonymous votes after the match.": "Maçtan sonraki anonim oyların ortalaması.", "MVP": "MVP", "Player of the match": "Maçın oyuncusu", "player of the match": "maçın oyuncusu", "Goal of the match": "Maçın golü", "Best moment": "En iyi an", "Worst moment": "En kötü an", "Match awards": "Maç ödülleri", "Awards": "Ödüller", "Own goal": "Kendi kalesine", "Draw": "Berabere", "Winner": "Kazanan", "Wins by": "Fark", "goal": "gol", "goals": "gol", "Bigger margin": "Farkı artır", "Smaller margin": "Farkı azalt", "Choose a player": "Bir oyuncu seç", "Predictions": "Tahminler", "Revealed": "Açıklandı", "Send prediction": "Tahmini gönder", "Prediction saved": "Tahmin kaydedildi", "Loading predictions…": "Tahminler yükleniyor…", "Predictions open once the squad is set.": "Kadro belli olunca tahminler açılır.", "Predictions will open shortly.": "Tahminler birazdan açılacak.", "Predictions will open shortly. The organizer needs to open this match once.": "Tahminler birazdan açılacak. Organizatörün bu maçı bir kez açması gerekiyor.", "Nobody made a prediction for this match.": "Bu maç için kimse tahmin yapmadı.", "Points are added once the organizer enters the score.": "Puanlar, organizatör skoru girince eklenir.", "Only players in this squad can predict. Pick the winner, the winning margin and the player of the match. Points: right winner 1 · right margin +2 · right player of the match +1. Predictions stay hidden until kick-off.": "Sadece bu kadrodaki oyuncular tahmin yapabilir. Kazananı, farkı ve maçın oyuncusunu seç. Puanlar: doğru kazanan 1 · doğru fark +2 · doğru maçın oyuncusu +1. Tahminler maç başlayana kadar gizli kalır.", "has made a prediction. It will be shown at kick-off.": "tahminini yaptı. Maç başlayınca gösterilecek.", "Prediction league": "Tahmin ligi", "Predictions are closed or this name already predicted": "Tahminler kapandı ya da bu isim zaten tahmin yaptı", "You are": "Sen", "Select your name": "Adını seç", "Select your name first": "Önce adını seç", "Rate the players": "Oyuncuları puanla", "Rate players": "Oyuncuları puanla", "Ratings are closed": "Oylama kapalı", "Ratings open after each match.": "Oylama her maçtan sonra açılır.", "Match code": "Maç kodu", "Only players of this match can vote. Ask the organizer for the 4-digit code.": "Sadece bu maçta oynayanlar oy verebilir. 4 haneli kodu organizatörden iste.", "Continue": "Devam", "Enter the 4-digit code": "4 haneli kodu gir", "Wrong code": "Kod yanlış", "Could not check, try again": "Kontrol edilemedi, tekrar dene", "The match code changed. Enter the new code.": "Maç kodu değişti. Yeni kodu gir.", "Your name is only used to hide you from the list. It is not sent.": "Adın sadece seni listeden gizlemek için kullanılır, gönderilmez.", "has already voted for this match. Each name can vote once.": "bu maç için zaten oy verdi. Her isim bir kez oy verebilir.", "+ Add comment": "+ Yorum ekle", "Anonymous comment (optional)": "Anonim yorum (isteğe bağlı)", "Optional": "İsteğe bağlı", "No vote": "Oy yok", "Worst moment is the fun one: think of the open goal that somehow stayed open.": "En kötü an eğlencelisi: boş kaleye bir şekilde atılamayan golü düşün.", "Submit": "Gönder", "Tap again to send": "Göndermek için tekrar dokun", "Sending…": "Gönderiliyor…", "Ratings sent": "Puanlar gönderildi", "Thanks!": "Teşekkürler!", "Rate at least one player": "En az bir oyuncuya puan ver", "This name has already voted": "Bu isim zaten oy verdi", "Ratings are closed or this name already voted": "Oylama kapalı ya da bu isim zaten oy verdi", "Could not send, try again": "Gönderilemedi, tekrar dene", "Only you can see this page.": "Bu sayfayı sadece sen görebilirsin.", "Rating is open": "Oylama açık", "No rating open": "Açık oylama yok", "Open a rating from a match page after the game.": "Maçtan sonra maç sayfasından oylamayı aç.", "No ratings yet. Open a rating from a match page after the game.": "Henüz puan yok. Maçtan sonra maç sayfasından oylamayı aç.", "New code": "Yeni kod", "Give this code only to the players of this match. Making a new code means anyone who has not voted yet needs the new one.": "Bu kodu sadece bu maçta oynayanlara ver. Yeni kod oluşturursan, henüz oy vermemiş olanların yeni koda ihtiyacı olur.", "responses": "yanıt", "response": "yanıt", "Imported scores": "Aktarılan puanlar", "final score": "final puanı", "Unusual voting": "Sıra dışı oylar", "These submissions are far from what everyone else gave (more than 2.5 points off on average). Who sent them stays hidden. Excluded ones don’t count.": "Bu oylar diğerlerinin verdiği puanlardan çok farklı (ortalamada 2,5 puandan fazla). Kimin gönderdiği gizli kalır. Hariç tutulanlar hesaba katılmaz.", "Exclude": "Hariç tut", "Include again": "Tekrar dahil et", "Submission excluded": "Oy hariç tutuldu", "Submission included": "Oy dahil edildi", "Reopen this rating": "Bu oylamayı yeniden aç", "Delete this rating": "Bu oylamayı sil", "Tap again to delete all votes, comments and published scores for this match": "Bu maçın tüm oylarını, yorumlarını ve yayınlanan puanlarını silmek için tekrar dokun", "Published": "Yayınlandı", "Not published": "Yayınlanmadı", "Publish results": "Sonuçları yayınla", "Update published scores": "Yayınlanan puanları güncelle", "Unpublish": "Yayından kaldır", "Only you can see these scores until you publish them. Comments stay private.": "Bu puanları sen yayınlayana kadar sadece sen görürsün. Yorumlar gizli kalır.", "Published with the results": "Sonuçlarla birlikte yayınlanır", "Results published": "Sonuçlar yayınlandı", "Results unpublished": "Sonuçlar yayından kaldırıldı", "Rating": "Puan", "Rating opened": "Oylama açıldı", "Rating closed": "Oylama kapandı", "Rating deleted": "Oylama silindi", "+ Add player": "+ Oyuncu ekle", "Add player": "Oyuncu ekle", "Edit list": "Listeyi düzenle", "Save list": "Listeyi kaydet", "Name": "İsim", "Nicknames": "Lakaplar", "e.g. Kero, Kerem K.": "örn. Kero, Kerem K.", "One player per line. Add nicknames after a dash, e.g.": "Her satıra bir oyuncu yaz. Lakapları tireden sonra ekle, örneğin", ". Names you remove are hidden from the list, their past stats are kept.": ". Çıkardığın isimler listede gizlenir, geçmiş istatistikleri korunur.", "Loading players…": "Oyuncular yükleniyor…", "No players yet.": "Henüz oyuncu yok.", "Add your regular players here. You can also add everyone who played in past matches in one go.": "Düzenli oyuncularını buraya ekle. Geçmiş maçlarda oynayan herkesi tek seferde de ekleyebilirsin.", "Add players from past matches": "Geçmiş maçlardaki oyuncuları ekle", "Sort by": "Sırala", "Sort players": "Oyuncuları sırala", "Goals": "Gol", "Assists": "Asist", "Attendance": "Katılım", "Leaderboards": "Sıralamalar", "Top scorers": "Gol krallığı", "Top assists": "Asist krallığı", "Updated after every match": "Her maçtan sonra güncellenir", "Best duos": "En iyi ikililer", "Teammates, 2+ matches together": "Takım arkadaşları, birlikte 2+ maç", "Best teammate": "En iyi takım arkadaşı", "Most faced": "En çok karşılaşılan", "Form · last 3 ratings": "Form · son 3 puan", "In form": "Formda", "Out of form": "Form düşük", "Steady": "İstikrarlı", "Season MVP": "Sezonun MVP'si", "Iron man": "Demir adam", "Most consistent": "En istikrarlı", "matches played": "maç oynadı", "match played": "maç oynadı", "W-D-L": "G-B-M", "W": "G", "D": "B", "L": "M", "Player removed": "Oyuncu silindi", "Tap again to remove": "Silmek için tekrar dokun", "Name is required": "İsim gerekli", "No names found": "İsim bulunamadı", "No new names found": "Yeni isim bulunamadı", "Edit PIN": "Düzenleme PIN'i", "Unlock editing": "Düzenlemeyi aç", "Organizer sign in": "Organizatör girişi", "Sign out": "Çıkış yap", "Organizer ·": "Organizatör ·", "Enter the PIN to edit": "Düzenlemek için PIN'i gir", "Enter the PIN to add matches": "Maç eklemek için PIN'i gir", "Wrong PIN": "PIN yanlış", "Editing unlocked": "Düzenleme açıldı", "Signed out": "Çıkış yapıldı", "Sign-in failed": "Giriş başarısız", "Connecting…": "Bağlanıyor…", "Could not connect to the database.": "Veritabanına bağlanılamadı.", "Could not connect.": "Bağlanılamadı.", "Match created": "Maç oluşturuldu", "Match deleted": "Maç silindi", "Match locked": "Maç kilitlendi", "Match not found": "Maç bulunamadı", "A match already exists at that time": "O saatte zaten bir maç var", "Date and start time are needed": "Tarih ve başlangıç saati gerekli", "Pick a date": "Bir tarih seç", "Saved": "Kaydedildi", "Save failed, retrying…": "Kaydedilemedi, tekrar deneniyor…", "Players swapped": "Oyuncular yer değiştirdi", "Teams shuffled": "Takımlar karıştırıldı", "Formations reset": "Dizilişler sıfırlandı", "Names cleared": "İsimler temizlendi", "Lineup copied": "Kadro kopyalandı", "Copy failed": "Kopyalanamadı", "Add player names first": "Önce oyuncu isimlerini ekle", "Add player names first.": "Önce oyuncu isimlerini ekle.", "Unlocked for 24 hours": "24 saatliğine kilit açıldı", "This match is locked": "Bu maç kilitli", "Tap again to confirm": "Onaylamak için tekrar dokun", "Tap again to delete": "Silmek için tekrar dokun", "Result saved": "Sonuç kaydedildi", "Result removed": "Sonuç silindi", "Scores saved": "Puanlar kaydedildi", "Enter at least one score": "En az bir puan gir", "Only the organizer can save results": "Sonuçları sadece organizatör kaydedebilir", "Image downloaded · send it on WhatsApp": "Resim indirildi · WhatsApp'tan gönderebilirsin", "Could not create the image": "Resim oluşturulamadı", "My lineup · only you see this": "Benim kadrom · bunu sadece sen görürsün", "Ibnespor installed": "Ibnespor yüklendi", "Could not save": "Kaydedilemedi", "Could not save scores": "Puanlar kaydedilemedi", "Could not save result": "Sonuç kaydedilemedi", "Could not save the list": "Liste kaydedilemedi", "Could not delete": "Silinemedi", "Could not lock": "Kilitlenemedi", "Could not unlock": "Kilit açılamadı", "Could not open rating": "Oylama açılamadı", "Could not publish": "Yayınlanamadı", "Could not unpublish": "Yayından kaldırılamadı", "Could not update": "Güncellenemedi", "Could not remove": "Silinemedi", "Could not add player": "Oyuncu eklenemedi", "Could not add players": "Oyuncular eklenemedi", "Could not create match": "Maç oluşturulamadı", "Clear": "Açık", "Partly cloudy": "Parçalı bulutlu", "Cloudy": "Bulutlu", "Fog": "Sisli", "Rain": "Yağmurlu", "Snow": "Karlı", "Thunderstorm": "Gök gürültülü", "Player": "Oyuncu", "Match": "Maç"};
+const TRX=[[/^Submission #(\d+) · (\d+) players · gave ([\d.]+) on average, ([-+]?[\d.]+) vs others$/,"Oy #$1 · $2 oyuncu · ortalama $3 verdi, diğerlerinden $4 farklı"],
+[/(\d+) extreme votes dropped \(raw ([\d.]+)\)/,"en uç $1 oy çıkarıldı (ham $2)"],
+[/\b(\d+) votes?\b/,"$1 oy"],
+[/\b(\d+) comments?\b/,"$1 yorum"],
+[/^over (\d+) matches$/,"$1 maçta"],
+[/^(\d+) in (\d+) match(?:es)?$/,"$2 maçta $1"],
+[/^Ratings in the last (\d+) matches$/,"Son $1 maçtaki puanlar"],
+[/\b(\d+) match(?:es)?\b/,"$1 maç"],
+[/\b(\d+) goals?\b/,"$1 gol"],
+[/\b(\d+) assists?\b/,"$1 asist"],
+[/^(\d+) predictions? so far\.$/,"Şu ana kadar $1 tahmin yapıldı."],
+[/^(\d+)\/(\d+) rated$/,"$1/$2 puanlandı"],
+[/^(\d+) rated$/,"$1 puanlandı"],
+[/^(\d+) names? added$/,"$1 isim eklendi"],
+[/^(\d+) players? saved$/,"$1 oyuncu kaydedildi"],
+[/^(\d+)\/16 players$/,"$1/16 oyuncu"],
+[/^(\d+)W (\d+)D (\d+)L$/,"$1G $2B $3M"],
+[/ · fully anonymous$/," · tamamen anonim"],
+[/ · players can send ratings now$/," · oyuncular şu an puan verebilir"],
+[/ · open$/," · açık"],
+[/^Your ratings for (.+) are in\.$/,"$1 maçı için puanların gönderildi."],
+[/ \(already voted\)$/," (oy verdi)"],
+[/ \(done\)$/," (tahmin yaptı)"],
+[/^Average rating ([\d.]+)$/,"Ortalama puan $1"],
+[/^Match rating ([\d.]+)$/,"Maç puanı $1"],
+[/^Score (\d+)$/,"Puan $1"],
+[/^Score for (.+)$/,"$1 için puan"],
+[/^Attendance (\d+)%$/,"Katılım %$1"],
+[/^Balanced · (.+) ([\d.]+) vs (.+) ([\d.]+)$/,"Dengelendi · $1 $2 - $3 $4"],
+[/^Own goals for (.+)$/,"Kendi kalesine goller ($1 lehine)"],
+[/^Player (\d+)$/,"Oyuncu $1"],
+[/^Player of the month · /,"Ayın oyuncusu · "],
+[/^Next match · /,"Sıradaki maç · "],
+[/^Locks /,"Kilitlenme: "],
+[/^Rating opened · match code (\d+)$/,"Oylama açıldı · maç kodu $1"],
+[/^New match code (\d+)$/,"Yeni maç kodu $1"],
+[/^Team avg · (\d+)\/(\d+) rated players$/,"Takım ortalaması · $2 oyuncudan $1 tanesinin puanı var"],
+[/^Match avg · (\d+)\/(\d+) rated players$/,"Maç ortalaması · $2 oyuncudan $1 tanesinin puanı var"],
+[/^(.+) · (\d+)\/(\d+) wins$/,"$1 · $3 maçta $2 galibiyet"],
+[/^(.+) · (\d+)×$/,"$1 · $2 kez"],
+[/^Everyone can see these scores on the match page/,"Bu puanları herkes maç sayfasında görebilir"],
+[/^(Clear|Partly cloudy|Cloudy|Fog|Thunderstorm|Snow|Rain) · wind (\d+) km\/h$/,(m,a,b)=>({"Clear": "Açık", "Partly cloudy": "Parçalı bulutlu", "Cloudy": "Bulutlu", "Fog": "Sisli", "Thunderstorm": "Gök gürültülü", "Snow": "Karlı", "Rain": "Yağmurlu"})[a]+' · rüzgâr '+b+' km/sa'],
+[/^Closes at kick-off · /,"Maç başlayınca kapanır · "],
+[/\bIn (\d+) days\b/,"$1 gün sonra"],
+[/\bIn (\d+)h (\d+)m\b/,"$1 sa $2 dk sonra"],
+[/\bIn (\d+) min\b/,"$1 dk sonra"],
+[/· Tomorrow$/,"· Yarın"],
+[/^Two players are called “(.+)”\. Give one a different name\.$/,"İki oyuncunun adı “$1”. Birine farklı bir isim ver."],
+[/\b(Red|Blue)\b/g,(m,a)=>a==='Red'?'Kırmızı':'Mavi']];
+window.__miss=window.__miss||null;
+function tx(s){
+  if(LANG!=='tr'||s==null)return s;s=String(s);
+  const m=s.match(/^(\s*)([\s\S]*?)(\s*)$/),core=m[2];if(!core||!/[A-Za-z]/.test(core))return s;
+  let r=TR[core];
+  if(r==null){r=core;for(const [re,f] of TRX)r=r.replace(re,f);if(r===core){if(window.__miss)window.__miss.add(core);return s}}
+  return m[1]+r+m[3];
+}
+const I18A=['placeholder','title','aria-label'];
+function trNode(n){
+  if(n.nodeType===3){const p=n.parentElement;if(!p||p.closest('[data-noi18n],textarea,script,style'))return;const v=tx(n.nodeValue);if(v!==n.nodeValue)n.nodeValue=v;return}
+  if(n.nodeType!==1||n.closest('[data-noi18n],script,style'))return;
+  const els=[n,...n.querySelectorAll('[placeholder],[title],[aria-label]')];
+  for(const e of els){if(e.closest('[data-noi18n]'))continue;for(const a of I18A){const v=e.getAttribute(a);if(v){const t=tx(v);if(t!==v)e.setAttribute(a,t)}}}
+  const w=document.createTreeWalker(n,NodeFilter.SHOW_TEXT);let t;while(t=w.nextNode())trNode(t);
+}
+if(LANG==='tr'){
+  trNode(document.body);
+  new MutationObserver(ms=>{for(const m of ms){
+    if(m.type==='childList')m.addedNodes.forEach(trNode);
+    else if(m.type==='characterData')trNode(m.target);
+    else if(m.type==='attributes'&&m.target.nodeType===1&&!m.target.closest('[data-noi18n]')){const v=m.target.getAttribute(m.attributeName);if(v){const t=tx(v);if(t!==v)m.target.setAttribute(m.attributeName,t)}}
+  }}).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:I18A});
+}
 {
 const FORM={'3-3-1':[[.25,[.2,.5,.8]],[.55,[.2,.5,.8]],[.85,[.5]]],'3-2-2':[[.25,[.2,.5,.8]],[.56,[.32,.68]],[.85,[.32,.68]]],'2-3-2':[[.25,[.3,.7]],[.55,[.14,.5,.86]],[.85,[.32,.68]]],'3-1-3':[[.25,[.2,.5,.8]],[.5,[.5]],[.82,[.17,.5,.83]]],'2-4-1':[[.25,[.3,.7]],[.56,[.1,.37,.63,.9]],[.86,[.5]]],'4-2-1':[[.22,[.12,.38,.62,.88]],[.55,[.32,.68]],[.85,[.5]]],'2-2-3':[[.25,[.3,.7]],[.52,[.32,.68]],[.82,[.17,.5,.83]]]};
 const ROLE=['DF','MF','FW'];
@@ -603,7 +728,7 @@ $('#pin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#unlockBtn').clic
     const wait=setTimeout(()=>status('Connecting…'),8000);
     D.onValue(D.ref(db,'matches'),snap=>{clearTimeout(wait);status('');onMatches(snap.val())},()=>{clearTimeout(wait);$('#matches').innerHTML='<div class="empty"><p>Could not load matches.</p></div>'});
     D.onValue(D.ref(db,'meta/current'),s=>{round=s.val();onRound()},()=>{});
-    D.onValue(D.ref(db,'players'),s=>{ROSTER=s.val()||{};renderRosterDL();if(view==='match')all();renderPlayers()},()=>{});
+    D.onValue(D.ref(db,'players'),s=>{ROSTER=s.val()||{};renderRosterDL();if(view==='match')all();LASTSTATS=null;renderPlayers();if(cardId&&!$('#cmod').hidden)openCard(cardId)},()=>{});
     D.onValue(D.ref(db,'results'),s=>{RESULTS=s.val()||{};renderMatches();renderResult();renderTokens();renderPlayers()},()=>{});
     D.onValue(D.ref(db,'published'),s=>{PUB=s.val()||{};renderMatches();renderPub();renderPlayers();renderTokens();if(isAdmin)renderResults()},()=>{});
     Au.getRedirectResult(auth).catch(()=>{});
@@ -678,8 +803,8 @@ document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement
 $('#fs').addEventListener('pointerdown',e=>e.stopPropagation());
 // ---------- views ----------
 let view='matches',MATCHES={},curMatch=null,showNew=false,PUB={},RESULTS={},ROSTER={};
-const LABEL={matches:'Matches',match:'Squads',players:'Players',rate:'Player ratings',results:'Results'};
-const VIEWS={matches:'v-matches',match:'v-squads',players:'v-players',rate:'v-rate',results:'v-results'};
+const LABEL={matches:'Matches',match:'Squads',players:'Players',rate:'Player ratings',results:'Results',help:'How it works'};
+const VIEWS={matches:'v-matches',match:'v-squads',players:'v-players',rate:'v-rate',results:'v-results',help:'v-help'};
 const isLocked=m=>!!m&&(m.locked===true||!(+m.lockAt>Date.now()));
 const lockAtFor=(date,start,end)=>{const t=new Date(`${date}T${(end&&end>=start?end:start)||'23:59'}`).getTime();return (isNaN(t)?Date.now():t)+86400000};
 let mine=false;
@@ -700,13 +825,103 @@ function go(h){
   for(const k in VIEWS)$('#'+VIEWS[k]).hidden=k!==v;
   ['matches','players','rate','results'].forEach(x=>$('#nav-'+x).classList.toggle('on',x===v||(x==='matches'&&v==='match')));
   const hs=v==='match'?'m-'+id:v;if(location.hash.slice(1)!==hs)history.replaceState(null,'','#'+hs);
-  applyEd();renderPub();subPredicted();renderPred();if(v==='players')renderPlayers();if(v==='matches'){loadWeather();renderMatches()}heroUpdate();window.scrollTo(0,0);
+  applyEd();renderPub();subPredicted();renderPred();if(v==='players')renderPlayers();if(v==='help')renderHelp();if(v==='matches'){loadWeather();renderMatches()}heroUpdate();window.scrollTo(0,0);
 }
+
+const HELP={en:`<div class="help">
+<h2>How Ibnespor works</h2>
+<p class="lead">Ibnespor is our group's site for the weekly halı saha: squads, predictions, player ratings and season stats, all in one place.</p>
+<div class="hs"><h3><i>1</i>Matches</h3><p>The first screen lists upcoming and past matches. Tap a match to see the squads on the pitch, the kick-off time and the weather forecast for İTÜ Ayazağa.</p><p>A match locks <b>24 hours after it ends</b>. After that, the squad and the result can no longer be changed.</p></div>
+<div class="hs"><h3><i>2</i>Squads and ratings on the pitch</h3><ul>
+<li>The <b>official lineup</b> is set by the organizer and the friends who have the edit PIN.</li>
+<li><b>Before the match</b>, the badge next to each player shows their average rating from past matches. <b>?</b> means the player has no rating yet.</li>
+<li>The <b>team average</b> above each squad is the average of those ratings. Players without a rating are left out, so <b>5/8</b> means 5 of the 8 players have a rating.</li>
+<li><b>After the results are published</b>, the badges show that match's ratings. ★ marks the best player of the match, ⚽ is a goal and the boot is an assist.</li></ul></div>
+<div class="hs"><h3><i>3</i>My lineup</h3><p>Open <b>My lineup</b> above the pitch to build your own version: drag players, swap teams, change formations. No PIN is needed and the official lineup never changes. It is saved only on your phone.</p><p>Tap <b>Share</b> to send it as an image on WhatsApp, or <b>Download image</b> to save it.</p></div>
+<div class="hs"><h3><i>4</i>Predictions</h3><p>Only the players in that match's squad can predict, once each, before kick-off. Pick the winner, the winning margin and the player of the match.</p><ul>
+<li>Right winner: <b>1 point</b></li><li>Right margin: <b>+2 points</b></li><li>Right player of the match: <b>+1 point</b></li></ul>
+<p>Predictions stay hidden until kick-off. Points go into the season's prediction league once the organizer enters the score.</p></div>
+<div class="hs"><h3><i>5</i>Rating players</h3><ul>
+<li>After the match the organizer opens the rating and gives the <b>match code</b> to the players of that match.</li>
+<li>Go to <b>Rate</b>, enter the code and pick your name. Each name can vote <b>once</b> per match, and you can't rate yourself.</li>
+<li>Give each player a score from <b>1 to 10</b>. Comments are optional and anonymous.</li>
+<li>You can also vote for the match awards: <b>Goal of the match</b>, <b>Best moment</b> and <b>Worst moment</b>.</li></ul></div>
+<div class="hs"><h3><i>6</i>How scores are made fair</h3><ul>
+<li>Votes are anonymous. Nobody, including the organizer, can see who gave which score.</li>
+<li>When a player gets 5 or more votes, the <b>highest and lowest vote are dropped</b> before averaging.</li>
+<li>Submissions that are far from everyone else's are flagged, and the organizer can leave them out.</li>
+<li>Scores appear on the site only after the organizer <b>publishes</b> them. Comments are seen only by the organizer.</li></ul></div>
+<div class="hs"><h3><i>7</i>Players, cards and season</h3><p>Every player has a <b>player card</b> with a photo, an overall score (<b>OVR = average rating × 10</b>), their usual position and key stats: matches, goals, assists, MVPs, win rate and attendance. Gold is 75+, silver 65–74, bronze below 65. Tap a card to open it and share it as an image. Send your photo to the organizer to have it added.</p><p>The <b>Players</b> page also has everyone's attendance, goals, assists, average rating and form over the last matches, plus the best duos, rivalries, the prediction league and the season awards.</p></div>
+<div class="hs"><h3><i>8</i>Install as an app</h3><p>On Android, tap <b>Install</b> on the Matches page. On iPhone, open the site in Safari, tap <b>Share</b>, then <b>Add to Home Screen</b>. It then opens like an app.</p></div>
+<div class="hs rules"><h3><i>!</i>Rules</h3><ul>
+<li>Only vote and predict for matches you played in, and only under your own name.</li>
+<li>Don't share the match code or the edit PIN with anyone else.</li>
+<li>Rate honestly. Scoring everyone 1 or yourself 10 gets flagged.</li>
+<li>Keep comments fair. Banter is welcome, insults are not.</li></ul></div>
+<p class="note">Tap the language button at the top to switch between English and Türkçe.</p>
+<a class="btn bk" href="#matches">← All matches</a>
+</div>`,tr:`<div class="help">
+<h2>Ibnespor nasıl çalışır?</h2>
+<p class="lead">Ibnespor, haftalık halı saha grubumuzun sitesi. Kadrolar, tahminler, oyuncu puanları ve sezon istatistikleri tek bir yerde.</p>
+<div class="hs"><h3><i>1</i>Maçlar</h3><p>İlk ekranda yaklaşan ve geçmiş maçlar listelenir. Bir maça dokununca kadroları sahada, başlama saatini ve İTÜ Ayazağa için hava durumunu görürsün.</p><p>Maç, <b>bitişinden 24 saat sonra kilitlenir</b>. Bundan sonra kadro ve sonuç değiştirilemez.</p></div>
+<div class="hs"><h3><i>2</i>Kadrolar ve sahadaki puanlar</h3><ul>
+<li><b>Resmi kadroyu</b> organizatör ve düzenleme PIN'i olan arkadaşlar belirler.</li>
+<li><b>Maçtan önce</b>, her oyuncunun yanındaki rozet onun önceki maçlardaki puan ortalamasını gösterir. <b>?</b> işareti, oyuncunun henüz puanı olmadığı anlamına gelir.</li>
+<li>Her kadronun üstündeki <b>takım ortalaması</b>, bu puanların ortalamasıdır. Puanı olmayan oyuncular hesaba katılmaz. Örneğin <b>5/8</b>, 8 oyuncudan 5'inin puanı olduğunu gösterir.</li>
+<li><b>Sonuçlar yayınlandıktan sonra</b> rozetler o maçın puanlarını gösterir. ★ maçın en iyi oyuncusunu, ⚽ golü, krampon da asisti gösterir.</li></ul></div>
+<div class="hs"><h3><i>3</i>Benim kadrom</h3><p>Sahanın üstündeki <b>Benim kadrom</b> sekmesinden kendi kadronu kurabilirsin: oyuncuları sürükle, takımları değiştir, diziliş seç. PIN gerekmez ve resmi kadro hiç değişmez. Kadron sadece senin telefonuna kaydedilir.</p><p><b>Paylaş</b> ile resim olarak WhatsApp'tan gönderebilir, <b>Resmi indir</b> ile telefonuna kaydedebilirsin.</p></div>
+<div class="hs"><h3><i>4</i>Tahminler</h3><p>Sadece o maçın kadrosundaki oyuncular, maç başlamadan önce ve bir kez tahmin yapabilir. Kazananı, farkı ve maçın oyuncusunu seçersin.</p><ul>
+<li>Kazananı bilmek: <b>1 puan</b></li><li>Farkı bilmek: <b>+2 puan</b></li><li>Maçın oyuncusunu bilmek: <b>+1 puan</b></li></ul>
+<p>Tahminler maç başlayana kadar gizli kalır. Organizatör skoru girince puanlar sezonun tahmin ligine eklenir.</p></div>
+<div class="hs"><h3><i>5</i>Oyuncuları puanlama</h3><ul>
+<li>Maçtan sonra organizatör oylamayı açar ve <b>maç kodunu</b> o maçta oynayanlara verir.</li>
+<li><b>Puanla</b> sekmesine gir, kodu yaz ve adını seç. Her isim maç başına <b>bir kez</b> oy verebilir, kendine puan veremezsin.</li>
+<li>Her oyuncuya <b>1 ile 10</b> arasında puan ver. Yorum yazmak isteğe bağlıdır ve anonimdir.</li>
+<li>Maç ödüllerine de oy verebilirsin: <b>Maçın golü</b>, <b>En iyi an</b> ve <b>En kötü an</b>.</li></ul></div>
+<div class="hs"><h3><i>6</i>Puanlar nasıl adil tutuluyor?</h3><ul>
+<li>Oylar anonimdir. Organizatör dahil kimse kimin hangi puanı verdiğini göremez.</li>
+<li>Bir oyuncu 5 veya daha fazla oy alırsa, ortalama hesaplanmadan önce <b>en yüksek ve en düşük oy çıkarılır</b>.</li>
+<li>Diğerlerinden çok farklı olan oylar işaretlenir ve organizatör bunları hesaptan çıkarabilir.</li>
+<li>Puanlar sitede ancak organizatör <b>yayınladıktan</b> sonra görünür. Yorumları sadece organizatör görür.</li></ul></div>
+<div class="hs"><h3><i>7</i>Oyuncular, kartlar ve sezon</h3><p>Her oyuncunun fotoğraflı bir <b>oyuncu kartı</b> var. Kartta genel puan (<b>GEN = puan ortalaması × 10</b>), en çok oynadığı mevki ve kilit istatistikler yer alır: maç, gol, asist, MVP, galibiyet oranı ve katılım. 75 ve üstü altın, 65–74 gümüş, 65 altı bronz kart olur. Karta dokunup açabilir, resim olarak paylaşabilirsin. Fotoğrafının eklenmesi için organizatöre gönder.</p><p><b>Oyuncular</b> sayfasında ayrıca herkesin katılım oranı, golleri, asistleri, puan ortalaması ve son maçlardaki formu, en iyi ikililer, rakip eşleşmeleri, tahmin ligi ve sezon ödülleri var.</p></div>
+<div class="hs"><h3><i>8</i>Uygulama olarak yükle</h3><p>Android'de Maçlar sayfasındaki <b>Yükle</b> düğmesine dokun. iPhone'da siteyi Safari'de aç, <b>Paylaş</b>'a, ardından <b>Ana Ekrana Ekle</b>'ye dokun. Böylece site bir uygulama gibi açılır.</p></div>
+<div class="hs rules"><h3><i>!</i>Kurallar</h3><ul>
+<li>Sadece oynadığın maçlar için ve sadece kendi adınla oy ver, tahmin yap.</li>
+<li>Maç kodunu ve düzenleme PIN'ini başkalarıyla paylaşma.</li>
+<li>Dürüst puan ver. Herkese 1, kendine 10 vermek gibi oylar işaretlenir.</li>
+<li>Yorumlarda saygılı ol. Şakaya evet, hakarete hayır.</li></ul></div>
+<p class="note">Dili değiştirmek için üstteki dil düğmesine dokun (English / Türkçe).</p>
+<a class="btn bk" href="#matches">← Tüm maçlar</a>
+</div>`};
+function renderHelp(){$('#help').innerHTML=HELP[LANG]||HELP.en}
+$('#helpBtn').querySelector('span').textContent=LANG==='tr'?'Nasıl kullanılır':'How it works';
+$('#helpBtn').setAttribute('aria-label',LANG==='tr'?'Nasıl kullanılır':'How it works');
+$('#helpBtn').onclick=()=>go('help');
+$('#langBtn').textContent=LANG==='tr'?'EN':'TR';
+$('#langBtn').setAttribute('aria-label',LANG==='tr'?'Switch to English':'Türkçeye geç');
+$('#langBtn').onclick=()=>{try{localStorage.setItem('hs-lang',LANG==='tr'?'en':'tr')}catch(e){}location.reload()};
+$('#cmX').onclick=closeCard;
+$('#cmod').addEventListener('click',e=>{if(e.target.id==='cmod')closeCard()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#cmod').hidden)closeCard()});
+$('#cmShare').onclick=$('#cmDl').onclick=async e=>{
+  const bid=e.currentTarget.id;const st=LASTSTATS||computeStats(),x=st.list.find(q=>q.id===cardId);if(!x)return;
+  let blob;try{blob=await cardPNG(x,st.total)}catch(err){toast('Could not create the image');return}
+  const file=new File([blob],`ibnespor-card-${String(x.name).replace(/[^\w]+/g,'-')}.png`,{type:'image/png'});
+  if(bid==='cmShare'&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:'Ibnespor'});return}catch(err){if(err&&err.name==='AbortError')return}}
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);
+};
+$('#cmFile').onchange=async e=>{
+  const f=e.target.files&&e.target.files[0];e.target.value='';if(!f||!cardId||!isAdmin)return;
+  try{const d=await photoData(f);await F.set(F.ref(db,'players/'+cardId+'/photo'),d);toast('Photo saved');setTimeout(()=>{if(cardId)openCard(cardId)},300)}catch(err){toast('Could not save the photo')}
+};
+$('#cmDel').onclick=async()=>{if(!cardId||!isAdmin)return;try{await F.set(F.ref(db,'players/'+cardId+'/photo'),null);toast('Photo removed');setTimeout(()=>{if(cardId)openCard(cardId)},300)}catch(err){toast('Could not update')}};
 document.querySelector('.tabbar').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});
 window.addEventListener('hashchange',()=>go(location.hash.slice(1)));
 const pad=n=>String(n).padStart(2,'0');
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`};
-const fmtDate=d=>{try{return new Date(String(d).slice(0,10)+'T12:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}catch(e){return d}};
+const trD=x=>`${x.toLocaleDateString(LOC,{weekday:'short'})} ${x.getDate()} ${x.toLocaleDateString(LOC,{month:'short'})}`;
+const fmtDate=d=>{try{const x=new Date(String(d).slice(0,10)+'T12:00');return LANG==='tr'?trD(x):x.toLocaleDateString(LOC,{weekday:'short',day:'numeric',month:'short'})}catch(e){return d}};
+const fmtDT=ts=>{const x=new Date(+ts);return LANG==='tr'?`${trD(x)} ${pad(x.getHours())}:${pad(x.getMinutes())}`:x.toLocaleString(LOC,{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})};
 const hue=v=>`hsl(${Math.round((v-1)*13)},72%,52%)`;
 const teamOf=(r,t)=>(r.teams&&r.teams[t])||{name:'',color:'#888'};
 const mLabel=m=>m?`${fmtDate(m.date)} · ${m.start||''}${m.end?'–'+m.end:''}`:'';
@@ -751,7 +966,7 @@ function mcard(m){
     foot=`<div class="mf"><div class="lbar"><i style="width:${Math.min(100,pl/16*100)}%"></i></div><span class="lt">${pl>=16?'16 players confirmed':`${16-pl} ${16-pl===1?'spot':'spots'} left`}</span></div>`;
   }else if(mvp){foot=`<div class="mf"><span class="mvpb">MVP</span><b>${esc(mvp.n)}</b><span class="mvs">${(+mvp.avg).toFixed(1)}</span></div>`}
   return `<a class="mc2${sc?' played':''}" href="#m-${esc(m.id)}">
-    <div class="mh2"><span class="mdate"><b>${d.getDate()}</b>${esc(d.toLocaleDateString('en-GB',{month:'short'}))}</span><span class="mwk">${esc(d.toLocaleDateString('en-GB',{weekday:'long'}))} · ${esc(m.start||'')}${m.end?'–'+esc(m.end):''}</span>${past?'':wxChip(m)}${pill}</div>
+    <div class="mh2"><span class="mdate"><b>${d.getDate()}</b>${esc(d.toLocaleDateString(LOC,{month:'short'}))}</span><span class="mwk">${esc(d.toLocaleDateString(LOC,{weekday:'long'}))} · ${esc(m.start||'')}${m.end?'–'+esc(m.end):''}</span>${past?'':wxChip(m)}${pill}</div>
     <div class="mu"><div class="tmx l">${kitSVG(A.c)}<span>${esc(A.n)}</span></div><div class="msc">${sc?`<b>${sc[0]}</b><i>–</i><b>${sc[1]}</b>`:'<em>VS</em>'}</div><div class="tmx r"><span>${esc(B.n)}</span>${kitSVG(B.c)}</div></div>
     ${foot}</a>`;
 }
@@ -767,14 +982,14 @@ function resolve(n){
 function renderRosterDL(){const dl=$('#rosterDL');if(!dl)return;dl.innerHTML=Object.values(ROSTER).filter(p=>p&&!p.archived).sort((a,b)=>a.name.localeCompare(b.name,'tr')).map(p=>`<option value="${esc(p.name)}">${esc(p.aliases||'')}</option>`).join('')}
 function computeStats(){
   const t=today(),past=mList().filter(m=>m.date<t||RESULTS[m.id]).sort((a,b)=>mKey(a).localeCompare(mKey(b)));
-  const st={};for(const id in ROSTER){const r=ROSTER[id];if(!r)continue;st[id]={id,name:r.name||'',aliases:r.aliases||'',archived:!!r.archived,played:0,goals:0,gm:0,ast:0,rs:[],mvp:0,w:0,d:0,l:0,hist:[]}}
+  const st={};for(const id in ROSTER){const r=ROSTER[id];if(!r)continue;st[id]={id,name:r.name||'',aliases:r.aliases||'',photo:typeof r.photo==='string'&&r.photo.startsWith('data:image/')?r.photo:'',pos:{},archived:!!r.archived,played:0,goals:0,gm:0,ast:0,rs:[],mvp:0,w:0,d:0,l:0,hist:[]}}
   past.forEach(m=>{
     const b=m.board||{},R=RESULTS[m.id],P=PUB[m.id],sc=scoreOf(m),seen={};
     const top=P&&Array.isArray(P.players)&&P.players.length?P.players.slice().sort((a,c)=>c.avg-a.avg)[0]:null;
-    (b.slots||[]).forEach(sl=>{
+    (b.slots||[]).forEach((sl,j)=>{
       const nm=String((b.players||[])[sl.p]||'').trim();if(!nm)return;
       const id=(b.pids||[])[sl.p]||resolve(nm);const x=id&&st[id];if(!x||seen[id])return;seen[id]=1;
-      x.played++;const g=R?+((R.goals||{})['p'+sl.p]||0):0;x.goals+=g;if(g)x.gm++;const as=R?+((R.assists||{})['p'+sl.p]||0):0;x.ast+=as;
+      x.played++;try{const fm=((b.teams||[])[sl.t]||{}).form;const rl=FORM[fm]?formPos(fm)[j%8][2]:null;if(rl)x.pos[rl]=(x.pos[rl]||0)+1}catch(e){}const g=R?+((R.goals||{})['p'+sl.p]||0):0;x.goals+=g;if(g)x.gm++;const as=R?+((R.assists||{})['p'+sl.p]||0):0;x.ast+=as;
       let rt=null;if(P&&Array.isArray(P.players)){const e=P.players.find(q=>q&&((q.pid&&q.pid===id)||(!q.pid&&resolve(q.n)===id)));if(e){rt=+e.avg;x.rs.push(rt);if(e===top)x.mvp++}}
       let res=null;if(sc){const my=sc[sl.t],op=sc[1-sl.t];res=my>op?'W':my<op?'L':'D';x[res.toLowerCase()]++}
       x.hist.push({id:m.id,label:mLabel(m),team:(b.teams||[])[sl.t]||{},g,as,rt,res,mvp:!!(top&&rt!=null&&P.players.find(q=>q===top)&&((top.pid&&top.pid===id)||(!top.pid&&resolve(top.n)===id)))});
@@ -782,25 +997,82 @@ function computeStats(){
   });
   return{total:past.length,list:Object.values(st).map(x=>({...x,avg:x.rs.length?x.rs.reduce((a,c)=>a+c,0)/x.rs.length:null}))};
 }
-let pSort='avg',pOpen={},pDel=0;
+let pSort='avg',pOpen={},pDel=0,LASTSTATS=null,pView=(()=>{try{return localStorage.getItem('hs-pview')||'cards'}catch(e){return 'cards'}})();
+const SIL='<svg viewBox="0 0 100 100" class="sil" aria-hidden="true"><circle cx="50" cy="38" r="19"/><path d="M12 100c2-24 18-36 38-36s36 12 38 36z"/></svg>';
+function futData(x,total){
+  const ovr=x.avg!=null?Math.round(x.avg*10):null,tier=ovr==null?'none':ovr>=75?'gold':ovr>=65?'silver':'bronze';
+  const ps=Object.entries(x.pos||{}).sort((a,b)=>b[1]-a[1])[0],dec=x.w+x.d+x.l;
+  const fo=formOf(x);
+  return{ovr,tier,pos:ps?ps[0]:'—',fo,stats:[[x.played,'APP'],[x.goals,'GLS'],[x.ast,'AST'],[x.mvp,'MVP'],[dec?Math.round(x.w/dec*100)+'%':'–','WIN'],[total?Math.round(x.played/total*100)+'%':'–','ATT']]};
+}
+function futHTML(x,total,big){
+  const d=futData(x,total);
+  return `<div class="fut t-${d.tier}${big?' big':''}" data-card="${esc(x.id)}" role="button" tabindex="0" aria-label="${esc(x.name)}"><div class="fsh"></div>
+    <div class="fo"><b>${d.ovr??'?'}</b><span>${d.pos}</span>${d.fo?`<i class="f-${d.fo.c}">${d.fo.c==='up'?'▲':d.fo.c==='down'?'▼':'●'}</i>`:''}</div>
+    <div class="fph">${x.photo?`<img src="${x.photo}" alt="">`:SIL}</div>
+    <div class="fnm"><span>${esc(x.name)}</span></div>
+    <div class="fst">${d.stats.map(([v,l])=>`<span><b>${v}</b><em>${l}</em></span>`).join('')}</div>
+    <div class="flg">IBNESPOR</div></div>`;
+}
+let cardId=null;
+function openCard(id){
+  const st=LASTSTATS||computeStats(),x=st.list.find(q=>q.id===id);if(!x)return;cardId=id;
+  $('#cmCard').innerHTML=futHTML(x,st.total,true);
+  $('#cmAdm').hidden=!isAdmin;$('#cmDel').hidden=!x.photo;$('#cmAddL').textContent=x.photo?'Change photo':'Add photo';
+  $('#cmod').hidden=false;document.body.classList.add('noscroll');
+}
+function closeCard(){$('#cmod').hidden=true;cardId=null;document.body.classList.remove('noscroll')}
+async function photoData(file){
+  const url=URL.createObjectURL(file);const img=new Image();
+  try{await new Promise((r,j)=>{img.onload=r;img.onerror=j;img.src=url})}finally{setTimeout(()=>URL.revokeObjectURL(url),1000)}
+  const Z=360,c=document.createElement('canvas');c.width=Z;c.height=Z;const k=Math.min(img.naturalWidth,img.naturalHeight);
+  const sx=(img.naturalWidth-k)/2,sy=(img.naturalHeight-k)*0.3;c.getContext('2d').drawImage(img,sx,sy,k,k,0,0,Z,Z);
+  let q=.82,d;do{d=c.toDataURL('image/jpeg',q);q-=.08}while(d.length>60000&&q>.3);return d;
+}
+async function cardPNG(x,total){
+  const d=futData(x,total),W=1080,H=1543,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+  const FC='"Barlow Condensed", "Arial Narrow", Arial, sans-serif';
+  const T={gold:['#fff2b8','#e9c45a','#c9972a','#8f6514','#2a2110'],silver:['#ffffff','#d9dfe3','#a8b3ba','#76828a','#1f262b'],bronze:['#ffd9b8','#d99a63','#a96535','#6d3f1d','#2b1709'],none:['#6a7a70','#4a574f','#333d37','#1f2621','#eef3ef']}[d.tier];
+  g.fillStyle='#0b110e';g.fillRect(0,0,W,H);
+  const rr=(x0,y0,w,h,r)=>{g.beginPath();g.moveTo(x0+r,y0);g.arcTo(x0+w,y0,x0+w,y0+h,r);g.arcTo(x0+w,y0+h,x0,y0+h,r);g.arcTo(x0,y0+h,x0,y0,r);g.arcTo(x0,y0,x0+w,y0,r);g.closePath()};
+  const gr=g.createLinearGradient(0,0,W*.6,H);gr.addColorStop(0,T[0]);gr.addColorStop(.3,T[1]);gr.addColorStop(.65,T[2]);gr.addColorStop(1,T[3]);
+  rr(40,40,W-80,H-80,64);g.fillStyle=gr;g.fill();g.save();g.clip();
+  const sh=g.createRadialGradient(W*.3,H*.15,20,W*.3,H*.15,W*.9);sh.addColorStop(0,'rgba(255,255,255,.35)');sh.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=sh;g.fillRect(0,0,W,H);
+  const px=W*.31,py=90,pw=W*.65,ph=H*.5;
+  if(x.photo){const im=new Image();await new Promise(r=>{im.onload=r;im.onerror=r;im.src=x.photo});
+    g.save();rr(px,py,pw,ph,40);g.clip();g.drawImage(im,px,py,pw,ph);const fd=g.createLinearGradient(0,py+ph*.62,0,py+ph);fd.addColorStop(0,'rgba(0,0,0,0)');fd.addColorStop(1,T[2]);g.fillStyle=fd;g.fillRect(px,py,pw,ph);g.restore()}
+  else{g.fillStyle='rgba(0,0,0,.18)';g.beginPath();g.arc(px+pw/2,py+ph*.36,ph*.17,0,7);g.fill();g.beginPath();g.ellipse(px+pw/2,py+ph,pw*.38,ph*.36,0,Math.PI,0);g.fill()}
+  g.restore();
+  g.fillStyle=T[4];g.textAlign='center';
+  g.font=`800 200px ${FC}`;g.fillText(d.ovr??'?',200,300);
+  g.font=`700 92px ${FC}`;g.fillText(tx(d.pos),200,400);
+  const nm=String(x.name).toLocaleUpperCase(LANG==='tr'?'tr':'en');let fs=130;g.font=`800 ${fs}px ${FC}`;while(g.measureText(nm).width>W-200&&fs>60){fs-=6;g.font=`800 ${fs}px ${FC}`}
+  g.fillText(nm,W/2,H*.645);
+  g.fillStyle=T[4];g.globalAlpha=.35;g.fillRect(140,H*.67,W-280,4);g.globalAlpha=1;
+  d.stats.forEach(([v,l],i)=>{const cx=W*(.22+(i%3)*.28),cy=H*(.745+Math.floor(i/3)*.11);g.font=`800 96px ${FC}`;g.fillText(String(v),cx,cy);g.font=`700 46px ${FC}`;g.globalAlpha=.8;g.fillText(tx(l),cx,cy+54);g.globalAlpha=1});
+  g.font=`700 38px ${FC}`;g.globalAlpha=.7;g.fillText('IBNESPOR · taskino21.github.io/Ibnespor',W/2,H-90);g.globalAlpha=1;
+  return await new Promise((res,rej)=>c.toBlob(b=>b?res(b):rej(new Error('blob')),'image/png'));
+}
 function renderPlayers(){
   const el=$('#players');if(!el||view!=='players')return;
   const {total,list}=computeStats(),act=list.filter(x=>!x.archived),ex=computeExtra();
   const key={avg:x=>x.avg??-1,goals:x=>x.goals,ast:x=>x.ast,att:x=>x.played,mvp:x=>x.mvp}[pSort];
   act.sort((a,b)=>key(b)-key(a)||a.name.localeCompare(b.name,'tr'));
   const f2=v=>(+v).toFixed(2).replace(/0$/,'');
-  let h=`<div class="psort" role="group" aria-label="Sort players"><span>Sort by</span>${[['avg','Rating'],['goals','Goals'],['ast','Assists'],['att','Attendance'],['mvp','MVP']].map(([k,l])=>`<button type="button" data-ps="${k}" class="${pSort===k?'on':''}">${l}</button>`).join('')}</div>`;
+  LASTSTATS={total,list};
+  let h=`<div class="seg2 pview" role="tablist" aria-label="View"><button type="button" data-pv="cards" class="${pView==='cards'?'on':''}">Cards</button><button type="button" data-pv="list" class="${pView==='list'?'on':''}">List</button></div><div class="psort" role="group" aria-label="Sort players"><span>Sort by</span>${[['avg','Rating'],['goals','Goals'],['ast','Assists'],['att','Attendance'],['mvp','MVP']].map(([k,l])=>`<button type="button" data-ps="${k}" class="${pSort===k?'on':''}">${l}</button>`).join('')}</div>`;
   const sa=seasonAwards(list,ex);
   if(sa.length)h=`<div class="sech"><h2>Awards</h2><span>Updated after every match</span></div><div class="sawg">${sa.map(a=>`<div class="saw saw-${a.k}"><span class="awl">${esc(a.l)}</span><b>${esc(a.n)}</b><span class="sav">${esc(a.v)}</span><span class="sas">${esc(a.s)}</span></div>`).join('')}</div>`+h;
   if(!act.length){el.innerHTML=h+`<div class="empty"><p>${isAdmin?'Add your regular players here. You can also add everyone who played in past matches in one go.':'No players yet.'}</p>${isAdmin?'<div class="bar" style="justify-content:center;margin-top:12px"><button class="pri" id="importP">Add players from past matches</button></div>':''}</div>`;return}
-  h+=act.map((x,k)=>{const pct=total?Math.round(x.played/total*100):0,op=pOpen[x.id];
-    return `<div class="pp${op?' open':''}" data-pid="${esc(x.id)}"><div class="ph"><span class="rk">${k+1}</span><div class="pn"><b>${esc(x.name)}</b>${x.aliases?`<span>${esc(x.aliases)}</span>`:''}</div>${(()=>{const fo=formOf(x);return fo?`<span class="form f-${fo.c}" title="${fo.t}: last 3 matches ${fo.d>=0?'+':''}${fo.d.toFixed(2)} vs average">${fo.c==='up'?'▲':fo.c==='down'?'▼':'●'}</span>`:''})()}<span class="avg"${x.avg!=null?` style="color:${hue(x.avg)}"`:''}>${x.avg!=null?f2(x.avg):'–'}</span></div>
+  if(pView==='cards')h+=`<div class="futg">${act.map(x=>futHTML(x,total)).join('')}</div><p class="note futn">OVR = average rating × 10. Gold 75+, silver 65–74, bronze below 65.</p>`;
+  else h+=act.map((x,k)=>{const pct=total?Math.round(x.played/total*100):0,op=pOpen[x.id];
+    return `<div class="pp${op?' open':''}" data-pid="${esc(x.id)}"><div class="ph"><span class="rk">${k+1}</span>${x.photo?`<img class="pav" src="${x.photo}" alt="">`:''}<div class="pn"><b>${esc(x.name)}</b>${x.aliases?`<span>${esc(x.aliases)}</span>`:''}</div>${(()=>{const fo=formOf(x);return fo?`<span class="form f-${fo.c}" title="${fo.t}: last 3 matches ${fo.d>=0?'+':''}${fo.d.toFixed(2)} vs average">${fo.c==='up'?'▲':fo.c==='down'?'▼':'●'}</span>`:''})()}<span class="avg"${x.avg!=null?` style="color:${hue(x.avg)}"`:''}>${x.avg!=null?f2(x.avg):'–'}</span></div>
     <div class="chips"><span><em>Attendance</em>${x.played}/${total}${total?` · ${pct}%`:''}</span><span><em>Goals</em>${x.goals}${x.gm?` in ${x.gm} ${x.gm===1?'match':'matches'}`:''}</span><span><em>Assists</em>${x.ast}</span><span><em>MVP</em>${x.mvp}</span><span><em>W-D-L</em>${x.w}-${x.d}-${x.l}</span>${(()=>{const a=ex.awards[x.id];return a?AW.filter(([k])=>a[k]).map(([k,l])=>`<span class="awchip aw-${k}"><em>${l}</em>${a[k]}</span>`).join(''):''})()}</div>
     <div class="abar" title="Attendance ${pct}%"><i style="width:${pct}%"></i></div>
     ${op?`<div class="pext">${(()=>{const r=x.hist.filter(h=>h.rt!=null).map(h=>h.rt).slice(-10);const fo=formOf(x);
       const mates=ex.duos.filter(d=>(d.a===x.id||d.b===x.id)&&d.g>=2).map(d=>({o:d.a===x.id?d.b:d.a,g:d.g,w:d.w,pct:d.w/d.g})).sort((a,b)=>b.pct-a.pct||b.g-a.g);
       const riv=Object.entries(ex.rivals[x.id]||{}).sort((a,b)=>b[1]-a[1])[0];
-      return `${r.length>=2?`<div class="frm"><span class="awl">Form · last ${r.length} ratings${fo?` · <b class="f-${fo.c}">${fo.t}</b>`:''}</span>${sparkSVG(r)}</div>`:''}<div class="duo2">${mates[0]?`<span><em>Best teammate</em>${esc(ROSTER[mates[0].o]?ROSTER[mates[0].o].name:'')} · ${mates[0].w}/${mates[0].g} wins</span>`:''}${riv&&ROSTER[riv[0]]?`<span><em>Most faced</em>${esc(ROSTER[riv[0]].name)} · ${riv[1]}×</span>`:''}</div>`})()}</div><div class="phist">${x.hist.length?x.hist.slice().reverse().map(hh=>`<div class="hr"><span class="hd">${esc(hh.label)}</span><span class="ht" style="--c:${esc(hh.team.color||'#888')}">${esc(hh.team.name||'')}</span>${hh.res?`<span class="res r${hh.res}">${hh.res}</span>`:''}${hh.g?`<span class="hg">${hh.g} ${hh.g===1?'goal':'goals'}</span>`:''}${hh.as?`<span class="hg">${hh.as} ${hh.as===1?'assist':'assists'}</span>`:''}${hh.mvp?'<span class="hm">MVP</span>':''}<span class="hrt">${hh.rt!=null?f2(hh.rt):''}</span></div>`).join(''):'<p class="note" style="text-align:left">No matches yet.</p>'}
+      return `${r.length>=2?`<div class="frm"><span class="awl">Form · last ${r.length} ratings${fo?` · <b class="f-${fo.c}">${fo.t}</b>`:''}</span>${sparkSVG(r)}</div>`:''}<div class="duo2">${mates[0]?`<span><em>Best teammate</em>${esc(ROSTER[mates[0].o]?ROSTER[mates[0].o].name:'')} · ${mates[0].w}/${mates[0].g} wins</span>`:''}${riv&&ROSTER[riv[0]]?`<span><em>Most faced</em>${esc(ROSTER[riv[0]].name)} · ${riv[1]}×</span>`:''}</div>`})()}</div><div class="bar" style="margin:6px 0 10px"><button type="button" data-vc="${esc(x.id)}">View card</button></div><div class="phist">${x.hist.length?x.hist.slice().reverse().map(hh=>`<div class="hr"><span class="hd">${esc(hh.label)}</span><span class="ht" style="--c:${esc(hh.team.color||'#888')}">${esc(hh.team.name||'')}</span>${hh.res?`<span class="res r${hh.res}">${hh.res}</span>`:''}${hh.g?`<span class="hg">${hh.g} ${hh.g===1?'goal':'goals'}</span>`:''}${hh.as?`<span class="hg">${hh.as} ${hh.as===1?'assist':'assists'}</span>`:''}${hh.mvp?'<span class="hm">MVP</span>':''}<span class="hrt">${hh.rt!=null?f2(hh.rt):''}</span></div>`).join(''):'<p class="note" style="text-align:left">No matches yet.</p>'}
     ${isAdmin?`<form class="pedit" data-edit="${esc(x.id)}"><input type="text" name="n" value="${esc(x.name)}" maxlength="30" aria-label="Name"><input type="text" name="a" value="${esc(x.aliases)}" maxlength="80" placeholder="Nicknames" aria-label="Nicknames"><button class="pri" type="submit">Save</button><button type="button" class="danger" data-del="${esc(x.id)}">Remove</button></form>`:''}</div>`:''}</div>`}).join('');
   const duo=ex.duos.filter(d=>d.g>=2&&ROSTER[d.a]&&ROSTER[d.b]&&!ROSTER[d.a].archived&&!ROSTER[d.b].archived).sort((a,b)=>b.w/b.g-a.w/a.g||b.g-a.g).slice(0,6);
   if(duo.length)h+=`<div class="sech" style="margin-top:18px"><h2>Best duos</h2><span>Teammates, 2+ matches together</span></div><div class="duos">${duo.map((d,i)=>`<div class="duo"><span class="rk">${i+1}</span><b>${esc(ROSTER[d.a].name)} <i>&amp;</i> ${esc(ROSTER[d.b].name)}</b><span class="tmn">${d.w}W ${d.dr}D ${d.l}L</span><span class="dp">${Math.round(d.w/d.g*100)}%</span></div>`).join('')}</div>`;
@@ -809,6 +1081,9 @@ function renderPlayers(){
 $('#players').addEventListener('click',async e=>{
   const t=e.target;
   if(t.dataset.ps){pSort=t.dataset.ps;renderPlayers();return}
+  if(t.dataset.pv){pView=t.dataset.pv;try{localStorage.setItem('hs-pview',pView)}catch(e){}renderPlayers();return}
+  if(t.dataset.vc){openCard(t.dataset.vc);return}
+  const fc=t.closest('.fut[data-card]');if(fc){openCard(fc.dataset.card);return}
   if(t.id==='importP'){
     const seen={},ops={};mList().forEach(m=>{const b=m.board||{};(b.players||[]).forEach(n=>{n=String(n||'').trim();const k=nameKey(n);if(!n||seen[k]||resolve(n))return;seen[k]=1;ops['players/'+F.push(F.ref(db,'players')).key]={name:n,aliases:'',createdAt:Date.now()}})});
     if(!Object.keys(ops).length){toast('No new names found');return}
@@ -973,7 +1248,7 @@ function nextCard(m){
   const A=T(0),B=T(1),d=new Date(m.date+'T12:00'),started=Date.now()>=ko;
   return `<a class="nx" href="#m-${esc(m.id)}">
     <div class="nxh"><span class="nxl">Next match</span><span class="nxc">${esc(untilText(ko))}</span></div>
-    <div class="nxd"><b>${esc(d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'}))}</b><span>${esc(m.start||'')}${m.end?'–'+esc(m.end):''} · İTÜ Ayazağa</span></div>
+    <div class="nxd"><b>${esc(d.toLocaleDateString(LOC,LANG==='tr'?{day:'numeric',month:'long',weekday:'long'}:{weekday:'long',day:'numeric',month:'long'}))}</b><span>${esc(m.start||'')}${m.end?'–'+esc(m.end):''} · İTÜ Ayazağa</span></div>
     <div class="mu big"><div class="tmx l">${kitSVG(A.c)}<span>${esc(A.n)}</span></div><div class="msc"><em>VS</em></div><div class="tmx r"><span>${esc(B.n)}</span>${kitSVG(B.c)}</div></div>
     <div class="nxf">${wxChip(m,true)}<div class="nxl2"><div class="lbar"><i style="width:${Math.min(100,pl/16*100)}%"></i></div><span class="lt">${pl>=16?'Lineup ready':`${pl}/16 players`}</span></div></div>
     <div class="nxb"><span class="btn pri">View lineup</span>${started?'':`<span class="btn">Predict</span>`}</div>
@@ -1014,7 +1289,7 @@ function renderMbar(){
   if(editor&&!mine)h+=`<button id="editM">Edit date &amp; time</button>`;
   if(isAdmin)h+=lk?`<button id="unlockM">Unlock match</button>`:`<button id="lockM">Lock now</button>`;
   if(lk&&!isAdmin)h+=`<span class="lknote">This match is final and can’t be changed.</span>`;
-  else if(!lk&&m.lockAt)h+=`<span class="lknote">Locks ${esc(new Date(+m.lockAt).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}))}</span>`;
+  else if(!lk&&m.lockAt)h+=`<span class="lknote">Locks ${esc(fmtDT(m.lockAt))}</span>`;
   el.innerHTML=h+`</div></div>`;
 }
 $('#newM').onclick=()=>{const f=$('#mForm');f.hidden=!f.hidden;if(!f.hidden){$('#fDate').value=nextWed();$('#fDate').focus()}};
@@ -1211,7 +1486,7 @@ function renderResults(){
   const awt=sum?{}:awardTally(rd,subs);
   lastRows={id:selRound,rd,rows,awt};
   const pub=PUB[selRound],rated=rows.filter(r=>r.avg!=null).length;
-  if(rated)h+=`<div class="pubbar"><div><b>${pub?'Published':'Not published'}</b><span>${pub?`Everyone can see these scores on the match page${pub.publishedAt?' · '+esc(new Date(pub.publishedAt).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})):''}`:'Only you can see these scores until you publish them. Comments stay private.'}</span></div><button class="pri" id="pubR">${pub?'Update published scores':'Publish results'}</button>${pub?'<button id="unpubR">Unpublish</button>':''}</div>`;
+  if(rated)h+=`<div class="pubbar"><div><b>${pub?'Published':'Not published'}</b><span>${pub?`Everyone can see these scores on the match page${pub.publishedAt?' · '+esc(new Date(pub.publishedAt).toLocaleString(LOC,{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})):''}`:'Only you can see these scores until you publish them. Comments stay private.'}</span></div><button class="pri" id="pubR">${pub?'Update published scores':'Publish results'}</button>${pub?'<button id="unpubR">Unpublish</button>':''}</div>`;
   if(Object.keys(awt).length)h+=`<div class="sech" style="margin-top:4px"><h2 style="font-size:20px">Match awards</h2><span>Published with the results</span></div>`+awardsHTML(awt,rd.teams);
   h+=rows.map((r,k)=>{const tm=teamOf(rd,r.p.t);return `<div class="rc${r.cs.length?' has':''}" data-r="${r.i}" style="--c:${esc(tm.color)}"><div class="rt"><span class="rk">${r.avg==null?'–':k+1}</span><div class="rn"><b>${esc(r.p.n)}</b><span>${esc(tm.name)} · ${r.n==null?'final score':`${r.n} ${r.n===1?'vote':'votes'}`}${r.tr&&r.raw!=null&&Math.abs(r.raw-r.avg)>=.05?` · ${r.tr*2} extreme votes dropped (raw ${r.raw.toFixed(2)})`:''}${r.cs.length?` · ${r.cs.length} ${r.cs.length===1?'comment':'comments'}`:''}</span></div><span class="avg"${r.avg!=null?` style="color:${hue(r.avg)}"`:''}>${r.avg==null?'–':r.avg.toFixed(2).replace(/0$/,"")}</span></div><div class="meter"><i style="width:${(r.avg||0)*10}%"></i></div>${openRow[r.i]&&r.cs.length?`<div class="cms">${r.cs.map(c=>`<p class="cm">${esc(c)}</p>`).join('')}</div>`:''}</div>`}).join('');
   $('#results').innerHTML=h;
@@ -1265,6 +1540,7 @@ $('#lmode').addEventListener('click',async e=>{
     if(b.id==='myShare')toast('Image downloaded · send it on WhatsApp');
   }
 });
+function trGen(n){const w=String(n).trim(),v=(w.toLocaleLowerCase('tr').match(/[aıoueiöü](?=[^aıoueiöü]*$)/)||['e'])[0],x={a:'ı',ı:'ı',o:'u',u:'u',e:'i',i:'i',ö:'ü',ü:'ü'}[v];return /[aıoueiöü]$/i.test(w)?`${w}'n${x}n`:`${w}'${x}n`}
 async function lineupPNG(){
   try{await document.fonts.ready}catch(e){}
   const W=1080,H=1700,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
@@ -1273,8 +1549,8 @@ async function lineupPNG(){
   x.fillStyle='#0b110e';x.fillRect(0,0,W,H);
   const m=MATCHES[curMatch]||{};let who='';try{who=localStorage.getItem('hs-me')||''}catch(e){}
   x.fillStyle='#8ef0a9';x.font=`700 30px ${FB}`;x.fillText('IBNESPOR',90,82);
-  x.fillStyle='#f1f6f2';x.font=`800 74px ${FC}`;x.fillText(mine?(who?`${who}'s lineup`:'My lineup'):'Official lineup',90,160);
-  x.fillStyle='#98ab9e';x.font=`600 32px ${FB}`;x.fillText(`${mLabel(m)}  ·  ${S.teams[0].name} ${S.teams[0].form}  vs  ${S.teams[1].name} ${S.teams[1].form}`,90,208);
+  x.fillStyle='#f1f6f2';x.font=`800 74px ${FC}`;x.fillText(mine?(who?(LANG==='tr'?`${trGen(who)} kadrosu`:`${who}'s lineup`):tx('My lineup')):tx('Official lineup'),90,160);
+  x.fillStyle='#98ab9e';x.font=`600 32px ${FB}`;x.fillText(`${mLabel(m)}  ·  ${tx(S.teams[0].name)} ${S.teams[0].form}  vs  ${tx(S.teams[1].name)} ${S.teams[1].form}`.replace('  vs  ',LANG==='tr'?'  -  ':'  vs  '),90,208);
   const PX=90,PY=250,PW=900,PH=1350,sx=PW/68,sy=PH/102;
   x.save();rr(PX,PY,PW,PH,22);x.clip();
   x.fillStyle='#8e3628';x.fillRect(PX,PY,PW,PH);
@@ -1494,7 +1770,7 @@ function seasonAwards(list,ex){
   const mos=Object.keys(ex.months).sort();const curMo=today().slice(0,7);
   for(const mo of [curMo,...mos.slice().reverse()]){const M=ex.months[mo];if(!M)continue;
     const c=Object.entries(M).filter(([id,v])=>v.length>=2&&ROSTER[id]&&!ROSTER[id].archived).map(([id,v])=>({id,avg:v.reduce((a,b)=>a+b,0)/v.length,n:v.length})).sort((a,b)=>b.avg-a.avg)[0];
-    if(c){out.push({k:'month',l:`Player of the month · ${new Date(mo+'-15').toLocaleDateString('en-GB',{month:'long'})}`,n:ROSTER[c.id].name,v:c.avg.toFixed(2),s:`${c.n} matches`});break}}
+    if(c){out.push({k:'month',l:`Player of the month · ${new Date(mo+'-15').toLocaleDateString(LOC,{month:'long'})}`,n:ROSTER[c.id].name,v:c.avg.toFixed(2),s:`${c.n} matches`});break}}
   const mvp=act.filter(x=>x.mvp>0).sort((a,b)=>b.mvp-a.mvp||(b.avg||0)-(a.avg||0))[0];
   if(mvp)out.push({k:'mvp',l:'Season MVP',n:mvp.name,v:mvp.mvp+'×',s:'player of the match'});
   const cons=act.filter(x=>x.rs.length>=3).map(x=>{const m=x.rs.reduce((a,b)=>a+b,0)/x.rs.length;return{x,sd:Math.sqrt(x.rs.reduce((a,b)=>a+(b-m)**2,0)/x.rs.length)}}).sort((a,b)=>a.sd-b.sd)[0];
