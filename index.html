@@ -579,11 +579,21 @@ body:not([data-view=matches]) .ghbg{opacity:.35}
 .mu .tmx span{overflow-wrap:anywhere}
 @media(max-width:420px){.ghkd{display:none}.mu.big .tmx span{font-size:21px}.mu.big .kit{width:34px;height:34px}.tmx span{font-size:18px}.nxmini .k{display:none}.ghm{padding:4px 2px}}
 @media(max-width:360px){.seg button{font-size:14px;padding:0 4px;white-space:normal}.tn1,.tn2{font-size:16px!important;white-space:normal!important}.mwk{white-space:normal!important}.ch .tn{font-size:16px}.list .nm{font-size:13px}.list li{gap:4px;padding:4px 5px}.scl{font-size:13px}.tmx span{font-size:15px}.tmx{gap:5px}.tmx .kit{width:26px;height:26px}.mu.big .tmx span{font-size:18px}.wx{flex-wrap:wrap}}
+/* v10 */
+.ghlogo{width:auto!important;height:auto!important;border-radius:0!important;overflow:visible!important;box-shadow:none!important;cursor:default;user-select:none;-webkit-user-select:none;pointer-events:none;
+ font:800 calc(34px - 12px * var(--p))/1 "Barlow Condensed",sans-serif;letter-spacing:calc(.14em - .04em * var(--p));color:#fff;white-space:nowrap;
+ background:linear-gradient(180deg,#ffffff 30%,#c9f5d6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 6px #000a)}
+.ghlogo:hover{transform:none}
+.ghm{overflow:hidden}
+@media(max-width:420px){.ghlogo{font-size:calc(19px - 4px * var(--p));letter-spacing:.05em}.ghin{gap:6px;padding:0 8px}.ghs small{font-size:13px}.ghs{font-size:calc(23px - 7px * var(--p))}}
+.p1{justify-content:center;gap:18px}
+.p1 .pdt{flex:0 1 auto;max-width:48%}
+.p1 .pds{margin-left:6px}
 </style>
 </head>
 <body>
 <header class="gh" id="gh"><div class="ghbg" aria-hidden="true"></div>
-  <div class="ghin"><a class="ghm ghl" id="ghL" href="#matches"></a><a class="ghlogo" href="#matches" aria-label="Ibnespor"><img src="icon-192.png" alt="Ibnespor" width="96" height="96"></a><a class="ghm ghr" id="ghR" href="#matches"></a></div>
+  <div class="ghin"><a class="ghm ghl" id="ghL" href="#matches"></a><span class="ghlogo" data-noi18n aria-label="Ibnespor">IBNESPOR</span><a class="ghm ghr" id="ghR" href="#matches"></a></div>
 </header>
 <div class="ghsp" aria-hidden="true"></div>
 <div hidden><div id="heroSub"></div><div id="sq"></div><div class="bug" id="bug"></div></div>
