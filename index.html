@@ -1227,9 +1227,12 @@ function rateCalc(hist,ids,rids,core){
 // A match whose published average is below 7 is scaled up to 7 (capped at 10); 7+ stays as is. Raw value kept in .raw.
 // Joke entries removed from the ratings (not counted anywhere).
 const PEXCL={'2026-05-22-1600':["mertcan'ın ayaksız kankisi"]};
+// Corrected raw scores (before the 7-average scaling).
+const PFIX={'2026-05-22-1600':{'yusuf':8.1}};
 function normPub(o){
   for(const k in o){const P=o[k];if(!P||!Array.isArray(P.players))continue;
     if(PEXCL[k])P.players=P.players.filter(q=>!(q&&PEXCL[k].includes(nameKey(q.n))));
+    if(PFIX[k])P.players.forEach(q=>{const v=q&&PFIX[k][nameKey(q.n)];if(v!=null)q.avg=v});
     const v=P.players.filter(q=>q&&+q.avg>0).map(q=>+q.avg);if(!v.length)continue;
     const f=Math.max(1,RTGT/(v.reduce((a,b)=>a+b,0)/v.length));P.scale=f;if(f===1)continue;
     P.players.forEach(q=>{if(!q||!(+q.avg>0))return;q.raw=+q.avg;q.avg=Math.min(10,Math.round(q.raw*f*100)/100)});}
