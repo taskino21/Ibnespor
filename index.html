@@ -45,10 +45,11 @@ h1{margin:0;font:800 clamp(34px,6vw,52px)/1.02 "Barlow Condensed",sans-serif;tex
 .c0{order:1}.pbox{order:2}.c1{order:3}
 @media(max-width:1099px){.wrap{grid-template-columns:repeat(2,minmax(0,1fr))}.pbox{order:0;grid-column:1/-1}}
 @media(max-width:600px){.wrap{grid-template-columns:minmax(0,1fr)}}
-.pitch{position:relative;container-type:inline-size;width:min(100%,calc(80vh * .6667),560px);aspect-ratio:68/102;margin:0 auto;border-radius:10px;overflow:hidden;box-shadow:0 24px 60px #000a,0 0 0 4px #1c2a22;touch-action:none;user-select:none;-webkit-user-select:none}
+.pitch{position:relative;container-type:inline-size;width:min(100%,calc(80vh * .6667),560px);aspect-ratio:68/102;margin:0 auto;border-radius:10px;overflow:hidden;box-shadow:0 24px 60px #000a,0 0 0 4px #1c2a22;touch-action:pan-y pinch-zoom;user-select:none;-webkit-user-select:none}
 .pitch>svg{position:absolute;inset:0;width:100%;height:100%}
 .pitch::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(70% 45% at 50% 0,#ffffff1c,transparent 70%),radial-gradient(70% 45% at 50% 100%,#ffffff14,transparent 70%)}
-.tk{position:absolute;transform:translate(-50%,-50%);display:grid;justify-items:center;z-index:2;touch-action:none;transition:left .35s,top .35s}
+.tk{position:absolute;transform:translate(-50%,-50%);display:grid;justify-items:center;z-index:2;touch-action:pan-y pinch-zoom;transition:left .35s,top .35s}
+.ed .pitch,.ed .tk{touch-action:none}
 .ed .tk{cursor:grab}
 .tk.drag{transition:none;z-index:6;cursor:grabbing}
 .tk svg.j{width:clamp(36px,9.5cqw,66px);height:auto;aspect-ratio:40/38;display:block;overflow:visible;filter:drop-shadow(0 3px 3px #0009)}
@@ -638,7 +639,7 @@ body:not([data-view=matches]) .ghbg{opacity:.35}
   <section class="pbox">
     <div class="lmode" id="lmode"><div class="seg2" role="tablist" aria-label="Lineup"><button type="button" data-lm="0" class="on" role="tab">Official lineup</button><button type="button" data-lm="1" role="tab">My lineup</button></div>
       <div class="mybar"><span id="mytxt">The lineup set by the organizer.</span><div class="bar"><button type="button" class="pri" id="myShare">Share</button><button type="button" id="myDl">Download image</button><button type="button" id="myReset" hidden>Reset</button></div></div></div>
-    <div class="pitch" id="pitch"><button class="fs" id="fs" aria-label="Tactics mode">⤢ Tactics mode</button>
+    <div class="pitch" id="pitch">
       <svg viewBox="0 0 68 102" preserveAspectRatio="none" aria-hidden="true">
         <defs>
           <filter id="grass" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="1.6 .9" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 -.12"/></filter>
@@ -998,9 +999,6 @@ $('#copy').onclick=async()=>{
   const txt='Ibnespor · '+mLabel(MATCHES[curMatch])+'\n\n'+S.teams.map((tm,t)=>{const r=roles(t);return `${tm.name} (${tm.form})\n`+[0,1,2,3,4,5,6,7].map(i=>`${num(t*8+i)}. ${S.players[S.slots[t*8+i].p]||'-'} (${r[i]})`).join('\n')}).join('\n\n');
   try{await navigator.clipboard.writeText(txt);toast('Lineup copied')}catch(e){toast('Copy failed')}
 };
-$('#fs').onclick=async e=>{e.stopPropagation();const on=!document.body.classList.contains('focus');document.body.classList.toggle('focus',on);$('#fs').textContent=on?'✕ Exit':'⤢ Tactics mode';window.scrollTo(0,0);try{if(on&&!document.fullscreenElement)await document.documentElement.requestFullscreen();else if(!on&&document.fullscreenElement)await document.exitFullscreen()}catch(err){}};
-document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&document.body.classList.contains('focus')){document.body.classList.remove('focus');$('#fs').textContent='⤢ Tactics mode'}});
-$('#fs').addEventListener('pointerdown',e=>e.stopPropagation());
 // ---------- views ----------
 let view='matches',MATCHES={},curMatch=null,showNew=false,PUB={},RESULTS={},ROSTER={};
 const LABEL={matches:'Matches',match:'Squads',players:'Players',stats:'Stats',rate:'Player ratings',results:'Results',help:'How it works'};
