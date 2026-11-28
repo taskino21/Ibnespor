@@ -419,6 +419,9 @@ body:not([data-view=home]) .hero .sub{display:none}
 .nxh{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .nxl{font:700 14px Barlow,sans-serif;color:var(--acc)}
 .nxc,.cd{background:#41d36a;color:#0d2414;font-weight:800;font-size:13px;border-radius:20px;padding:3px 10px}
+.nxc{display:block;min-width:0;max-width:96px;padding:3px 4px;overflow:hidden}.nxh .nxl{flex:none}
+.nxc .ghmq.run{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 8px,#000 calc(100% - 8px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 8px,#000 calc(100% - 8px),transparent 100%)}
+.nxc .ghmi{padding:0 6px}.nxc .ghmq.run .ghmi{padding:0 8px}
 .nxd{display:grid;margin-top:8px}.nxd b{font:800 28px/1.05 "Barlow Condensed",sans-serif}.nxd span{color:var(--mut);font-size:14px}
 .mu.big{margin:16px 0 8px}.mu.big .tmx span{font-size:26px}.mu.big .kit{width:42px;height:42px}
 .nxf{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:10px}
@@ -455,6 +458,7 @@ body.mine #mres,body.mine #mpred,body.mine #pubres{opacity:.45;pointer-events:no
 .ghm{display:grid;grid-template-columns:minmax(0,1fr);gap:calc(6px * (1 - var(--p)));color:#fff;text-decoration:none;min-width:0;padding:4px 6px;border-radius:12px}
 a.ghm[href]:hover{background:#ffffff10}
 .ghr{justify-items:end;text-align:right}
+.gh .ghm{visibility:hidden}
 .ghk{font:600 calc(12.5px - 2.5px * var(--p))/1.2 Barlow,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#ffffffcc;opacity:calc(1 - var(--p) * 1.4);max-height:calc(18px * (1 - var(--p)));overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .ghs{display:flex;align-items:center;gap:calc(10px - 4px * var(--p));min-width:0;font:800 calc(30px - 12px * var(--p))/1 "Barlow Condensed",sans-serif;white-space:nowrap}
 .ghr .ghs{justify-content:flex-end;max-width:100%}.ghr .ghs .ght{flex:none}
@@ -1546,7 +1550,7 @@ function nextCard(m){
   const T=i=>({n:(t[i]&&t[i].name)||(i?'Blue':'Red'),c:isCol((t[i]||{}).color)?t[i].color:(i?'#2468d8':'#d93a2b')});
   const A=T(0),B=T(1),d=new Date(m.date+'T12:00'),started=Date.now()>=ko;
   return `<a class="nx" href="#m-${esc(m.id)}">
-    <div class="nxh"><span class="nxl">Next match</span><span class="nxc">${esc(untilText(ko))}</span></div>
+    <div class="nxh"><span class="nxl">Next match</span><span class="nxc"><span class="ghmq"><span class="ghmi">${esc(untilText(ko))}</span></span></span></div>
     <div class="nxd"><b>${esc(d.toLocaleDateString(LOC,LANG==='tr'?{day:'numeric',month:'long',weekday:'long'}:{weekday:'long',day:'numeric',month:'long'}))}</b><span>${esc(m.start||'')}${m.end?'–'+esc(m.end):''} · İTÜ Ayazağa</span></div>
     <div class="mu big"><div class="tmx l">${kitSVG(A.c)}<span>${esc(A.n)}</span></div><div class="msc"><em>VS</em></div><div class="tmx r"><span>${esc(B.n)}</span>${kitSVG(B.c)}</div></div>
     <div class="nxf">${wxChip(m,true)}<div class="nxl2"><div class="lbar"><i style="width:${Math.min(100,pl/16*100)}%"></i></div><span class="lt">${pl>=16?'Lineup ready':`${pl}/16 players`}</span></div></div>
@@ -1573,7 +1577,7 @@ function renderHome(){
   const kg=(t,rows,u)=>`<div class="hk"><span class="hkl">${t}</span>${rows.length?rows.slice(0,3).map((x,i)=>`<div class="hkr${i?'':' top'}"><b>${esc(x.n)}</b><span><em>${x.v}</em> ${u}</span></div>`).join(''):'<p class="note">–</p>'}</div>`;
   const G=tally('goals'),A=tally('assists');
   if(G.length||A.length)h+=`<div class="sech"><h2>Kings</h2><a class="hall" href="#stats">Stats ›</a></div><div class="hkg">${kg('Top scorers',G,'goals')}${kg('Top assists',A,'assists')}</div>`;
-  el.innerHTML=h;
+  el.innerHTML=h;ghMq();
 }
 function renderMatches(){
   try{renderHome()}catch(e){console.error(e)}
@@ -1584,7 +1588,7 @@ function renderMatches(){
   else h+=`<div class="empty sm"><p>No upcoming matches.${baseEd?' Tap “New match” to add one.':''}</p></div>`;
   if(later.length)h+=`<div class="sech"><h2>Later matches</h2><span>Only editors see this</span></div>`+later.map(mcard).join('');
   if(all_.length)h+=`<div class="sech"><h2>All matches</h2><span>Newest first</span></div>`+all_.map(mcard).join('');
-  el.innerHTML=h;renderGH();nxMini();
+  el.innerHTML=h;renderGH();nxMini();ghMq();
 }
 function lastDone(){const now=Date.now();return mList().filter(m=>kickoffOf(m)+3600000<=now).sort((a,b)=>mKey(b).localeCompare(mKey(a)))[0]||null}
 function nextUp(){const now=Date.now();return mList().filter(m=>kickoffOf(m)+3600000>now).sort((a,b)=>mKey(a).localeCompare(mKey(b)))[0]||null}
