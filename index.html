@@ -369,9 +369,9 @@ body.noscroll{overflow:hidden}
 .lnk.dl{color:var(--bad)}
 /* v5 */
 body{-webkit-font-smoothing:antialiased}
-body:not([data-view=matches]) .hero{min-height:118px}
-body:not([data-view=matches]) .hero h1{font-size:30px}
-body:not([data-view=matches]) .hero .sub{display:none}
+body:not([data-view=home]) .hero{min-height:118px}
+body:not([data-view=home]) .hero h1{font-size:30px}
+body:not([data-view=home]) .hero .sub{display:none}
 .sech{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:22px 2px 10px}
 .sech h2{font:800 23px/1.1 "Barlow Condensed",sans-serif;margin:0}
 .sech span{color:var(--mut);font-size:13px;text-align:right}
@@ -591,10 +591,10 @@ body.nxs .nxmini{transform:translate(-50%,0);opacity:1;pointer-events:auto}
 .ghlogo{display:block;flex:none;width:calc(76px - 36px * var(--p));height:calc(76px - 36px * var(--p));border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px #ffffffd0,0 6px 18px #0008;transition:transform .2s}
 .ghlogo:hover{transform:scale(1.05)}
 .ghlogo img{width:100%;height:100%;display:block;object-fit:cover}
-body:not([data-view=matches]) .gh{--p:1}
-body:not([data-view=matches]) .ghm{visibility:hidden}
-body:not([data-view=matches]) .ghsp{height:calc(env(safe-area-inset-top) + var(--ghC))}
-body:not([data-view=matches]) .ghbg{opacity:.35}
+body:not([data-view=home]) .gh{--p:1}
+body:not([data-view=home]) .ghm{visibility:hidden}
+body:not([data-view=home]) .ghsp{height:calc(env(safe-area-inset-top) + var(--ghC))}
+body:not([data-view=home]) .ghbg{opacity:.35}
 .podium{grid-auto-rows:1fr}
 .pd{min-height:0}
 .p2,.p3{justify-content:center}
